@@ -1,0 +1,23 @@
+# Garde-fous rejoués avant chaque commit.
+#
+# Installation, une fois, à la racine du dépôt :
+#   pre-commit install        (uv tool install pre-commit, ou pipx install pre-commit)
+# Le crochet vaut pour l'arbre principal et tous les worktrees. Tout rejouer :
+#   pre-commit run --all-files
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      # [PAS-SUR-MAIN] : refuse tout commit fait sur main ou develop. GitHub refuse aussi
+      # tout push direct sur ces branches (ruleset « Protection main et develop »).
+      - id: no-commit-to-branch
+        args: [--branch, main, --branch, develop]
+      - id: check-added-large-files
+        args: [--maxkb=1024]
+      - id: check-merge-conflict
+      - id: detect-private-key
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+        args: [--markdown-linebreak-ext=md]
+      - id: check-yaml
+      - id: check-json
