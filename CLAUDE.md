@@ -30,12 +30,12 @@ l'identifiant se trouve dans l'un de ses trois fichiers.
   la dette et abaisser le budget dans le même commit.
 - **Revue** : non vérifiable mécaniquement ; appliqué en relecture.
 
-Tant qu'aucun contrôle n'est branché (commande `charte` et `charte.toml`, pre-commit, CI),
-toutes les règles sont en régime **revue**, et le code part de zéro : une règle stricte ou en
-cliquet chez AnnSki n'a ici aucun passif à tolérer. Une règle impossible à tenir
-s'**amende ici**, explicitement, avec sa raison et sa date — on ne la contourne pas en
-silence. Une exception ponctuelle se justifie par un commentaire au point d'appel, qui cite
-l'identifiant de la règle.
+Les règles contrôlées sont décrites dans `charte.toml` et vérifiées par la commande `charte`
+(installée avec init-repo) après chaque édition, avant chaque commit (pre-commit) et en CI ;
+les autres sont listées dans `scripts/ci/charte-non-verifiee.txt` et appliquées en revue.
+Une règle impossible à tenir s'**amende ici**, explicitement, avec sa raison et sa date — on ne
+la contourne pas en silence. Une exception ponctuelle se justifie par un commentaire au point
+d'appel, qui cite l'identifiant de la règle.
 
 ### Hiérarchie
 En cas de conflit : **sécurité et intégrité des données > contrat d'API publié > lisibilité >
