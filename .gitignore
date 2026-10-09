@@ -26,11 +26,13 @@ logs/
 .DS_Store
 Thumbs.db
 *:Zone.Identifier
-
 # --- Python (backend) ---
 __pycache__/
 *.py[cod]
 .venv/
+coverage.xml
+.coverage
+htmlcov/
 .mypy_cache/
 .ruff_cache/
 .pytest_cache/

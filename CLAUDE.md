@@ -3,8 +3,9 @@
 Projet d'équipe du module DATA732 (visualisation de données) : Antoine, Nathan, Pavel.
 
 Monorepo : backend Django + Django Ninja (`backend/`) et frontend Nuxt 4 + Vue 3
-(`frontend/`). Ce fichier réunit les consignes de travail sur le dépôt et la **charte**, norme
-unique du code, reprise de celle d'AnnSki : tout code nouveau la respecte, humains et agents.
+(`frontend/`).
+Ce fichier réunit les consignes de travail sur le dépôt et la **charte**, norme unique du code,
+reprise de celle d'AnnSki : tout code nouveau la respecte, humains et agents.
 La charte tient en trois fichiers : celui-ci (§0, §1, §4, §5, §6),
 [`frontend/CLAUDE.md`](frontend/CLAUDE.md) (§2) et [`backend/CLAUDE.md`](backend/CLAUDE.md)
 (§3), chargés par Claude Code dès qu'il travaille dans le dossier.
@@ -30,12 +31,12 @@ l'identifiant se trouve dans l'un de ses trois fichiers.
   la dette et abaisser le budget dans le même commit.
 - **Revue** : non vérifiable mécaniquement ; appliqué en relecture.
 
-Tant qu'aucun contrôle n'est branché (commande `charte` et `charte.toml`, pre-commit, CI),
-toutes les règles sont en régime **revue**, et le code part de zéro : une règle stricte ou en
-cliquet chez AnnSki n'a ici aucun passif à tolérer. Une règle impossible à tenir
-s'**amende ici**, explicitement, avec sa raison et sa date — on ne la contourne pas en
-silence. Une exception ponctuelle se justifie par un commentaire au point d'appel, qui cite
-l'identifiant de la règle.
+Les règles contrôlées sont décrites dans `charte.toml` et vérifiées par la commande `charte`
+(installée avec kiln) après chaque édition, avant chaque commit (pre-commit) et en CI ;
+les autres sont listées dans `scripts/ci/charte-non-verifiee.txt` et appliquées en revue.
+Une règle impossible à tenir s'**amende ici**, explicitement, avec sa raison et sa date — on ne
+la contourne pas en silence. Une exception ponctuelle se justifie par un commentaire au point
+d'appel, qui cite l'identifiant de la règle.
 
 ### Hiérarchie
 En cas de conflit : **sécurité et intégrité des données > contrat d'API publié > lisibilité >
@@ -55,10 +56,10 @@ casserait le contrat ([CONTRAT-FIGE]) ; on ne le fait qu'en ouvrant une nouvelle
     `.gitattributes` marque `linguist-generated`, seule liste (`openapi.json`, types
     TypeScript générés, verrous).
 - **[TAILLE-FONCTION]** Une fonction = une responsabilité, **30 lignes au plus** (hors
-  template des fichiers Vue, hors docstring). Un test peut aller jusqu'à 40 lignes si le
+  gabarit des composants, hors docstring). Un test peut aller jusqu'à 40 lignes si le
   découper cacherait le scénario.
 - **[UNE-CLASSE]** Une classe par fichier. Exceptions, qui restent sous [TAILLE-FICHIER] : les
-  schémas Ninja / Pydantic d'un même domaine (`schemas.py`, `responses.py`), les exceptions
+  schémas Pydantic d'un même domaine (`schemas.py`, `responses.py`), les exceptions
   métier d'un même domaine, les classes de test d'un même fichier de test.
 
 ### Nommage
@@ -70,7 +71,7 @@ casserait le contrat ([CONTRAT-FIGE]) ; on ne le fait qu'en ouvrant une nouvelle
   (titres, axes, légendes, messages) sont en français. Les adresses des pages sont des URL
   publiques et n'ont pas à suivre le vocabulaire du code.
 - **[BOOLEENS]** Un booléen est préfixé : `is`, `has`, `should`, `can` côté frontend
-  (`isLoading`, `hasMissingValues`) ; `is_`, `has_`, `should_`, `can_` côté backend. Les champs
+  (`isLoading`, `hasMissingValues`) ; `is_`, `has_`, `should_`, `can_` en Python. Les champs
   déjà publiés dans l'API restent tels quels ([CONTRAT-FIGE]).
 - **[CASSE]** Composants Vue en PascalCase préfixé par le domaine (`ChartLegend`,
   `MapTooltip`) ; classes Python en PascalCase ; fonctions et variables Python en snake_case ;
@@ -78,7 +79,7 @@ casserait le contrat ([CONTRAT-FIGE]) ; on ne le fait qu'en ouvrant une nouvelle
 
 ### Valeurs magiques
 - **[ZERO-MAGIE]** Pas de littéral métier en dur (statut, rôle, seuil, délai, prix, couleur,
-  nom de colonne répété) : constantes dans `utils/constants.ts` ou enums TypeScript côté
+  nom de colonne répété) : constantes dans `app/utils/constants.ts` ou enums TypeScript côté
   frontend ; `TextChoices` / `IntegerChoices` ou constante nommée en tête de module côté
   backend. Ne sont pas magiques : `0`, `1`, `-1`, `""`, `None`, les index et les littéraux des
   tests.
@@ -103,14 +104,14 @@ casserait le contrat ([CONTRAT-FIGE]) ; on ne le fait qu'en ouvrant une nouvelle
 
 ---
 
-## 2. Frontend (Nuxt et Vue 3)
+## 2. Frontend (Nuxt 4 + Vue 3)
 
 Dans [`frontend/CLAUDE.md`](frontend/CLAUDE.md) : code ([TS-STRICT] à [ACCESSIBILITE]) et
 stylage ([STYLE-1] à [STYLE-5], isolats CSS).
 
 ---
 
-## 3. Backend (Django et Django Ninja)
+## 3. Backend (Django + Django Ninja)
 
 Dans [`backend/CLAUDE.md`](backend/CLAUDE.md) : socle ([TYPAGE] à [FICHIERS]) et piliers I à XV
 (couches, persistance, contrats, sécurité, erreurs, domaine, concurrence, observabilité,
@@ -127,15 +128,19 @@ puis en strict.
 - **[DEPENDANCES-FIGEES]** Toute dépendance est résolue par un lockfile commité (`uv.lock`,
   `pnpm-lock.yaml`) ; la CI installe en mode figé (`uv sync --locked`, `--frozen-lockfile`) et
   échoue si le lockfile dérive.
+- **[UV-PODMAN]** Python passe par uv (`uv add`, `uv run`, `uv tool install`) : jamais pip,
+  pipx ni `requirements.txt`. Les conteneurs passent par podman (`Containerfile`,
+  `compose.yaml`, `podman-compose`) : jamais docker, `Dockerfile` ni `docker-compose.yml`.
 - **[IMAGES-PAR-EMPREINTE]** Toute image de base de conteneur est épinglée par empreinte
   `@sha256:`, jamais par un tag mobile seul.
-- **[AUDIT-VULNERABILITES]** La CI audite les dépendances à chaque commit (`pip-audit` / `uv`
-  côté backend, `pnpm audit --audit-level=high` côté frontend) ; une vulnérabilité haute ou
+- **[AUDIT-VULNERABILITES]** La CI audite les dépendances à chaque commit (`uv audit` pour
+  chaque projet Python, `pnpm audit --audit-level=high` pour un front pnpm) ; une vulnérabilité haute ou
   critique bloque la fusion, sauf dérogation datée et justifiée.
 - **[NOUVELLE-DEPENDANCE]** Ajouter une dépendance se justifie dans le commit : maintenue
   (release de moins d'un an), licence compatible, pas d'équivalent déjà présent, pas de nom
-  proche d'un paquet connu (typosquatting). Les montées de version passent par Dependabot, une
-  par PR.
+  proche d'un paquet connu (typosquatting). Les montées de version passent par `kiln update`
+  (compatibles par défaut, majeures par `kiln update --major`, contrôles à la suite), une PR par
+  passage ; Dependabot ne propose que les correctifs de sécurité (amendé le 9 octobre 2026).
 - **[SBOM]** Chaque image déployée produit sa nomenclature logicielle (CycloneDX ou SPDX),
   conservée avec la release.
 
@@ -161,13 +166,13 @@ puis en strict.
 
 ### Observabilité
 - **[OPENTELEMETRY]** Traces distribuées OpenTelemetry (propagation W3C `traceparent`) de la
-  requête du frontend jusqu'à l'outbox et aux API tierces ; le `X-Request-ID` ([CORRELATION])
+  requête jusqu'aux traitements de fond et aux API tierces ; le `X-Request-ID` ([CORRELATION])
   en est l'attribut de corrélation.
 - **[SLO]** Chaque parcours critique a un objectif de niveau de service chiffré
   (disponibilité, latence p95) et un budget d'erreur. Un budget épuisé gèle les
   fonctionnalités au profit de la fiabilité.
 - **[ALERTE-SUR-SYMPTOME]** On alerte sur ce que l'utilisateur subit (taux d'erreur, latence,
-  file d'outbox qui grossit), pas sur des causes internes (CPU, mémoire).
+  file de traitements qui grossit), pas sur des causes internes (CPU, mémoire).
 
 ### Performance
 - **[CORE-WEB-VITALS]** Budgets au 75ᵉ centile, sur mobile : **LCP < 2,5 s**, **INP < 200 ms**,
@@ -223,7 +228,7 @@ puis en strict.
 - **[IA-CONFIDENTIALITE]** Aucun secret, aucune donnée personnelle réelle n'est collée dans une
   conversation avec un agent ; on travaille sur des données de test ou publiques.
 - **[IA-FONCTIONNALITE]** Toute fonctionnalité qui appelle un modèle de langage passe par
-  l'outbox ou une file ([HORS-REQUETE]), borne son coût par appel, journalise modèle et jetons
+  une file ([HORS-REQUETE]), borne son coût par appel, journalise modèle et jetons
   consommés, et ne laisse jamais le texte généré déclencher une action sans validation
   (injection de consignes).
 

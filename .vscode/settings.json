@@ -10,6 +10,9 @@
   "search.exclude": {
     ".claude/worktrees": true
   },
+  "[python]": {
+    "editor.defaultFormatter": "charliermarsh.ruff"
+  },
   "[markdown]": {
     "files.trimTrailingWhitespace": false
   }
