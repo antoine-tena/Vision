@@ -1,12 +1,17 @@
-# Réponses du générateur init-repo : ne pas modifier à la main, `init-repo maj` s'en sert.
-_commit: 8c08903
-_src_path: https://github.com/antoine-tena/init-repo.git
+# Réponses de kiln : ne pas modifier à la main, `kiln update` s'en sert.
+_commit: 10fb72d
+_src_path: https://github.com/antoine-tena/kiln.git
+avec_a_faire: false
+backend: django
 description: 'Projet d''équipe du module DATA732 (visualisation de données) : Antoine,
     Nathan, Pavel.'
 equipe:
 - antoine-tena
 - NathanBarrachin
 - Trofymov-Pavlo
+frontend: nuxt
 nom: vision
+podman: false
 proprietaire: antoine-tena
 titre: Vision
+type_projet: app
