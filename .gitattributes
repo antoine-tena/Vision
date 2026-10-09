@@ -5,3 +5,7 @@
 *.png binary
 *.jpg binary
 *.ico binary
+
+# Fichiers générés, exemptés de [TAILLE-FICHIER] (CLAUDE.md).
+backend/uv.lock linguist-generated=true
+frontend/pnpm-lock.yaml linguist-generated=true

@@ -26,3 +26,12 @@ logs/
 .DS_Store
 Thumbs.db
 *:Zone.Identifier
+
+# --- Python (backend) ---
+__pycache__/
+*.py[cod]
+.venv/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+backend/db.sqlite3
