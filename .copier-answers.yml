@@ -1,8 +1,9 @@
 # Réponses de kiln : ne pas modifier à la main, `kiln update` s'en sert.
-_commit: 10fb72d
+_commit: b842941
 _src_path: https://github.com/antoine-tena/kiln.git
-avec_a_faire: false
 backend: django
+boussole: Vision en service
+date_creation: '2026-10-10'
 description: 'Projet d''équipe du module DATA732 (visualisation de données) : Antoine,
     Nathan, Pavel.'
 equipe:
@@ -13,5 +14,7 @@ frontend: nuxt
 nom: vision
 podman: false
 proprietaire: antoine-tena
+statusline_ci: true
 titre: Vision
 type_projet: app
+url_sante_prod: ''

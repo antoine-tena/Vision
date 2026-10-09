@@ -14,6 +14,15 @@ La charte tient en trois fichiers : celui-ci (§0, §1, §4, §5, §6),
 
 - Échanges, documentation et messages de commit en français ; code en anglais.
 
+## Où est l'état du projet
+
+- **`docs/a-faire/` est la seule source à jour** : [`a-faire.md`](docs/a-faire/a-faire.md), la
+  liste unique de ce qui reste, rangée par criticité (une entrée `AF-NN` par chose, avec son
+  état et son détail ; ce qui est terminé est dans sa section « Fait »),
+  [`ecarte.md`](docs/a-faire/ecarte.md), ce qui a été refusé, et
+  [`urgent.md`](docs/a-faire/urgent.md), ce que seul un humain de l'équipe peut faire (une case
+  par action). Skill `base:a-faire` ; la status line de Claude Code les compte.
+
 ---
 
 ## 0. Mode d'emploi de la charte
