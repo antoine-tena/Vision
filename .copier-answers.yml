@@ -1,6 +1,7 @@
 # Réponses du générateur init-repo : ne pas modifier à la main, `init-repo maj` s'en sert.
-_commit: 8c08903
+_commit: b0b7927
 _src_path: https://github.com/antoine-tena/init-repo.git
+avec_a_faire: false
 description: 'Projet d''équipe du module DATA732 (visualisation de données) : Antoine,
     Nathan, Pavel.'
 equipe:
