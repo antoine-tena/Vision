@@ -3,6 +3,13 @@
     "editorconfig.editorconfig",
     "anthropic.claude-code",
     "github.vscode-pull-request-github",
-    "davidanson.vscode-markdownlint"
+    "davidanson.vscode-markdownlint",
+    "ms-python.python",
+    "charliermarsh.ruff",
+    "ms-python.mypy-type-checker",
+    "vue.volar",
+    "nuxtr.nuxtr-vscode",
+    "dbaeumer.vscode-eslint",
+    "bradlc.vscode-tailwindcss"
   ]
 }
