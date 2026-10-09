@@ -1,7 +1,7 @@
 # Garde-fous rejoués avant chaque commit.
 #
 # Installation, une fois, à la racine du dépôt :
-#   pre-commit install        (uv tool install pre-commit, ou pipx install pre-commit)
+#   init-repo installer       (ou : uv tool install pre-commit && pre-commit install)
 # Le crochet vaut pour l'arbre principal et tous les worktrees. Tout rejouer :
 #   pre-commit run --all-files
 repos:

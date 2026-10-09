@@ -1,12 +1,12 @@
 # Vision
 
-Projet du module DATA732 (visualisation de données).
+Projet d'équipe du module DATA732 (visualisation de données) : Antoine, Nathan, Pavel.
 
 ## Équipe
 
-- Antoine ([@antoine-tena](https://github.com/antoine-tena))
-- Nathan ([@NathanBarrachin](https://github.com/NathanBarrachin))
-- Pavel ([@Trofymov-Pavlo](https://github.com/Trofymov-Pavlo))
+- [@antoine-tena](https://github.com/antoine-tena)
+- [@NathanBarrachin](https://github.com/NathanBarrachin)
+- [@Trofymov-Pavlo](https://github.com/Trofymov-Pavlo)
 
 ## Organisation
 
@@ -18,27 +18,48 @@ Projet du module DATA732 (visualisation de données).
   pour les agents.
 - `.vscode/` : réglages et extensions recommandées, partagés par toute l'équipe.
 
+Le projet est généré et tenu à jour par
+[init-repo](https://github.com/antoine-tena/init-repo) (réponses dans `.copier-answers.yml`).
+
 ## Installation
 
-Prérequis : [uv](https://docs.astral.sh/uv/) et [pnpm](https://pnpm.io/) (avec Node 24).
-Puis, une fois après le clone, depuis la racine du dépôt :
+Prérequis : [uv](https://docs.astral.sh/uv/), [pnpm](https://pnpm.io/) (avec Node 24) et
+l'outil init-repo, installé une fois par poste :
 
 ```sh
-./scripts/init.sh
+uv tool install git+https://github.com/antoine-tena/init-repo
 ```
 
-Le script installe les dépendances du backend et du frontend, crée `backend/.env` avec une
+Puis, après le clone, depuis la racine du dépôt :
+
+```sh
+init-repo installer
+```
+
+La commande installe les dépendances du backend et du frontend, crée `backend/.env` avec une
 clé secrète locale, applique les migrations et active les garde-fous du commit (pre-commit,
-dont le refus de commiter sur `main` ou `develop`). On peut le relancer sans risque.
+dont le refus de commiter sur `main` ou `develop`). On peut la relancer sans risque.
 
 ## Lancer le projet
 
 ```sh
-./scripts/dev.sh
+init-repo dev
 ```
 
 - Frontend : http://localhost:3000 (les appels `/api` sont relayés vers le backend).
 - Backend : http://localhost:8000/api/ (documentation de l'API sur `/api/docs`).
+
+## Mettre à jour
+
+Sur une branche dédiée (`chore/maj-…`), avec un arbre propre :
+
+```sh
+init-repo maj
+```
+
+Elle rapporte les évolutions du modèle (charte, outillage, configuration) sans écraser les
+modifications locales, puis met à jour les dépendances. Relire le diff, lancer les
+vérifications, puis ouvrir une pull request.
 
 ## Vérifier le code
 
