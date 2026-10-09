@@ -1,0 +1,28 @@
+# --- Secrets : seul le modèle sans valeur réelle est suivi ---
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+
+# --- Claude Code : réglages personnels (le .claude/settings.json reste partagé) ---
+.claude/settings.local.json
+.claude/worktrees/
+CLAUDE.local.md
+
+# --- Données : jeux de données lourds ou bruts, hors du dépôt ---
+data/raw/
+
+# --- Journaux ---
+*.log
+logs/
+
+# --- Éditeurs ---
+.idea/
+*.swp
+
+# --- Système ---
+.DS_Store
+Thumbs.db
+*:Zone.Identifier
