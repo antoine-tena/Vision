@@ -20,4 +20,6 @@ repos:
       - id: trailing-whitespace
         args: [--markdown-linebreak-ext=md]
       - id: check-yaml
+        # Le lockfile de pnpm contient plusieurs documents YAML.
+        args: [--allow-multiple-documents]
       - id: check-json
