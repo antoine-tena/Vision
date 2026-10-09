@@ -20,12 +20,31 @@ Projet du module DATA732 (visualisation de données).
 
 ## Installation
 
-Une fois après le clone, pour activer les garde-fous du commit (dont le refus de commiter
-sur `main` ou `develop`) :
+Prérequis : [uv](https://docs.astral.sh/uv/) et [pnpm](https://pnpm.io/) (avec Node 24).
+Puis, une fois après le clone, depuis la racine du dépôt :
 
 ```sh
-uv tool install pre-commit   # ou : pipx install pre-commit
-pre-commit install
+./scripts/init.sh
+```
+
+Le script installe les dépendances du backend et du frontend, crée `backend/.env` avec une
+clé secrète locale, applique les migrations et active les garde-fous du commit (pre-commit,
+dont le refus de commiter sur `main` ou `develop`). On peut le relancer sans risque.
+
+## Lancer le projet
+
+```sh
+./scripts/dev.sh
+```
+
+- Frontend : http://localhost:3000 (les appels `/api` sont relayés vers le backend).
+- Backend : http://localhost:8000/api/ (documentation de l'API sur `/api/docs`).
+
+## Vérifier le code
+
+```sh
+cd backend && uv run ruff check . && uv run mypy . && uv run pytest
+cd frontend && pnpm typecheck
 ```
 
 ## Contribuer
