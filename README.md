@@ -10,12 +10,13 @@ Projet du module DATA732 (visualisation de données).
 
 ## Organisation
 
-- [`CLAUDE.md`](CLAUDE.md) : la stack et les règles du projet, pour les humains comme pour les
-  agents.
+- `backend/` : l'API, en Django + Django Ninja ; règles dans
+  [`backend/CLAUDE.md`](backend/CLAUDE.md).
+- `frontend/` : l'interface, en Nuxt 4 + Vue 3 ; règles dans
+  [`frontend/CLAUDE.md`](frontend/CLAUDE.md).
+- [`CLAUDE.md`](CLAUDE.md) : la charte commune (nommage, taille, git…), pour les humains comme
+  pour les agents.
 - `.vscode/` : réglages et extensions recommandées, partagés par toute l'équipe.
-
-La stack n'est pas encore choisie : elle se décide en équipe, puis se décrit ici (prérequis,
-commandes pour lancer et tester) et dans le `CLAUDE.md`.
 
 ## Installation
 
