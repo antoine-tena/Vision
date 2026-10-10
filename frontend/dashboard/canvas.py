@@ -9,7 +9,14 @@ renvoyée à Python sous forme d'URL de données PNG ; le bouton efface tout.
 import streamlit as st
 from PIL import Image
 
-from dashboard.constants import CANVAS_KEY, CANVAS_PIXELS, PEN_WIDTH
+from dashboard.constants import (
+    CANVAS_BACKGROUND,
+    CANVAS_BORDER,
+    CANVAS_KEY,
+    CANVAS_PIXELS,
+    PEN_COLOR,
+    PEN_WIDTH,
+)
 from dashboard.images import decode_data_url
 
 HTML = f"""
@@ -20,12 +27,13 @@ HTML = f"""
 </div>
 """
 
-CSS = """
-.vision-canvas { display: flex; flex-direction: column; gap: 0.5rem; align-items: flex-start; }
-.vision-canvas canvas { border: 2px solid #888; border-radius: 8px; touch-action: none;
-                        cursor: crosshair; width: 280px; height: 280px; }
-.vision-canvas button { padding: 0.3rem 1rem; border-radius: 6px; border: 1px solid #888;
-                        background: transparent; color: inherit; cursor: pointer; }
+CSS = f"""
+.vision-canvas {{ display: flex; flex-direction: column; gap: 0.5rem; align-items: flex-start; }}
+.vision-canvas canvas {{ border: 2px solid {CANVAS_BORDER}; border-radius: 8px; touch-action: none;
+                        cursor: crosshair; width: {CANVAS_PIXELS}px; height: {CANVAS_PIXELS}px; }}
+.vision-canvas button {{ padding: 0.3rem 1rem; border-radius: 6px;
+                        border: 1px solid {CANVAS_BORDER}; background: transparent;
+                        color: inherit; cursor: pointer; }}
 """
 
 JS = f"""
@@ -34,11 +42,11 @@ export default function (component) {{
   const canvas = parentElement.querySelector("canvas");
   const context = canvas.getContext("2d");
   const reset = () => {{
-    context.fillStyle = "#000";
+    context.fillStyle = "{CANVAS_BACKGROUND}";
     context.fillRect(0, 0, canvas.width, canvas.height);
   }};
   if (!canvas.dataset.ready) {{ reset(); canvas.dataset.ready = "1"; }}
-  Object.assign(context, {{ strokeStyle: "#fff", lineWidth: {PEN_WIDTH},
+  Object.assign(context, {{ strokeStyle: "{PEN_COLOR}", lineWidth: {PEN_WIDTH},
                            lineCap: "round", lineJoin: "round" }});
   let isDrawing = false;
   const point = (event) => {{
