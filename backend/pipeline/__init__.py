@@ -1,1 +1,1 @@
-"""Chaîne de données : charger et valider (sources), transformer (transforms), tracer (figures)."""
+"""Données des chiffres : charger (sources, printed), préparer (transforms), tracer (figures)."""

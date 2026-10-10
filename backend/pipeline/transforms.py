@@ -1,13 +1,68 @@
-"""Transformations pures : un DataFrame en entrée, un DataFrame en sortie, aucun effet de bord."""
+"""Prétraitement : toute image de chiffre ramenée au format de MNIST, et découpage des jeux.
 
-import polars as pl
+Format MNIST : chiffre clair sur fond noir, tenu dans une boîte de 20x20 pixels, centré par son
+centre de masse dans une image de 28x28, pixels entre 0 et 1.
+"""
+
+import numpy as np
+from PIL import Image
+
+from network.arrays import Matrix
+from network.model import IMAGE_SIZE, PIXEL_COUNT
+from pipeline.dataset import DigitDataset
+
+DIGIT_BOX_SIZE = 20
+INK_THRESHOLD = 0.1
+LIGHT_BACKGROUND_MEAN = 0.5
+PIXEL_MAX = 255.0
 
 
-def monthly_totals(measurements: pl.DataFrame) -> pl.DataFrame:
-    """Total des valeurs par mois et par catégorie, trié par mois puis par catégorie."""
+def to_mnist_pixels(image: Image.Image) -> Matrix:
+    """Une ligne de 784 pixels prête pour le modèle (fond clair inversé, chiffre recentré)."""
+    gray = np.asarray(image.convert("L"), dtype=np.float64) / PIXEL_MAX
+    if gray.mean() > LIGHT_BACKGROUND_MEAN:
+        gray = 1.0 - gray
+    ink_rows, ink_columns = np.nonzero(gray > INK_THRESHOLD)
+    if len(ink_rows) == 0:
+        return np.zeros((1, PIXEL_COUNT))
+    cropped = gray[ink_rows.min() : ink_rows.max() + 1, ink_columns.min() : ink_columns.max() + 1]
+    return _center_by_mass(_fit_in_box(cropped)).reshape(1, PIXEL_COUNT)
+
+
+def _fit_in_box(cropped: Matrix) -> Matrix:
+    """Mise à l'échelle qui garde les proportions, le plus grand côté valant 20 pixels."""
+    height, width = cropped.shape
+    ratio = DIGIT_BOX_SIZE / max(height, width)
+    size = (max(1, round(width * ratio)), max(1, round(height * ratio)))
+    resized = Image.fromarray((cropped * PIXEL_MAX).astype(np.uint8)).resize(
+        size, Image.Resampling.LANCZOS
+    )
+    fitted: Matrix = np.asarray(resized, dtype=np.float64) / PIXEL_MAX
+    return fitted
+
+
+def _center_by_mass(digit: Matrix) -> Matrix:
+    """Place le chiffre dans 28x28 de sorte que son centre de masse tombe au centre."""
+    height, width = digit.shape
+    rows, columns = np.indices(digit.shape)
+    total = digit.sum()
+    center_row = (rows * digit).sum() / total if total else height / 2
+    center_column = (columns * digit).sum() / total if total else width / 2
+    top = int(np.clip(round(IMAGE_SIZE / 2 - center_row), 0, IMAGE_SIZE - height))
+    left = int(np.clip(round(IMAGE_SIZE / 2 - center_column), 0, IMAGE_SIZE - width))
+    canvas = np.zeros((IMAGE_SIZE, IMAGE_SIZE))
+    canvas[top : top + height, left : left + width] = digit
+    return canvas
+
+
+def split_dataset(
+    dataset: DigitDataset, validation_fraction: float, seed: int
+) -> tuple[DigitDataset, DigitDataset]:
+    """Découpage aléatoire mais reproductible en jeu d'entraînement et jeu de validation."""
+    order = np.random.default_rng(seed).permutation(len(dataset))
+    validation_size = int(len(dataset) * validation_fraction)
+    validation, training = order[:validation_size], order[validation_size:]
     return (
-        measurements.with_columns(pl.col("date").dt.truncate("1mo").alias("month"))
-        .group_by("month", "category")
-        .agg(pl.col("value").sum().alias("total"))
-        .sort("month", "category")
+        DigitDataset(dataset.images[training], dataset.labels[training]),
+        DigitDataset(dataset.images[validation], dataset.labels[validation]),
     )
