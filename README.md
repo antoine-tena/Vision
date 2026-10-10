@@ -44,7 +44,7 @@ cd backend && uv run python -m network.train            # --epochs, --learning-r
 
 ## Organisation
 
-- `backend/` : la chaîne de données (polars, Plotly) et les notebooks marimo ; règles dans [`backend/CLAUDE.md`](backend/CLAUDE.md).
+- `backend/` : la chaîne de données (polars ou NumPy, Plotly) et les notebooks marimo ; règles dans [`backend/CLAUDE.md`](backend/CLAUDE.md).
 - `frontend/` : le tableau de bord, en Streamlit ; règles dans [`frontend/CLAUDE.md`](frontend/CLAUDE.md).
 - [`CLAUDE.md`](CLAUDE.md) : la charte commune (nommage, taille, git…), pour les humains comme
   pour les agents.
@@ -56,14 +56,8 @@ dans `.copier-answers.yml`). Changer un paramètre (équipe, frameworks, podman�
 
 ## Installation
 
-Prérequis : [uv](https://docs.astral.sh/uv/) et l'outil kiln, installé une fois par
-poste :
-
-```sh
-uv tool install git+https://github.com/antoine-tena/kiln
-```
-
-Puis, après le clone, depuis la racine du dépôt :
+Prérequis : ceux du démarrage rapide. Puis, après le clone, depuis la
+racine du dépôt :
 
 ```sh
 kiln install
@@ -103,6 +97,11 @@ kiln check
 ```
 
 Ruff, mypy et pytest pour chaque projet Python, puis la charte.
+
+## Suivi du travail
+
+Ce qui reste à faire est dans [`docs/a-faire/`](docs/a-faire/) : `a-faire.md` (la liste, par
+criticité), `ecarte.md` (ce qui a été refusé) et `urgent.md` (ce que seul un humain peut faire).
 
 ## Contribuer
 

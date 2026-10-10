@@ -2,7 +2,7 @@
 
 [SOURCES] : chaque jeu de données a ici sa source, sa date de récupération et sa licence.
 [DONNEES-LOURDES] : `raw/` et `interim/` sont hors du dépôt ; seul ce qui est petit et
-reproductible est commité (`models/`).
+reproductible est commité (`models/`, le modèle entraîné : sa commande est notée ci-dessous).
 
 | Fichier | Source | Récupéré le | Licence |
 |---|---|---|---|

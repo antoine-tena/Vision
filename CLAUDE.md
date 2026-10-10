@@ -2,7 +2,7 @@
 
 IA écrite à la main (NumPy) qui reconnaît les chiffres manuscrits ou imprimés.
 
-Monorepo : backend données Python : polars, marimo, Plotly (`backend/`) et frontend Streamlit
+Monorepo : backend données Python : polars ou NumPy, marimo, Plotly (`backend/`) et frontend Streamlit
 (`frontend/`).
 Ce fichier réunit les consignes de travail sur le dépôt et la **charte**, norme unique du code,
 reprise de celle d'AnnSki : tout code nouveau la respecte, humains et agents.
@@ -113,9 +113,9 @@ Dans [`frontend/CLAUDE.md`](frontend/CLAUDE.md) : règles propres à Streamlit.
 
 ---
 
-## 3. Backend (données Python : polars, marimo, Plotly)
+## 3. Backend (données Python : polars ou NumPy, marimo, Plotly)
 
-Dans [`backend/CLAUDE.md`](backend/CLAUDE.md) : règles propres à données Python : polars, marimo, Plotly.
+Dans [`backend/CLAUDE.md`](backend/CLAUDE.md) : règles propres à données Python : polars ou NumPy, marimo, Plotly.
 
 ---
 
