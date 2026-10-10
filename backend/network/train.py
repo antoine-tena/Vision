@@ -46,7 +46,7 @@ def run(config: TrainingConfig, model_path: Path) -> None:
         logger.info("training.epoch", **asdict(metrics))
     model.save(model_path)
     model_path.with_name(HISTORY_PATH.name).write_text(
-        json.dumps([asdict(metrics) for metrics in history], indent=2)
+        json.dumps([asdict(metrics) for metrics in history], indent=2) + "\n"
     )
     logger.info(
         "training.saved", path=str(model_path), test_accuracy=accuracy(model, *test.as_tuple())
