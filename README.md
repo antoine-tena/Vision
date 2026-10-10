@@ -14,6 +14,31 @@ kiln dev
 
 Puis ouvrir http://localhost:8501. Détail de chaque commande ci-dessous.
 
+## Le réseau
+
+Projet du module DATA732. Un perceptron écrit à la main avec NumPy, sans framework
+d'apprentissage : 784 pixels → 128 neurones (ReLU) → 10 probabilités (softmax), entraîné par
+rétropropagation et descente de gradient stochastique avec inertie, sur les chiffres manuscrits
+de MNIST et des chiffres imprimés générés à partir de polices. Exactitude sur le jeu de test :
+97,6 %.
+
+- `backend/network/` : le réseau (couches, activations, perte, optimiseur, entraînement) ;
+- `backend/pipeline/` : les données (MNIST, chiffres imprimés, prétraitement, figures) ;
+- `backend/notebooks/exploration.py` : analyse du modèle (courbes, matrice de confusion, erreurs) ;
+- `frontend/` : l'application Streamlit où l'on dessine ou importe un chiffre.
+
+Réentraîner le modèle (MNIST est téléchargé au premier lancement, environ une minute) :
+
+```sh
+cd backend && uv run python -m network.train            # --epochs, --learning-rate, --seed
+```
+
+**Crédits.** Le projet part du dépôt de Jack Carter,
+[Artificial-Intelligence-Number-Recognition-Neural-Network](https://github.com/thecarpetjasp/Artificial-Intelligence-Number-Recognition-Neural-Network),
+sur demande du professeur : son code d'origine est archivé dans `backend/reference/jack_carter/`
+(voir `NOTICE.md`). Architecture inspirée de *Neural Networks from Scratch in Python*
+(H. Kinsley, D. Kukieła). Données : MNIST (Y. LeCun, C. Cortes, C. J. C. Burges, CC BY-SA 3.0).
+
 ## Équipe
 
 - [@antoine-tena](https://github.com/antoine-tena)
