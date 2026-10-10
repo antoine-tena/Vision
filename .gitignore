@@ -40,4 +40,4 @@ htmlcov/
 # --- Données : brutes et intermédiaires hors du dépôt ([DONNEES-LOURDES]) ---
 backend/data/raw/
 backend/data/interim/
-backend/__marimo__/
+__marimo__/

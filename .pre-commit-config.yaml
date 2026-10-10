@@ -5,6 +5,8 @@
 # Le crochet vaut pour l'arbre principal et tous les worktrees. Tout rejouer :
 #   pre-commit run --all-files
 # Les crochets locaux appellent les outils du projet (uv) et `charte`, installée avec kiln.
+# Code d'origine de Jack Carter, archivé tel quel (backend/reference/jack_carter/NOTICE.md).
+exclude: ^backend/reference/
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v6.0.0
