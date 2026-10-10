@@ -9,14 +9,14 @@ from network.model import IMAGE_SIZE, PIXEL_COUNT
 from network.training import EpochMetrics
 from pipeline.dataset import DigitDataset
 from pipeline.figures import (
-    confusion_matrix,
     confusion_matrix_figure,
+    probabilities_description,
     probabilities_figure,
     training_history_figure,
 )
 from pipeline.printed import generate_printed_digits
 from pipeline.sources import DatasetFormatError, load_mnist, read_idx_images, read_idx_labels
-from pipeline.transforms import split_dataset, to_mnist_pixels
+from pipeline.transforms import confusion_matrix, digit_image, split_dataset, to_mnist_pixels
 
 
 def idx_images(count: int) -> bytes:
@@ -110,3 +110,23 @@ def test_recognition_returns_the_most_probable_digit() -> None:
     assert np.isclose(recognition.probabilities.sum(), 1.0)
     assert not recognition.is_blank
     assert recognize(DigitClassifier(hidden_size=8), Image.new("L", (40, 40), 255)).is_blank
+
+
+def test_digit_image_is_a_bounded_square() -> None:
+    image = digit_image(np.linspace(-1.0, 2.0, PIXEL_COUNT))
+
+    assert image.shape == (IMAGE_SIZE, IMAGE_SIZE)
+    assert image.min() == 0.0 and image.max() == 1.0
+
+
+def test_predicted_digit_stands_out_without_color() -> None:
+    probabilities = np.full((1, 10), 0.05)
+    probabilities[0, 7] = 0.55
+
+    bar = probabilities_figure(probabilities).data[0]
+
+    assert [shape for shape in bar.marker.pattern.shape if shape] == ["/"]
+    assert bar.text[7] == "55% (prédit)"
+    assert probabilities_description(probabilities).startswith(
+        "Probabilités par chiffre ; les plus probables : 7 à 55%"
+    )

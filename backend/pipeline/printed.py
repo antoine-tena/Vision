@@ -11,6 +11,7 @@ import numpy as np
 from PIL import Image, ImageDraw, ImageFont
 
 from network.arrays import Labels
+from network.model import DIGIT_COUNT
 from pipeline.dataset import DigitDataset
 from pipeline.transforms import to_mnist_pixels
 
@@ -75,7 +76,7 @@ def generate_printed_digits(
     rng = np.random.default_rng(seed)
     available: list[Path | None] = list(fonts if fonts is not None else find_fonts()) or [None]
     images, labels = [], []
-    for digit in range(10):
+    for digit in range(DIGIT_COUNT):
         for _ in range(count_per_digit):
             font_path = available[int(rng.integers(len(available)))]
             images.append(to_mnist_pixels(render_digit(digit, font_path, rng))[0])

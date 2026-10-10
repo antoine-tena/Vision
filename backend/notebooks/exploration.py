@@ -14,10 +14,10 @@ def _():
     from network.model import DEFAULT_MODEL_PATH, load_model
     from network.training import EpochMetrics
     from pipeline.dataset import DigitDataset
-    from pipeline.figures import confusion_matrix, confusion_matrix_figure, digit_image
-    from pipeline.figures import training_history_figure
+    from pipeline.figures import confusion_matrix_figure, training_history_figure
     from pipeline.printed import generate_printed_digits
     from pipeline.sources import load_mnist
+    from pipeline.transforms import confusion_matrix, digit_image
 
     return (
         DEFAULT_MODEL_PATH, DigitDataset, EpochMetrics, confusion_matrix, confusion_matrix_figure,

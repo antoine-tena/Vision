@@ -7,8 +7,8 @@ centre de masse dans une image de 28x28, pixels entre 0 et 1.
 import numpy as np
 from PIL import Image
 
-from network.arrays import Matrix
-from network.model import IMAGE_SIZE, PIXEL_COUNT
+from network.arrays import Labels, Matrix
+from network.model import DIGIT_COUNT, IMAGE_SIZE, PIXEL_COUNT
 from pipeline.dataset import DigitDataset
 
 DIGIT_BOX_SIZE = 20
@@ -66,3 +66,16 @@ def split_dataset(
         DigitDataset(dataset.images[training], dataset.labels[training]),
         DigitDataset(dataset.images[validation], dataset.labels[validation]),
     )
+
+
+def confusion_matrix(labels: Labels, predictions: Labels) -> Matrix:
+    """Nombre d'images de chaque chiffre (lignes) prédites comme chaque chiffre (colonnes)."""
+    matrix = np.zeros((DIGIT_COUNT, DIGIT_COUNT))
+    np.add.at(matrix, (labels, predictions), 1)
+    return matrix
+
+
+def digit_image(pixels: Matrix) -> Matrix:
+    """Une ligne de 784 pixels remise en image 28x28, bornée entre 0 et 1 pour l'afficher."""
+    image: Matrix = np.clip(pixels.reshape(IMAGE_SIZE, IMAGE_SIZE), 0.0, 1.0)
+    return image
