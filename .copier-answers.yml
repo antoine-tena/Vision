@@ -1,20 +1,20 @@
 # Réponses de kiln : ne pas modifier à la main, `kiln update` s'en sert.
 _commit: b842941
 _src_path: https://github.com/antoine-tena/kiln.git
-backend: django
+backend: data
 boussole: Vision en service
 date_creation: '2026-10-10'
-description: 'Projet d''équipe du module DATA732 (visualisation de données) : Antoine,
-    Nathan, Pavel.'
+description: IA écrite à la main (NumPy) qui reconnaît les chiffres manuscrits ou
+    imprimés.
 equipe:
 - antoine-tena
 - NathanBarrachin
 - Trofymov-Pavlo
-frontend: nuxt
+frontend: streamlit
 nom: vision
 podman: false
 proprietaire: antoine-tena
 statusline_ci: true
 titre: Vision
-type_projet: app
+type_projet: tableau
 url_sante_prod: ''

@@ -26,7 +26,7 @@ logs/
 .DS_Store
 Thumbs.db
 *:Zone.Identifier
-# --- Python (backend) ---
+# --- Python (backend, frontend) ---
 __pycache__/
 *.py[cod]
 .venv/
@@ -36,4 +36,8 @@ htmlcov/
 .mypy_cache/
 .ruff_cache/
 .pytest_cache/
-backend/db.sqlite3
+
+# --- Données : brutes et intermédiaires hors du dépôt ([DONNEES-LOURDES]) ---
+backend/data/raw/
+backend/data/interim/
+backend/__marimo__/

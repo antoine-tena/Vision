@@ -1,12 +1,12 @@
 # Vision — consignes et charte de développement
 
-Projet d'équipe du module DATA732 (visualisation de données) : Antoine, Nathan, Pavel.
+IA écrite à la main (NumPy) qui reconnaît les chiffres manuscrits ou imprimés.
 
-Monorepo : backend Django + Django Ninja (`backend/`) et frontend Nuxt 4 + Vue 3
+Monorepo : backend données Python : polars, marimo, Plotly (`backend/`) et frontend Streamlit
 (`frontend/`).
 Ce fichier réunit les consignes de travail sur le dépôt et la **charte**, norme unique du code,
 reprise de celle d'AnnSki : tout code nouveau la respecte, humains et agents.
-La charte tient en trois fichiers : celui-ci (§0, §1, §4, §5, §6),
+La charte tient en trois fichiers : celui-ci (§0, §1, §4, §5),
 [`frontend/CLAUDE.md`](frontend/CLAUDE.md) (§2) et [`backend/CLAUDE.md`](backend/CLAUDE.md)
 (§3), chargés par Claude Code dès qu'il travaille dans le dossier.
 
@@ -58,8 +58,7 @@ casserait le contrat ([CONTRAT-FIGE]) ; on ne le fait qu'en ouvrant une nouvelle
 
 ### Taille et découpage
 - **[TAILLE-FICHIER]** 300 lignes au plus par fichier (cliquet).
-  - Frontend : un composant Vue qui dépasse devient un dossier (un point d'entrée et des
-    sous-composants).
+  - Frontend : une page qui dépasse devient un paquet de sous-modules.
   - Backend : un module qui dépasse devient un paquet ; `__init__.py` réexporte l'API publique.
   - Exemptés : migrations générées, `settings.py`, fichiers générés — ceux que
     `.gitattributes` marque `linguist-generated`, seule liste (`openapi.json`, types
@@ -79,32 +78,27 @@ casserait le contrat ([CONTRAT-FIGE]) ; on ne le fait qu'en ouvrant une nouvelle
 - **[VOCABULAIRE]** Le code parle comme les apps du backend, en anglais ; les textes affichés
   (titres, axes, légendes, messages) sont en français. Les adresses des pages sont des URL
   publiques et n'ont pas à suivre le vocabulaire du code.
-- **[BOOLEENS]** Un booléen est préfixé : `is`, `has`, `should`, `can` côté frontend
-  (`isLoading`, `hasMissingValues`) ; `is_`, `has_`, `should_`, `can_` en Python. Les champs
-  déjà publiés dans l'API restent tels quels ([CONTRAT-FIGE]).
-- **[CASSE]** Composants Vue en PascalCase préfixé par le domaine (`ChartLegend`,
-  `MapTooltip`) ; classes Python en PascalCase ; fonctions et variables Python en snake_case ;
+- **[BOOLEENS]** Un booléen est préfixé : `is_`, `has_`, `should_`, `can_` en Python.
+- **[CASSE]** Classes Python en PascalCase ; fonctions et variables Python en snake_case ;
   constantes en `UPPER_SNAKE_CASE`.
 
 ### Valeurs magiques
 - **[ZERO-MAGIE]** Pas de littéral métier en dur (statut, rôle, seuil, délai, prix, couleur,
-  nom de colonne répété) : constantes dans `app/utils/constants.ts` ou enums TypeScript côté
-  frontend ; `TextChoices` / `IntegerChoices` ou constante nommée en tête de module côté
-  backend. Ne sont pas magiques : `0`, `1`, `-1`, `""`, `None`, les index et les littéraux des
+  nom de colonne répété) : `enum.StrEnum` ou constante nommée en tête de module en Python. Ne sont pas magiques : `0`, `1`, `-1`, `""`, `None`, les index et les littéraux des
   tests.
 
 ### Argent, dates, données personnelles, secrets
 - **[ARGENT]** Tout montant est un **entier en centimes** (`*_cents`), dans la base, l'API et
   le front. Jamais de `float` pour de l'argent ; conversion en euros uniquement à l'affichage.
-- **[FUSEAU]** Stockage en UTC (`USE_TZ = True`). Toute notion calendaire — « aujourd'hui »,
-  jour, mois, bornes d'une période — se calcule en `Europe/Paris` (`timezone.localdate()`),
+- **[FUSEAU]** Stockage en UTC. Toute notion calendaire — « aujourd'hui »,
+  jour, mois, bornes d'une période — se calcule en `Europe/Paris` (`ZoneInfo("Europe/Paris")`),
   jamais par `.date()` sur un instant UTC.
 - **[DONNEES-PERSO]** Aucune donnée personnelle (e-mail, nom, téléphone, pièce, IP complète)
   dans les logs, les messages d'erreur, les URL, les clés de cache ou les figures : on
   journalise l'identifiant (`user_id`), pas la personne. Toute nouvelle donnée personnelle
   stockée est couverte par l'export et l'anonymisation RGPD dans le même lot.
 - **[SECRETS]** Aucun secret dans le code ni dans le dépôt : tout passe par l'environnement
-  (`python-decouple` côté backend, `runtimeConfig` côté frontend). Un secret commis par erreur
+  (`python-decouple` côté backend, `st.secrets` côté frontend). Un secret commis par erreur
   est considéré compromis et changé.
 
 ### Erreurs
@@ -113,18 +107,15 @@ casserait le contrat ([CONTRAT-FIGE]) ; on ne le fait qu'en ouvrant une nouvelle
 
 ---
 
-## 2. Frontend (Nuxt 4 + Vue 3)
+## 2. Frontend (Streamlit)
 
-Dans [`frontend/CLAUDE.md`](frontend/CLAUDE.md) : code ([TS-STRICT] à [ACCESSIBILITE]) et
-stylage ([STYLE-1] à [STYLE-5], isolats CSS).
+Dans [`frontend/CLAUDE.md`](frontend/CLAUDE.md) : règles propres à Streamlit.
 
 ---
 
-## 3. Backend (Django + Django Ninja)
+## 3. Backend (données Python : polars, marimo, Plotly)
 
-Dans [`backend/CLAUDE.md`](backend/CLAUDE.md) : socle ([TYPAGE] à [FICHIERS]) et piliers I à XV
-(couches, persistance, contrats, sécurité, erreurs, domaine, concurrence, observabilité,
-évolution de l'API, tests, migrations, outbox, cache, cryptographie, contrat front/back).
+Dans [`backend/CLAUDE.md`](backend/CLAUDE.md) : règles propres à données Python : polars, marimo, Plotly.
 
 ---
 
@@ -175,8 +166,7 @@ puis en strict.
 
 ### Observabilité
 - **[OPENTELEMETRY]** Traces distribuées OpenTelemetry (propagation W3C `traceparent`) de la
-  requête jusqu'aux traitements de fond et aux API tierces ; le `X-Request-ID` ([CORRELATION])
-  en est l'attribut de corrélation.
+  requête jusqu'aux traitements de fond et aux API tierces.
 - **[SLO]** Chaque parcours critique a un objectif de niveau de service chiffré
   (disponibilité, latence p95) et un budget d'erreur. Un budget épuisé gèle les
   fonctionnalités au profit de la fiabilité.
@@ -184,37 +174,23 @@ puis en strict.
   file de traitements qui grossit), pas sur des causes internes (CPU, mémoire).
 
 ### Performance
-- **[CORE-WEB-VITALS]** Budgets au 75ᵉ centile, sur mobile : **LCP < 2,5 s**, **INP < 200 ms**,
-  **CLS < 0,1**. Une régression au-delà bloque la release.
-- **[BUDGET-JS]** Budget de JavaScript par page, vérifié à la construction ; toute bibliothèque
-  lourde (moteur de graphiques, carte) est chargée à la demande (`defineAsyncComponent`, import
-  dynamique).
-- **[IMAGES-MODERNES]** Images en AVIF/WebP, dimensionnées (`width`/`height` explicites),
-  chargées en différé hors du premier écran.
 - **[LATENCE-API]** p95 < 300 ms pour une route de lecture ; une route plus lente se justifie ou
-  passe par le cache ([STAMPEDE]).
+  passe par le cache.
 
 ### Tests
-- **[FUZZING-API]** L'API est fuzzée depuis son contrat OpenAPI (`schemathesis`) : aucune
-  entrée conforme au schéma ne provoque de 500.
 - **[TESTS-PROPRIETES]** Les calculs à invariants — agrégations, bornes de période, totaux,
   pourcentages — ont des tests par propriétés (`hypothesis`) en plus des exemples.
 - **[TESTS-MUTATION]** Les modules de calcul critiques passent périodiquement au test par
   mutation (`mutmut`) : un mutant qui survit est un test manquant.
 - **[E2E-PARCOURS]** Les parcours critiques ont un test de bout en bout Playwright, joué en CI
   contre une pile complète.
-- **[ACCESSIBILITE-AUTO]** Les pages principales passent un contrôle `axe-core` automatisé ;
-  cible **WCAG 2.2 niveau AA**.
 
-### Python et TypeScript
+### Python
 - **[PYTHON-MODERNE]** Syntaxe Python 3.12+ : génériques PEP 695 (`def first[T](...)`,
   `type Alias = ...`), `X | None` plutôt que `Optional[X]`, `@override` sur toute surcharge,
   `match` pour les aiguillages sur des statuts, `Self` pour les retours chaînés.
 - **[TYPAGE-STRICT]** mypy `strict` sur tout nouveau module ; aucun `# type: ignore` sans code
   d'erreur précis et raison.
-- **[VUE-MODERNE]** API Vue 3.5 / Nuxt 4 : `defineModel()` pour le `v-model`,
-  `useTemplateRef()` pour les références, props déstructurées réactives, `useFetch` /
-  `useAsyncData` avec une clé explicite. Pas d'Options API.
 - **[VALIDATION-AUX-FRONTIERES]** Toute donnée qui entre (API tierce, fichier source,
   `localStorage`, paramètre d'URL) est validée par un schéma à l'exécution avant usage : le
   type TypeScript ne protège que ce que le compilateur voit.
@@ -223,7 +199,7 @@ puis en strict.
 - **[FEATURE-FLAGS]** Une fonctionnalité risquée se livre éteinte derrière un drapeau, puis
   s'active sans redéploiement. Un drapeau a une date de retrait ; au-delà, il est supprimé.
 - **[DEPLOIEMENT-REVERSIBLE]** Tout déploiement est annulable en une commande, sans perte de
-  données : un déploiement qui migre le schéma ([MIGRATIONS]) se défait en restaurant la
+  données : un déploiement qui migre le schéma se défait en restaurant la
   sauvegarde d'avant bascule.
 - **[CI-RAPIDE]** La CI complète tient en moins de 10 minutes ; un test instable est mis en
   quarantaine et corrigé dans la semaine, jamais relancé jusqu'à ce qu'il passe.
@@ -237,7 +213,7 @@ puis en strict.
 - **[IA-CONFIDENTIALITE]** Aucun secret, aucune donnée personnelle réelle n'est collée dans une
   conversation avec un agent ; on travaille sur des données de test ou publiques.
 - **[IA-FONCTIONNALITE]** Toute fonctionnalité qui appelle un modèle de langage passe par
-  une file ([HORS-REQUETE]), borne son coût par appel, journalise modèle et jetons
+  une file, borne son coût par appel, journalise modèle et jetons
   consommés, et ne laisse jamais le texte généré déclencher une action sans validation
   (injection de consignes).
 
@@ -263,19 +239,3 @@ puis en strict.
   - jamais `--author` : l'auteur reste celui de `git config`.
 - **[FUSION]** Fusion de la PR sur GitHub en commit de fusion (pas de squash ni de rebase),
   puis suppression de la branche (et du worktree, s'il y en avait un).
-
----
-
-## 6. Données et visualisation
-
-- **[SOURCES]** Chaque jeu de données a sa source (lien, date de récupération, licence) notée
-  dans le dépôt.
-- **[DONNEES-LOURDES]** Pas de fichier de données brut volumineux dans git (`data/raw/` est
-  ignoré, 1 Mo au plus par fichier commité) : on décrit ou on scripte sa récupération.
-- **[REPRODUCTIBLE]** Une figure se régénère par une commande depuis les données sources ;
-  aucune retouche à la main d'un fichier généré.
-- **[NOTEBOOKS]** Un notebook explore ; le code qui produit une figure livrée vit dans un
-  module, que le notebook importe. Pas de fonction de plus de [TAILLE-FONCTION] dans une
-  cellule, sorties vidées avant commit.
-- **[FIGURES-ACCESSIBLES]** Palettes lisibles par les daltoniens, axes titrés avec leur unité,
-  texte alternatif pour toute figure publiée.

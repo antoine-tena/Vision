@@ -8,4 +8,4 @@
 
 # Fichiers générés, exemptés de [TAILLE-FICHIER] (CLAUDE.md).
 backend/uv.lock linguist-generated=true
-frontend/pnpm-lock.yaml linguist-generated=true
+frontend/uv.lock linguist-generated=true

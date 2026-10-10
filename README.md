@@ -1,11 +1,10 @@
 # Vision
 
-Projet d'équipe du module DATA732 (visualisation de données) : Antoine, Nathan, Pavel.
+IA écrite à la main (NumPy) qui reconnaît les chiffres manuscrits ou imprimés.
 
 ## Démarrage rapide
 
-Après le clone, depuis la racine du dépôt (prérequis : [uv](https://docs.astral.sh/uv/) et
-[pnpm](https://pnpm.io/) avec Node 24) :
+Après le clone, depuis la racine du dépôt (prérequis : [uv](https://docs.astral.sh/uv/)) :
 
 ```sh
 uv tool install git+https://github.com/antoine-tena/kiln   # une fois par poste
@@ -13,7 +12,7 @@ kiln install
 kiln dev
 ```
 
-Puis ouvrir http://localhost:3000. Détail de chaque commande ci-dessous.
+Puis ouvrir http://localhost:8501. Détail de chaque commande ci-dessous.
 
 ## Équipe
 
@@ -23,8 +22,8 @@ Puis ouvrir http://localhost:3000. Détail de chaque commande ci-dessous.
 
 ## Organisation
 
-- `backend/` : l'API, en Django + Django Ninja ; règles dans [`backend/CLAUDE.md`](backend/CLAUDE.md).
-- `frontend/` : l'interface, en Nuxt 4 + Vue 3 ; règles dans [`frontend/CLAUDE.md`](frontend/CLAUDE.md).
+- `backend/` : la chaîne de données (polars, Plotly) et les notebooks marimo ; règles dans [`backend/CLAUDE.md`](backend/CLAUDE.md).
+- `frontend/` : le tableau de bord, en Streamlit ; règles dans [`frontend/CLAUDE.md`](frontend/CLAUDE.md).
 - [`CLAUDE.md`](CLAUDE.md) : la charte commune (nommage, taille, git…), pour les humains comme
   pour les agents.
 - `.vscode/` : réglages et extensions recommandées, partagés par toute l'équipe.
@@ -35,7 +34,7 @@ dans `.copier-answers.yml`). Changer un paramètre (équipe, frameworks, podman�
 
 ## Installation
 
-Prérequis : [uv](https://docs.astral.sh/uv/), [pnpm](https://pnpm.io/) (avec Node 24) et l'outil kiln, installé une fois par
+Prérequis : [uv](https://docs.astral.sh/uv/) et l'outil kiln, installé une fois par
 poste :
 
 ```sh
@@ -49,7 +48,7 @@ kiln install
 ```
 
 La commande demande une fois le système du poste (Linux, WSL ou macOS), installe les
-dépendances (backend, frontend), crée `backend/.env`, applique les migrations et active les garde-fous du
+dépendances (backend, frontend) et active les garde-fous du
 commit (pre-commit, dont le refus de commiter sur `main` ou `develop`). On peut la relancer sans
 risque.
 
@@ -59,8 +58,8 @@ risque.
 kiln dev
 ```
 
-- Backend : http://localhost:8000/api/ (documentation de l'API sur `/api/docs`).
-- Frontend : http://localhost:3000 (les appels `/api` sont relayés vers le backend).
+- Notebooks marimo : http://localhost:2718.
+- Frontend : http://localhost:8501.
 
 ## Mettre à jour
 
@@ -81,7 +80,7 @@ puis ouvrir une pull request.
 kiln check
 ```
 
-Ruff, mypy et pytest pour chaque projet Python, ESLint et le contrôle des types côté frontend, puis la charte.
+Ruff, mypy et pytest pour chaque projet Python, puis la charte.
 
 ## Contribuer
 
