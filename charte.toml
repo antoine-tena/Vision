@@ -3,7 +3,7 @@
 # Interdictions : respectées partout. Cliquets : le passif est un plafond qui ne fait que
 # baisser. Planchers : une valeur qui ne fait que monter. Valeurs : `charte --detail`.
 
-exclus = ["/migrations/", "/notebooks/", "/reference/"]
+exclus = ["/migrations/", "/notebooks/"]
 regles_non_verifiees = "scripts/ci/charte-non-verifiee.txt"
 
 [interdictions.journalisation]

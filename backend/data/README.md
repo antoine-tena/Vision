@@ -10,8 +10,3 @@ reproductible est commité (`models/`).
 | chiffres imprimés | Générés à la volée par `pipeline.printed`, à partir des polices du poste (ou de la police livrée avec Pillow) ; rien n'est stocké | à chaque entraînement | — |
 | `models/vision.npz` | Poids du réseau entraîné par `uv run python -m network.train` (graine 0, 10 époques) | 10 octobre 2026 | celle du projet |
 | `models/historique.json` | Mesures de cet entraînement, époque par époque | 10 octobre 2026 | celle du projet |
-
-Le modèle de Jack Carter (`Model/…json`, 4 Mo, dans
-[son dépôt](https://github.com/thecarpetjasp/Artificial-Intelligence-Number-Recognition-Neural-Network))
-se charge par `network.model.load_reference_model` ; il n'est pas copié ici (voir
-`reference/jack_carter/NOTICE.md`).

@@ -30,14 +30,14 @@ dev = [
 line-length = 100
 target-version = "py314"
 # Les notebooks marimo sont des fichiers Python générés par l'éditeur ([NOTEBOOKS]).
-extend-exclude = ["notebooks", "reference"]
+extend-exclude = ["notebooks"]
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "I", "N", "UP", "B", "SIM", "RUF", "ANN"]
 
 [tool.mypy]
 strict = true
-exclude = ["notebooks/", "reference/"]
+exclude = ["notebooks/"]
 
 # Plotly ne publie pas de types.
 [[tool.mypy.overrides]]

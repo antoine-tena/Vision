@@ -1,11 +1,10 @@
-import json
 from pathlib import Path
 
 import numpy as np
 
 from network.activations import softmax
 from network.losses import cross_entropy
-from network.model import PIXEL_COUNT, DigitClassifier, load_model, load_reference_model
+from network.model import PIXEL_COUNT, DigitClassifier, load_model
 from network.optimizers import StochasticGradientDescent
 from network.training import TrainingConfig, accuracy, train
 
@@ -77,25 +76,5 @@ def test_saved_model_predicts_the_same(tmp_path: Path) -> None:
     model.save(tmp_path / "modele.npz")
 
     restored = load_model(tmp_path / "modele.npz")
-
-    assert np.array_equal(restored.predict(images), model.predict(images))
-
-
-def test_reference_model_json_is_readable(tmp_path: Path) -> None:
-    model = DigitClassifier(hidden_size=8, seed=5)
-    reference = {
-        "dense1": {
-            "weights": model.hidden.weights.tolist(),
-            "biases": model.hidden.biases.tolist(),
-        },
-        "dense2": {
-            "weights": model.output.weights.tolist(),
-            "biases": model.output.biases.tolist(),
-        },
-    }
-    (tmp_path / "reference.json").write_text(json.dumps(reference))
-    images, _ = small_batch()
-
-    restored = load_reference_model(tmp_path / "reference.json")
 
     assert np.array_equal(restored.predict(images), model.predict(images))

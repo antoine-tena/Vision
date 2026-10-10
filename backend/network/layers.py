@@ -1,4 +1,4 @@
-"""Couche dense : sortie = entrées · poids + biais (`Layer_Dense` de Jack Carter)."""
+"""Couche dense : sortie = entrées · poids + biais."""
 
 import numpy as np
 

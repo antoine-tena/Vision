@@ -9,6 +9,3 @@
 # Fichiers générés, exemptés de [TAILLE-FICHIER] (CLAUDE.md).
 backend/uv.lock linguist-generated=true
 frontend/uv.lock linguist-generated=true
-
-# Code de Jack Carter archivé tel quel, fins de ligne Windows comprises.
-backend/reference/** -text

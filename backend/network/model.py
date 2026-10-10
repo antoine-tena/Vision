@@ -1,6 +1,5 @@
 """Le classifieur de chiffres : 784 pixels → couche cachée (ReLU) → 10 probabilités."""
 
-import json
 from pathlib import Path
 
 import numpy as np
@@ -70,17 +69,6 @@ def load_model(path: Path = DEFAULT_MODEL_PATH) -> DigitClassifier:
             weights["output_weights"],
             weights["output_biases"],
         )
-
-
-def load_reference_model(path: Path) -> DigitClassifier:
-    """Modèle JSON entraîné par Jack Carter (`Model/…json` de son dépôt), même architecture."""
-    weights = json.loads(path.read_text())
-    return _with_weights(
-        np.array(weights["dense1"]["weights"]),
-        np.array(weights["dense1"]["biases"]),
-        np.array(weights["dense2"]["weights"]),
-        np.array(weights["dense2"]["biases"]),
-    )
 
 
 def _with_weights(
