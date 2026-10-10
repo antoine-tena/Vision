@@ -62,14 +62,6 @@ scannée ni une police. Pistes :
 
 ## 🟡 Normal
 
-### AF-03 · Comparer avec le modèle de Jack Carter
-- **État** : à faire
-- **Effort** : S · **Qui** : — · **Échéance** : —
-- **Origine** : demande du professeur
-
-Charger son modèle (`network.model.load_reference_model`, JSON de son dépôt) et le mesurer sur
-notre jeu de test : base de la partie « point de départ » du rapport.
-
 ### AF-04 · Rapport et soutenance DATA732
 - **État** : à faire
 - **Effort** : L · **Qui** : — · **Échéance** : —
@@ -77,7 +69,7 @@ notre jeu de test : base de la partie « point de départ » du rapport.
 
 Architecture, équations de la propagation et de la rétropropagation, choix des données,
 courbes d'apprentissage et matrice de confusion (notebook `backend/notebooks/exploration.py`),
-crédits (Jack Carter, *Neural Networks from Scratch*, MNIST).
+crédits (*Neural Networks from Scratch*, MNIST).
 
 ## ⚪ Fond — chantiers longs et dette
 

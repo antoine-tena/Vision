@@ -33,10 +33,7 @@ Réentraîner le modèle (MNIST est téléchargé au premier lancement, environ 
 cd backend && uv run python -m network.train            # --epochs, --learning-rate, --seed
 ```
 
-**Crédits.** Le projet part du dépôt de Jack Carter,
-[Artificial-Intelligence-Number-Recognition-Neural-Network](https://github.com/thecarpetjasp/Artificial-Intelligence-Number-Recognition-Neural-Network),
-sur demande du professeur : son code d'origine est archivé dans `backend/reference/jack_carter/`
-(voir `NOTICE.md`). Architecture inspirée de *Neural Networks from Scratch in Python*
+**Crédits.** Architecture inspirée de *Neural Networks from Scratch in Python*
 (H. Kinsley, D. Kukieła). Données : MNIST (Y. LeCun, C. Cortes, C. J. C. Burges, CC BY-SA 3.0).
 
 ## Équipe
