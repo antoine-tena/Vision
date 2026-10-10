@@ -4,11 +4,7 @@
     "PROJET_NOM": "vision",
     "PROJET_BACK": "backend",
     "PROJET_FRONT": "frontend",
-    "PROJET_ENV_TEST": "backend/.env"
-  },
-  "enabledPlugins": {
-    "pile-django@antoine": true,
-    "pile-nuxt@antoine": true
+    "PROJET_ENV_TEST": ""
   },
   "permissions": {
     "deny": [
