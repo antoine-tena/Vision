@@ -1,0 +1,7 @@
+[browser]
+gatherUsageStats = false
+
+[server]
+headless = true
+# Mo ; dashboard/images.py refuse aussi au-delà ([VALIDATION-AUX-FRONTIERES]).
+maxUploadSize = 5

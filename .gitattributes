@@ -5,7 +5,10 @@
 *.png binary
 *.jpg binary
 *.ico binary
+*.npz binary
 
 # Fichiers générés, exemptés de [TAILLE-FICHIER] (CLAUDE.md).
 backend/uv.lock linguist-generated=true
-frontend/pnpm-lock.yaml linguist-generated=true
+frontend/uv.lock linguist-generated=true
+# Modèles entraînés : régénérés par leur commande d'entraînement (data/README.md).
+backend/data/models/** linguist-generated=true

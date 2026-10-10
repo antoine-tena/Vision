@@ -10,20 +10,14 @@ on:
 
 jobs:
   backend:
-    uses: antoine-tena/kiln/.github/workflows/django.yml@main
+    uses: antoine-tena/kiln/.github/workflows/python.yml@main
     with:
-      base: vision
-      env: |
-        DJANGO_SECRET_KEY=ci-sans-valeur-secrete
-        DJANGO_DEBUG=True
+      dossier: backend
 
   frontend:
-    uses: antoine-tena/kiln/.github/workflows/pnpm.yml@main
+    uses: antoine-tena/kiln/.github/workflows/python.yml@main
     with:
-      scripts: |
-        lint
-        typecheck
-        build
+      dossier: frontend
 
   charte:
     uses: antoine-tena/kiln/.github/workflows/charte.yml@main
@@ -31,5 +25,5 @@ jobs:
   securite:
     uses: antoine-tena/kiln/.github/workflows/securite.yml@main
     with:
-      uv: "backend"
-      pnpm: "frontend"
+      uv: "backend frontend"
+      pnpm: ""

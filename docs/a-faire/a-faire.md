@@ -20,7 +20,7 @@ La boussole est **Vision en service**.
     Pourquoi, ce qu'il faut faire (en liste à cocher `- [ ]` s'il y a plusieurs étapes), où regarder.
 
 - **Identifiant** `AF-NN` : stable, jamais réattribué, cité tel quel dans les commits et les
-  branches. **Prochain libre : AF-02.**
+  branches. **Prochain libre : AF-06.**
 - **L'état** prend une seule valeur parmi : `à faire` ; `en cours — branche <nom>, depuis le
   JJ mois` ; `bloqué — attend <qui ou quoi>` ; `à vérifier — <où>`.
 - **Criticité** = la section où vit l'entrée ; en changer, c'est déplacer l'entrée.
@@ -38,18 +38,48 @@ La boussole est **Vision en service**.
 
 ## 🔴 Critique
 
-### AF-01 · Titre de l'entrée
-- **État** : à faire
-- **Effort** : S · **Qui** : — · **Échéance** : —
-- **Origine** : —
-
-Ce qu'il faut faire, pourquoi, où regarder.
-
 ## 🟠 Important
+
+### AF-01 · Vérifier le dessin dans un navigateur
+- **État** : à vérifier — `kiln dev`, onglet « Dessiner »
+- **Effort** : XS · **Qui** : — · **Échéance** : —
+- **Origine** : socle du 10 octobre 2026
+
+La zone de dessin est un composant écrit pour Vision (`frontend/dashboard/canvas.py`,
+`st.components.v2`) : les tests vérifient la page et le décodage de l'image, pas le tracé à la
+souris. Dessiner quelques chiffres, vérifier la prédiction et le bouton « Effacer ».
+
+### AF-02 · Mieux reconnaître les chiffres dessinés à la souris
+- **État** : à faire
+- **Effort** : M · **Qui** : — · **Échéance** : —
+- **Origine** : socle du 10 octobre 2026
+
+97,6 % sur le jeu de test (MNIST et imprimés), mais un trait à la souris n'est ni une écriture
+scannée ni une police. Pistes :
+- [ ] constituer un petit jeu de chiffres dessinés dans l'application, pour mesurer l'écart ;
+- [ ] augmenter les données d'entraînement (rotations, épaisseurs, décalages) ;
+- [ ] essayer une couche cachée plus large ou une deuxième couche.
 
 ## 🟡 Normal
 
+### AF-04 · Rapport et soutenance DATA732
+- **État** : à faire
+- **Effort** : L · **Qui** : — · **Échéance** : —
+- **Origine** : module DATA732
+
+Architecture, équations de la propagation et de la rétropropagation, choix des données,
+courbes d'apprentissage et matrice de confusion (notebook `backend/notebooks/exploration.py`),
+crédits (*Neural Networks from Scratch*, MNIST).
+
 ## ⚪ Fond — chantiers longs et dette
+
+### AF-05 · Régularisation et réglages
+- **État** : à faire
+- **Effort** : M · **Qui** : — · **Échéance** : —
+- **Origine** : socle du 10 octobre 2026
+
+L'écart entraînement / validation (99,5 % contre 97,4 %) montre un début de surapprentissage :
+L2, dropout ou arrêt précoce, à comparer proprement.
 
 ---
 

@@ -41,11 +41,19 @@ repos:
         types: [python]
         files: ^backend/
 
-      - id: eslint
-        name: eslint (frontend)
-        entry: bash -c 'cd frontend && pnpm exec eslint --fix "${@#frontend/}"' --
+      - id: ruff-check-frontend
+        name: ruff check (frontend)
+        entry: bash -c 'cd frontend && uv run ruff check --fix --force-exclude "${@#frontend/}"' --
         language: system
-        files: ^frontend/.*\.(vue|ts|tsx|mjs)$
+        types: [python]
+        files: ^frontend/
+
+      - id: ruff-format-frontend
+        name: ruff format (frontend)
+        entry: bash -c 'cd frontend && uv run ruff format --force-exclude "${@#frontend/}"' --
+        language: system
+        types: [python]
+        files: ^frontend/
 
       - id: charte
         name: charte (charte.toml)
