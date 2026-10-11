@@ -1,11 +1,12 @@
 # Réponses de kiln : ne pas modifier à la main, `kiln update` s'en sert.
-_commit: 8b34775
+_commit: e63f9f0
 _src_path: https://github.com/antoine-tena/kiln.git
 backend: data
 boussole: Vision en service
 date_creation: '2026-10-10'
 description: IA écrite à la main (NumPy) qui reconnaît les chiffres manuscrits ou
     imprimés.
+envergure: ember
 equipe:
 - antoine-tena
 - NathanBarrachin

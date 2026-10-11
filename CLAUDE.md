@@ -2,6 +2,8 @@
 
 IA écrite à la main (NumPy) qui reconnaît les chiffres manuscrits ou imprimés.
 
+Envergure : **Ember**, une petite app ou un site, une ou deux personnes, peu d'enjeu (changer : `kiln set envergure=…`).
+
 Monorepo : backend données Python : polars ou NumPy, marimo, Plotly (`backend/`) et frontend Streamlit
 (`frontend/`).
 Ce fichier réunit les consignes de travail sur le dépôt et la **charte**, norme unique du code,
@@ -104,6 +106,11 @@ casserait le contrat ([CONTRAT-FIGE]) ; on ne le fait qu'en ouvrant une nouvelle
 ### Erreurs
 - **[EXCEPTIONS]** Jamais d'exception avalée en silence (`except: pass`, `catch {}`) ni de
   capture générique (`except Exception`) qui ne la relance pas ou ne la journalise pas.
+
+### Commentaires et tests
+- **[RENVOIS-AUDIT]** Un commentaire dit la contrainte au présent, jamais l'historique : aucun
+  renvoi à un audit ou à un constat (« audit H36 », « (CART-06) ») dans le code. L'historique va
+  dans le message de commit ; le constat d'origine reste dans `docs/` (strict).
 
 ---
 

@@ -21,6 +21,13 @@ fichiers = ["backend/*.py", "backend/**/*.py", "frontend/*.py", "frontend/**/*.p
 [interdictions.outils-interdits]
 id = "UV-PODMAN"
 
+# Les renvois à un rapport d'audit (« audit H36 », « (CART-06) ») pourrissent avec lui. Ajouter
+# à `prefixes` les préfixes des constats des audits du projet, à mesure qu'ils arrivent.
+[interdictions.renvois-audit]
+id = "RENVOIS-AUDIT"
+prefixes = "AUDIT"
+exclus = '(^docs/|^charte\.toml$|/migrations/|-lock\.yaml$|\.lock$)'
+
 [cliquets.taille-fichier]
 id = "TAILLE-FICHIER"
 fichiers = ["backend/*.py", "backend/**/*.py", "frontend/*.py", "frontend/**/*.py"]
