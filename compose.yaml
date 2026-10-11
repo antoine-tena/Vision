@@ -1,0 +1,19 @@
+# Pile du projet sous podman : `kiln dev --containers` (podman-compose up --build).
+# Images construites depuis la racine du dépôt (`.containerignore`) ; jamais docker.
+name: vision
+
+services:
+
+  notebooks:
+    build:
+      context: .
+      dockerfile: backend/Containerfile
+    ports:
+      - "2718:2718"
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Containerfile
+    ports:
+      - "8501:8501"
