@@ -27,3 +27,9 @@ jobs:
     with:
       uv: "backend frontend"
       pnpm: ""
+
+  conteneurs:
+    uses: antoine-tena/kiln/.github/workflows/infra.yml@main
+    with:
+      containerfiles: "backend/Containerfile frontend/Containerfile"
+      compose: compose.yaml

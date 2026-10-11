@@ -49,6 +49,7 @@ cd backend && uv run python -m network.train            # --epochs, --learning-r
 - [`CLAUDE.md`](CLAUDE.md) : la charte commune (nommage, taille, git…), pour les humains comme
   pour les agents.
 - `.vscode/` : réglages et extensions recommandées, partagés par toute l'équipe.
+- `compose.yaml` et les `Containerfile` : la pile en conteneurs podman.
 
 Le projet est généré et tenu à jour par [kiln](https://github.com/antoine-tena/kiln) (réponses
 dans `.copier-answers.yml`). Changer un paramètre (équipe, frameworks, podman…) :
@@ -56,7 +57,7 @@ dans `.copier-answers.yml`). Changer un paramètre (équipe, frameworks, podman�
 
 ## Installation
 
-Prérequis : ceux du démarrage rapide. Puis, après le clone, depuis la
+Prérequis : ceux du démarrage rapide, plus [podman](https://podman.io/). Puis, après le clone, depuis la
 racine du dépôt :
 
 ```sh
@@ -76,6 +77,8 @@ kiln dev
 
 - Notebooks marimo : http://localhost:2718.
 - Frontend : http://localhost:8501.
+
+`kiln dev --containers` lance toute la pile dans podman (`compose.yaml`).
 
 ## Mettre à jour
 

@@ -13,7 +13,7 @@ equipe:
 - Trofymov-Pavlo
 frontend: streamlit
 nom: vision
-podman: false
+podman: true
 proprietaire: antoine-tena
 statusline_ci: true
 titre: Vision
