@@ -1,5 +1,5 @@
 # Réponses de kiln : ne pas modifier à la main, `kiln update` s'en sert.
-_commit: ff45736
+_commit: f611f82
 _src_path: https://github.com/antoine-tena/kiln.git
 backend: data
 boussole: Vision en service
@@ -15,6 +15,7 @@ frontend: streamlit
 nom: vision
 podman: true
 proprietaire: antoine-tena
+serena: false
 statusline_ci: true
 titre: Vision
 type_projet: tableau
