@@ -24,7 +24,7 @@ endroit, ce qu'on y trouve ; pas de copie du code.
   - `sources.py` : MNIST téléchargé dans `data/raw/` (hors dépôt) ; `printed.py` : chiffres
     imprimés générés depuis les polices du poste ; `dataset.py` : un jeu (784 pixels + chiffre) ;
     `transforms.py` : toute image ramenée au format MNIST ; `recognition.py` : image → prédiction ;
-    `reasoning.py` : raisonnement interne (votes des neurones, pixels décisifs) ; `activity.py` :
+    `reasoning.py` : raisonnement interne (votes des neurones, pixels décisifs) ; `neuron_shapes.py` : nom du motif d'un neurone (trait, boucle…) ; `activity.py` :
     activité de tous les neurones et ordre de propagation, pour le réseau en direct.
 - `backend/network/` : réseau de neurones écrit en NumPy, sans framework. `model.py` : le
   classifieur (784 → couche cachée ReLU → 10) ; `layers.py`, `activations.py`, `losses.py`,
@@ -32,13 +32,15 @@ endroit, ce qu'on y trouve ; pas de copie du code.
   (`uv run python -m network.train`) ; `evaluate.py` : matrices de confusion du jeu de test ;
   `sample.py` : échantillon commité du jeu d'entraînement.
   Modèle entraîné et ses rapports commités dans `backend/data/models/`.
-- `frontend/app.py` : point d'entrée ; `frontend/dashboard/` : pages, mise en page et
-  constantes ; `frontend/tests/` : tests.
-  - `home.py` : la page d'accueil (dessiner, choisir un exemple d'entraînement — `examples.py` —
-    ou importer un chiffre), avec `live.py`, le réseau en direct, et `reasoning.py`, son
-    raisonnement interne ; `training.py` : page des courbes d'entraînement et du jeu de test ;
-    `loaders.py` : modèle et rapports en cache ; `canvas.py` : zone de dessin
-    (`st.components.v2`) ; `images.py` : validation des images reçues ; `constants.py` : textes.
+- `frontend/app.py` : point d'entrée (pages : Présentation, Lexique — `home.py`, `glossary.py`) ;
+  `frontend/dashboard/` : diapositives, mise en page et constantes ; `frontend/tests/` : tests.
+  - `home.py` : la présentation en diaporama ; `slides.py` : ordre des diapositives et
+    navigation (◀ ▶, clavier) ; `sections.py` : diapositives de section avec leur plan.
+  - Parties : `project.py` (le projet), `learning.py` et `training.py` (l'apprentissage),
+    `choice.py` (choisir un chiffre : dessin `canvas.py`, `examples.py`, import `images.py`),
+    `reasoning.py` (étapes 1 à 4, résultat), `live.py` (conclusion, le réseau en direct).
+  - `formula.py` : formules fléchées ; `explanations.py` : textes et formules ; `loaders.py` :
+    modèle et rapports en cache ; `constants.py` : textes et réglages.
 - `docs/a-faire/` : suivi du travail ; `charte.toml` : règles contrôlées par `charte`.
 
 ## Langue

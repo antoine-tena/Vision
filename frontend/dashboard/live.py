@@ -1,4 +1,4 @@
-"""Le réseau en direct : tous ses neurones, qui s'allument couche après couche."""
+"""Le réseau en direct : tous ses neurones, qui s'allument de l'entrée à la sortie."""
 
 import time
 
@@ -6,9 +6,10 @@ import numpy as np
 import streamlit as st
 from network.model import DigitClassifier
 from pipeline.activity import network_activity, propagation_schedule
-from pipeline.figures import network_description, network_figure
+from pipeline.figures import network_figure
 from pipeline.recognition import Recognition
 
+from dashboard import explanations
 from dashboard.constants import LAST_ANIMATED_KEY, LIVE_FRAME_SECONDS
 
 
@@ -28,4 +29,11 @@ def render_live_network(model: DigitClassifier, recognition: Recognition) -> Non
         if step:
             time.sleep(LIVE_FRAME_SECONDS)
         placeholder.plotly_chart(network_figure(activity, int(reached)))
-    st.caption(network_description(activity))
+    fact_column, map_column = st.columns(2)
+    with fact_column:
+        explanations.key_fact(
+            f"Le {activity.digit} l'emporte à {activity.probabilities[activity.digit]:.0%}"
+        )
+        explanations.explain(explanations.LIVE_LEGEND)
+    with map_column:
+        explanations.explain(explanations.LIVE_NETWORK)

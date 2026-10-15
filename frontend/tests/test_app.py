@@ -5,7 +5,6 @@ import pytest
 from PIL import Image, ImageDraw
 from streamlit.testing.v1 import AppTest
 
-from dashboard.constants import SITE_TITLE
 from dashboard.images import (
     DATA_URL_PREFIX,
     MAX_IMAGE_BYTES,
@@ -18,12 +17,34 @@ from dashboard.images import (
 APP_SCRIPT = "../app.py"
 
 
-def test_home_invites_to_draw_or_upload() -> None:
-    app = AppTest.from_file(APP_SCRIPT).run()
+def test_app_opens_on_the_first_part_of_the_presentation() -> None:
+    app = AppTest.from_file(APP_SCRIPT).run(timeout=20)
 
     assert not app.exception
-    assert app.title[0].value == SITE_TITLE
+    assert app.subheader[0].value == "Partie 1"
+    assert any("Le projet" in text.value for text in app.markdown)
+
+
+def render_the_home_page() -> None:
+    # Onglet d'import : la zone de dessin n'est enregistrée que dans l'app complète.
+    import streamlit as st
+
+    from dashboard.constants import INPUT_TABS_KEY, SLIDE_KEY, UPLOAD_TAB
+    from dashboard.home import render_home
+    from dashboard.slides import CHOICE_INDEX
+
+    st.session_state.setdefault(INPUT_TABS_KEY, UPLOAD_TAB)
+    st.session_state.setdefault(SLIDE_KEY, CHOICE_INDEX)
+    render_home()
+
+
+def test_home_invites_to_draw_or_upload() -> None:
+    app = AppTest.from_function(render_the_home_page).run()
+
+    assert not app.exception
+    assert app.subheader[0].value == "3.1 · Choisir un chiffre"
     assert "Tracez un chiffre" in app.info[0].value
+    assert app.button[1].disabled
 
 
 def test_canvas_data_url_is_decoded() -> None:
@@ -42,19 +63,21 @@ def render_a_recognized_digit() -> None:
     from PIL import Image, ImageDraw
     from pipeline.recognition import recognize
 
-    from dashboard.home import render_recognition
+    from dashboard.reasoning import render_result, render_softmax_step
 
     image = Image.new("L", (100, 100), 255)
     ImageDraw.Draw(image).line((50, 15, 50, 85), fill=0, width=10)
-    render_recognition(recognize(load_model(DEFAULT_MODEL_PATH), image))
+    model = load_model(DEFAULT_MODEL_PATH)
+    recognition = recognize(model, image)
+    render_softmax_step(model, recognition)
+    render_result(model, recognition)
 
 
 def test_recognition_shows_the_digit_and_its_probabilities() -> None:
     app = AppTest.from_function(render_a_recognized_digit).run()
 
     assert not app.exception
-    assert app.metric[0].label == "Chiffre reconnu"
-    assert app.caption[-1].value.startswith("Probabilités par chiffre")
+    assert any("des chances" in text.value for text in app.markdown)
 
 
 @pytest.mark.parametrize(

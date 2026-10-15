@@ -13,6 +13,7 @@ import numpy as np
 
 from network.arrays import Labels, Matrix
 from network.model import IMAGE_SIZE, DigitClassifier
+from pipeline.neuron_shapes import active_shapes, shape_parts
 
 TOP_NEURONS = 8
 
@@ -31,6 +32,8 @@ class Reasoning:
     neuron_activations: Matrix
     neuron_votes: Matrix
     neuron_patterns: Matrix
+    neuron_shapes: list[tuple[str, str]]
+    active_shapes: list[tuple[str, int, int]]
 
 
 def hidden_activations(model: DigitClassifier, pixels: Matrix) -> Matrix:
@@ -59,6 +62,7 @@ def explain(
     activations = hidden_activations(model, pixels)
     votes = neuron_votes(model, activations, digit)
     ranked = np.argsort(-np.abs(votes))[:top_neurons].astype(np.int64)
+    patterns = neuron_patterns(model, np.arange(len(activations)))
     return Reasoning(
         digit=digit,
         score=float(votes.sum() + model.output.biases[0, digit]),
@@ -68,7 +72,9 @@ def explain(
         neuron_ids=ranked,
         neuron_activations=activations[ranked],
         neuron_votes=votes[ranked],
-        neuron_patterns=neuron_patterns(model, ranked),
+        neuron_patterns=patterns[ranked],
+        neuron_shapes=[shape_parts(pattern) for pattern in patterns[ranked]],
+        active_shapes=active_shapes(patterns, activations),
     )
 
 
@@ -96,3 +102,32 @@ def tile_patterns(patterns: Matrix, columns: int) -> Matrix:
     grid = padded.reshape(rows, columns, cell, cell).transpose(0, 2, 1, 3)
     mosaic: Matrix = grid.reshape(rows * cell, columns * cell)[:-1, :-1]
     return mosaic
+
+
+def evidence_totals(evidence: Matrix) -> tuple[float, float]:
+    """Apport total des pixels pour le chiffre et contre lui (les deux positifs)."""
+    return float(evidence[evidence > 0].sum()), float(-evidence[evidence < 0].sum())
+
+
+def digit_scores(model: DigitClassifier, pixels: Matrix) -> Matrix:
+    """Les 10 scores bruts de la couche de sortie, avant la softmax."""
+    scores: Matrix = model.logits(pixels).reshape(-1)
+    return scores
+
+
+def before_and_after(model: DigitClassifier, neuron_ids: Labels, seed: int) -> Matrix:
+    """Pour chaque neurone : ses poids tirés au hasard au départ (même graine que
+    l'entraînement), puis ses poids appris ; en images 28x28, alternées."""
+    initial = DigitClassifier(model.hidden.weights.shape[1], seed=seed)
+    pairs = np.stack(
+        [neuron_patterns(initial, neuron_ids), neuron_patterns(model, neuron_ids)], axis=1
+    )
+    patterns: Matrix = pairs.reshape(-1, IMAGE_SIZE, IMAGE_SIZE)
+    return patterns
+
+
+def output_weights(model: DigitClassifier, neuron: int) -> Matrix:
+    """Les 10 poids qui sortent d'un neurone caché : combien son motif compte pour chaque
+    chiffre."""
+    weights: Matrix = model.output.weights[neuron]
+    return weights

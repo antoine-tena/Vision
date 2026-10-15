@@ -7,7 +7,6 @@ from plotly.subplots import make_subplots
 from network.arrays import Matrix
 from network.model import DIGIT_COUNT
 from pipeline.figures.common import (
-    COLORBLIND_PALETTE,
     DIGITS,
     DIVERGING_COLORSCALE,
 )
@@ -16,6 +15,14 @@ from pipeline.reasoning import Reasoning
 PREDICTED_PATTERN = "/"
 TOP_DIGITS_DESCRIBED = 3
 NEURON_GRID_COLUMNS = 4
+# Couche 2 (les sorties) en rose, comme dans la présentation ; scores bruts en jaune.
+OUTPUT_COLOR = "#CC79A7"
+MUTED_OUTPUT_COLOR = "#6E5A68"
+SCORE_COLOR = "#E9C46A"
+# Signe d'un poids, comme les traits du réseau : bleu pour, orange contre.
+SUPPORT_COLOR = "#56B4E9"
+AGAINST_COLOR = "#E69F00"
+SHAPE_TITLE_SIZE = 11
 
 
 def probabilities_figure(probabilities: Matrix) -> go.Figure:
@@ -29,7 +36,7 @@ def probabilities_figure(probabilities: Matrix) -> go.Figure:
             x=DIGITS,
             y=row * 100,
             marker={
-                "color": [COLORBLIND_PALETTE[1 if flag else 0] for flag in is_predicted],
+                "color": [OUTPUT_COLOR if flag else MUTED_OUTPUT_COLOR for flag in is_predicted],
                 "pattern": {"shape": [PREDICTED_PATTERN if flag else "" for flag in is_predicted]},
             },
             text=[f"{row[predicted]:.0%} (prédit)" if flag else "" for flag in is_predicted],
@@ -37,6 +44,45 @@ def probabilities_figure(probabilities: Matrix) -> go.Figure:
         )
     )
     figure.update_layout(title="Probabilités", xaxis_title="Chiffre", yaxis_title="Probabilité (%)")
+    figure.update_xaxes(type="category")
+    return figure
+
+
+def scores_figure(scores: Matrix) -> go.Figure:
+    """Les 10 scores bruts de la sortie, avant la softmax : des nombres quelconques."""
+    figure = go.Figure(
+        go.Bar(
+            x=DIGITS,
+            y=scores,
+            marker={"color": SCORE_COLOR},
+            text=[f"{score:+.1f}" for score in scores],
+            textposition="outside",
+        )
+    )
+    figure.update_layout(title="Scores bruts", xaxis_title="Chiffre", yaxis_title="Score z")
+    figure.update_xaxes(type="category")
+    return figure
+
+
+def output_weights_figure(weights: Matrix, neuron: int) -> go.Figure:
+    """Les 10 poids de sortie d'un neurone caché, un par chiffre : bleu si son motif pousse
+    vers ce chiffre, orange s'il l'en éloigne ; la valeur est écrite ([FIGURES-ACCESSIBLES])."""
+    figure = go.Figure(
+        go.Bar(
+            x=DIGITS,
+            y=weights,
+            marker={
+                "color": [SUPPORT_COLOR if weight > 0 else AGAINST_COLOR for weight in weights]
+            },
+            text=[f"{weight:+.1f}" for weight in weights],
+            textposition="outside",
+        )
+    )
+    figure.update_layout(
+        title=f"Ses 10 poids de sortie (neurone n°{neuron})",
+        xaxis_title="Vers le chiffre",
+        yaxis_title="Poids",
+    )
     figure.update_xaxes(type="category")
     return figure
 
@@ -85,20 +131,30 @@ def evidence_description(evidence: Matrix, digit: int) -> str:
 
 def neurons_figure(reasoning: Reasoning) -> go.Figure:
     """Motif guetté par chacun des neurones cachés qui ont le plus voté, avec son vote."""
-    count = len(reasoning.neuron_ids)
-    rows = -(-count // NEURON_GRID_COLUMNS)
     titles = [
-        f"n°{neuron} {vote:+.1f}"
-        for neuron, vote in zip(reasoning.neuron_ids, reasoning.neuron_votes, strict=True)
+        f"n°{neuron} {vote:+.1f}<br>{shape[0]}<br>{shape[1]}"
+        for neuron, vote, shape in zip(
+            reasoning.neuron_ids, reasoning.neuron_votes, reasoning.neuron_shapes, strict=True
+        )
     ]
+    return patterns_figure(
+        reasoning.neuron_patterns,
+        titles,
+        f"Neurones qui ont le plus voté pour ou contre le {reasoning.digit}",
+    )
+
+
+def patterns_figure(patterns: Matrix, titles: list[str], title: str) -> go.Figure:
+    """Motifs 28x28 (poids d'un neurone) en grille, chacun carré sous son titre."""
+    count = len(patterns)
     figure = make_subplots(
-        rows=rows,
+        rows=max(1, -(-count // NEURON_GRID_COLUMNS)),
         cols=NEURON_GRID_COLUMNS,
         subplot_titles=titles,
         horizontal_spacing=0.02,
-        vertical_spacing=0.12,
+        vertical_spacing=0.28,
     )
-    for index, pattern in enumerate(reasoning.neuron_patterns):
+    for index, pattern in enumerate(patterns):
         figure.add_trace(
             go.Heatmap(
                 z=pattern, coloraxis="coloraxis", hovertemplate="poids %{z:+.3f}<extra></extra>"
@@ -106,9 +162,9 @@ def neurons_figure(reasoning: Reasoning) -> go.Figure:
             row=index // NEURON_GRID_COLUMNS + 1,
             col=index % NEURON_GRID_COLUMNS + 1,
         )
-    limit = float(np.abs(reasoning.neuron_patterns).max()) if count else 1.0
+    limit = float(np.abs(patterns).max()) if count else 1.0
     figure.update_layout(
-        title=f"Neurones qui ont le plus voté pour ou contre le {reasoning.digit}",
+        title=title,
         coloraxis={
             "colorscale": DIVERGING_COLORSCALE,
             "cmin": -limit,
@@ -116,8 +172,13 @@ def neurons_figure(reasoning: Reasoning) -> go.Figure:
             "colorbar": {"title": "Poids"},
         },
     )
-    figure.update_xaxes(showticklabels=False, constrain="domain")
-    figure.update_yaxes(showticklabels=False, autorange="reversed", scaleanchor="x")
+    figure.update_annotations(font_size=SHAPE_TITLE_SIZE)
+    figure.update_xaxes(showticklabels=False, ticks="", constrain="domain")
+    figure.update_yaxes(showticklabels=False, ticks="", autorange="reversed")
+    # Chaque motif reste carré : son axe vertical suit l'échelle de son propre axe horizontal.
+    for index in range(count):
+        suffix = "" if index == 0 else str(index + 1)
+        figure.layout[f"yaxis{suffix}"].scaleanchor = f"x{suffix}"
     return figure
 
 

@@ -7,8 +7,11 @@ from pipeline.figures.recognition import (
     evidence_figure,
     neurons_description,
     neurons_figure,
+    output_weights_figure,
+    patterns_figure,
     probabilities_description,
     probabilities_figure,
+    scores_figure,
 )
 from pipeline.figures.training import (
     confusion_description,
@@ -31,8 +34,11 @@ __all__ = [
     "network_figure",
     "neurons_description",
     "neurons_figure",
+    "output_weights_figure",
+    "patterns_figure",
     "probabilities_description",
     "probabilities_figure",
+    "scores_figure",
     "training_history_description",
     "training_history_figure",
 ]

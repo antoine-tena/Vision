@@ -135,3 +135,41 @@ def test_broken_evaluation_is_refused(tmp_path: Path, broken: object) -> None:
 
     with pytest.raises(DatasetFormatError):
         load_evaluation(path)
+
+
+def test_evidence_totals_split_support_and_against() -> None:
+    from pipeline.reasoning import evidence_totals
+
+    assert evidence_totals(np.array([[1.0, -0.5], [0.0, 2.0]])) == (3.0, 0.5)
+
+
+def test_before_and_after_alternates_initial_and_learned_patterns() -> None:
+    from network.model import DigitClassifier
+    from pipeline.reasoning import before_and_after, neuron_patterns
+
+    model = DigitClassifier(hidden_size=4, seed=0)
+    model.hidden.weights = model.hidden.weights + 1.0
+    neurons = np.array([2, 0])
+
+    patterns = before_and_after(model, neurons, seed=0)
+
+    initial = neuron_patterns(DigitClassifier(hidden_size=4, seed=0), neurons)
+    assert patterns.shape == (4, 28, 28)
+    np.testing.assert_allclose(patterns[0], initial[0])
+    np.testing.assert_allclose(patterns[1], initial[0] + 1.0)
+
+
+def test_digit_scores_has_one_score_per_digit() -> None:
+    from network.model import DigitClassifier
+    from pipeline.reasoning import digit_scores
+
+    assert digit_scores(DigitClassifier(hidden_size=4), np.zeros((1, 784))).shape == (10,)
+
+
+def test_output_weights_are_the_neuron_row() -> None:
+    from network.model import DigitClassifier
+    from pipeline.reasoning import output_weights
+
+    model = DigitClassifier(hidden_size=4)
+
+    np.testing.assert_array_equal(output_weights(model, 2), model.output.weights[2])

@@ -1,7 +1,6 @@
 """[ZERO-MAGIE] : textes et réglages du tableau de bord, nommés une seule fois."""
 
 SITE_TITLE = "Vision"
-SITE_DESCRIPTION = "IA écrite à la main (NumPy) qui reconnaît les chiffres manuscrits ou imprimés."
 
 # [IDS] et réglages de la zone de dessin.
 CANVAS_KEY = "zone-de-dessin"
@@ -12,14 +11,7 @@ CANVAS_BACKGROUND = "#000000"
 PEN_COLOR = "#ffffff"
 CANVAS_BORDER = "#888888"
 UPLOAD_TYPES = ("png", "jpg", "jpeg", "bmp", "webp")
-PREVIEW_WIDTH = 140
 
-HOME_TITLE = "Reconnaître"
-TRAINING_TITLE = "Entraînement"
-TRAINING_DESCRIPTION = (
-    "Comment le réseau a appris : la perte et l'exactitude époque par époque, sa mesure sur des "
-    "images qu'il n'a jamais vues, et les motifs que ses neurones cachés ont appris à guetter."
-)
 MISSING_REPORT = (
     "Rapport d'entraînement introuvable ou illisible ({error}). Le régénérer depuis backend/ : "
     "`uv run python -m network.train` (ou `network.evaluate` pour la seule évaluation)."
@@ -38,3 +30,33 @@ MISSING_SAMPLE = (
     "Échantillon d'entraînement introuvable ou illisible ({error}). Le régénérer depuis "
     "backend/ : `uv run python -m network.sample`."
 )
+TOP_SHAPES = 5
+# Diaporama de l'accueil : une diapositive par écran, sans défiler.
+SLIDE_KEY = "diapositive"
+RECOGNITION_KEY = "chiffre-reconnu"
+SLIDE_FIGURE_HEIGHT = 390
+SLIDE_IMAGE_WIDTH = 260
+# Diaporama : sous la barre de Streamlit (60 px), titres centrés, images centrées, texte lisible.
+SLIDE_PAGE_STYLE = (
+    "<style>"
+    "[data-testid=stMainBlockContainer]{padding-top:4.1rem;padding-bottom:0.25rem;"
+    "max-width:1500px;margin:0 auto}"
+    "[data-testid=stHeading]{text-align:center}"
+    "[data-testid=stFullScreenFrame]:has([data-testid=stImage])"
+    "{display:flex;justify-content:center}"
+    "[data-testid=stImageCaption]{text-align:center}"
+    "[data-testid=stMarkdownContainer] li{font-size:1.15rem}"
+    ".st-key-raccourcis-clavier{display:none}"
+    "[data-testid=stMarkdownContainer] table{margin:0 auto}"
+    "[data-testid=stMarkdownContainer] ul{display:table;margin-left:auto;margin-right:auto}"
+    "</style>"
+)
+GLOSSARY_TITLE = "Lexique"
+TOP_CONFUSIONS = 3
+PREVIEW_WIDTH = 160
+SECTION_FIGURE_HEIGHT = 370
+SHORTCUTS_KEY = "raccourcis-clavier"
+EXTRA_NEXT_SHORTCUTS = ("Enter", "Space")
+PRESENTATION_TITLE = "Présentation"
+PLAYGROUND_CANVAS_KEY = "zone-de-dessin-libre"
+PLAYGROUND_FIGURE_HEIGHT = 290

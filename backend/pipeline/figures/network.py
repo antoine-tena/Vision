@@ -7,6 +7,7 @@ portent leur probabilité écrite).
 
 import numpy as np
 import plotly.graph_objects as go
+from plotly.colors import hex_to_rgb
 
 from network.arrays import Matrix
 from network.model import IMAGE_SIZE
@@ -20,18 +21,31 @@ HIDDEN_SPACING = 0.22
 OUTPUT_X = 7.0
 LAYER_HEIGHT = (IMAGE_SIZE - 1) * PIXEL_SPACING
 TITLE_Y = LAYER_HEIGHT + 0.25
+FRAME_PADDING = 0.2
+FRAME_FILL_ALPHA = 0.06
+OUTPUT_LABEL_WIDTH = 1.0
+# Mêmes couleurs que les formules de la présentation : pixels, couche 1, couche 2.
+FRAME_COLORS = ("#E69F00", "#2EC27E", "#CC79A7")
+FRAME_DASHES = ("dot", "solid", "solid")
 INPUT_FORMULA = "x = pixels ∈ [0, 1]"
 HIDDEN_FORMULA = "h = max(0, x·W₁ + b₁)"
 OUTPUT_FORMULA = "p = softmax(h·W₂ + b₂)"
 UNREACHED = {"color": "#BBBBBB", "opacity": 0.35, "size": 5}
-ACTIVITY_COLORSCALE = "Cividis"
-EDGE_OPACITY = 0.3
-FIGURE_HEIGHT = 420
+# Éteint : bleu-gris discret ; allumé : du turquoise au jaune vif, lisible sur fond sombre.
+ACTIVITY_COLORSCALE = [[0.0, "#33415C"], [0.15, "#21918C"], [0.6, "#5EC962"], [1.0, "#FDE725"]]
+EDGE_OPACITY = 0.7
+EDGE_WIDTH = 1.5
+FIGURE_HEIGHT = 300
 PIXEL_SIZE = 9
 HIDDEN_SIZES = (6, 16)
 OUTPUT_SIZES = (12, 34)
 
 type Positions = tuple[Matrix, Matrix]
+
+
+def translucent(hex_color: str, alpha: float) -> str:
+    red, green, blue = hex_to_rgb(hex_color)
+    return f"rgba({red}, {green}, {blue}, {alpha})"
 
 
 def input_positions() -> Positions:
@@ -87,8 +101,8 @@ def vote_edges(activity: NetworkActivity) -> list[go.Scatter]:
     output_xs, output_ys = output_positions(len(activity.probabilities))
     traces = []
     for is_selected, color in (
-        (activity.votes > 0, COLORBLIND_PALETTE[0]),
-        (activity.votes < 0, COLORBLIND_PALETTE[5]),
+        (activity.votes > 0, COLORBLIND_PALETTE[4]),
+        (activity.votes < 0, COLORBLIND_PALETTE[1]),
     ):
         ends = np.ones(int(is_selected.sum()))
         xs = np.column_stack(
@@ -103,7 +117,7 @@ def vote_edges(activity: NetworkActivity) -> list[go.Scatter]:
                 y=ys.ravel(),
                 mode="lines",
                 hoverinfo="skip",
-                line={"color": color, "width": 1},
+                line={"color": color, "width": EDGE_WIDTH},
                 opacity=EDGE_OPACITY,
             )
         )
@@ -147,8 +161,45 @@ def network_figure(activity: NetworkActivity, reached: int) -> go.Figure:
     return _network_layout(figure, activity, output_reached)
 
 
+def _layer_frames(figure: go.Figure, layer_sizes: tuple[int, int, int]) -> None:
+    """Un cadre et un titre par bloc ; seules les deux couches qui calculent sont numérotées,
+    l'entrée (les pixels, sans poids) a un cadre gris en pointillés."""
+    input_size, hidden_size, output_size = layer_sizes
+    hidden_right = HIDDEN_LEFT + (HIDDEN_COLUMNS - 1) * HIDDEN_SPACING
+    frames = (
+        (0.0, LAYER_HEIGHT, f"Entrée : {input_size} pixels", INPUT_FORMULA),
+        (HIDDEN_LEFT, hidden_right, f"Couche 1, cachée : {hidden_size} neurones", HIDDEN_FORMULA),
+        (
+            OUTPUT_X,
+            OUTPUT_X + OUTPUT_LABEL_WIDTH,
+            f"Couche 2, sortie : {output_size} chiffres",
+            OUTPUT_FORMULA,
+        ),
+    )
+    for index, (left, right, title, formula) in enumerate(frames):
+        color = FRAME_COLORS[index]
+        figure.add_shape(
+            type="rect",
+            x0=left - FRAME_PADDING,
+            x1=right + FRAME_PADDING,
+            y0=-FRAME_PADDING,
+            y1=LAYER_HEIGHT + FRAME_PADDING,
+            line={"color": color, "width": 2, "dash": FRAME_DASHES[index]},
+            fillcolor=translucent(color, FRAME_FILL_ALPHA),
+            layer="below",
+        )
+        figure.add_annotation(
+            x=(left + right) / 2,
+            y=TITLE_Y,
+            yanchor="bottom",
+            text=f"<b>{title}</b><br>{formula}",
+            font={"color": color},
+            showarrow=False,
+        )
+
+
 def _network_layout(figure: go.Figure, activity: NetworkActivity, output_reached: int) -> go.Figure:
-    input_size, hidden_size, output_size = activity.layer_sizes
+    output_size = activity.layer_sizes[-1]
     output_xs, output_ys = output_positions(output_size)
     for digit in range(output_reached):
         figure.add_annotation(
@@ -158,27 +209,19 @@ def _network_layout(figure: go.Figure, activity: NetworkActivity, output_reached
             showarrow=False,
             text=f"{digit} · {activity.probabilities[digit]:.0%}",
         )
-    for x, text, formula in (
-        (LAYER_HEIGHT / 2, f"Entrée : {input_size} pixels", INPUT_FORMULA),
-        (
-            HIDDEN_LEFT + (HIDDEN_COLUMNS - 1) * HIDDEN_SPACING / 2,
-            f"Couche cachée : {hidden_size} neurones",
-            HIDDEN_FORMULA,
-        ),
-        (OUTPUT_X, f"Sortie : {output_size} chiffres", OUTPUT_FORMULA),
-    ):
-        figure.add_annotation(
-            x=x, y=TITLE_Y, yanchor="bottom", text=f"<b>{text}</b><br>{formula}", showarrow=False
-        )
+    _layer_frames(figure, activity.layer_sizes)
     figure.update_layout(
-        title="Le réseau en direct",
+        # Sans titre : la diapositive qui l'affiche le titre déjà (« Le réseau en direct »).
         height=FIGURE_HEIGHT,
         showlegend=False,
-        margin={"l": 10, "r": 10, "t": 50, "b": 10},
+        margin={"l": 10, "r": 10, "t": 10, "b": 10},
         plot_bgcolor="rgba(0,0,0,0)",
     )
-    figure.update_xaxes(visible=False, range=[-0.3, OUTPUT_X + 1.2])
-    figure.update_yaxes(visible=False, range=[-0.3, TITLE_Y + 0.6])
+    figure.update_xaxes(visible=False, range=[-0.4, OUTPUT_X + 1.4])
+    # Même échelle sur les deux axes : les pixels d'entrée restent carrés.
+    figure.update_yaxes(
+        visible=False, range=[-0.3, TITLE_Y + 0.6], scaleanchor="x", constrain="domain"
+    )
     return figure
 
 

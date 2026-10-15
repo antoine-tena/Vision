@@ -97,3 +97,16 @@ def digit_image(pixels: Matrix) -> Matrix:
     """Une ligne de 784 pixels remise en image 28x28, bornée entre 0 et 1 pour l'afficher."""
     image: Matrix = np.clip(pixels.reshape(IMAGE_SIZE, IMAGE_SIZE), 0.0, 1.0)
     return image
+
+
+def top_confusions(matrix: Matrix, count: int) -> list[tuple[int, int, int]]:
+    """Les `count` erreurs les plus fréquentes : (vrai chiffre, réponse, nombre de fois)."""
+    errors = matrix.astype(np.int64).copy()
+    np.fill_diagonal(errors, 0)
+    order = np.argsort(-errors, axis=None)[:count]
+    rows, columns = np.unravel_index(order, errors.shape)
+    return [
+        (int(row), int(column), int(errors[row, column]))
+        for row, column in zip(rows, columns, strict=True)
+        if errors[row, column] > 0
+    ]
