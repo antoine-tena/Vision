@@ -120,8 +120,12 @@ def neurons_figure(reasoning: Reasoning) -> go.Figure:
         },
     )
     figure.update_annotations(font_size=SHAPE_TITLE_SIZE)
-    figure.update_xaxes(showticklabels=False, constrain="domain")
-    figure.update_yaxes(showticklabels=False, autorange="reversed", scaleanchor="x")
+    figure.update_xaxes(showticklabels=False, ticks="", constrain="domain")
+    figure.update_yaxes(showticklabels=False, ticks="", autorange="reversed")
+    # Chaque motif reste carré : son axe vertical suit l'échelle de son propre axe horizontal.
+    for index in range(count):
+        suffix = "" if index == 0 else str(index + 1)
+        figure.layout[f"yaxis{suffix}"].scaleanchor = f"x{suffix}"
     return figure
 
 
