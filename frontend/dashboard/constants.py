@@ -13,3 +13,15 @@ PEN_COLOR = "#ffffff"
 CANVAS_BORDER = "#888888"
 UPLOAD_TYPES = ("png", "jpg", "jpeg", "bmp", "webp")
 PREVIEW_WIDTH = 140
+
+HOME_TITLE = "Reconnaître"
+TRAINING_TITLE = "Entraînement"
+TRAINING_DESCRIPTION = (
+    "Comment le réseau a appris : la perte et l'exactitude époque par époque, sa mesure sur des "
+    "images qu'il n'a jamais vues, et les motifs que ses neurones cachés ont appris à guetter."
+)
+MISSING_REPORT = (
+    "Rapport d'entraînement introuvable ou illisible ({error}). Le régénérer depuis backend/ : "
+    "`uv run python -m network.train` (ou `network.evaluate` pour la seule évaluation)."
+)
+PATTERN_GRID_COLUMNS = 16

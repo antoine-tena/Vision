@@ -1,7 +1,6 @@
 """Page d'accueil : dessiner ou importer un chiffre, voir ce que le réseau en pense."""
 
 import streamlit as st
-from network.model import DEFAULT_MODEL_PATH, DigitClassifier, load_model
 from PIL import Image
 from pipeline.figures import probabilities_description, probabilities_figure
 from pipeline.recognition import Recognition, recognize
@@ -11,16 +10,11 @@ from streamlit.delta_generator import DeltaGenerator
 from dashboard.canvas import draw_digit
 from dashboard.constants import PREVIEW_WIDTH, SITE_DESCRIPTION, SITE_TITLE, UPLOAD_TYPES
 from dashboard.images import InvalidImageError, decode_image
-
-
-# [CACHE] : le modèle se charge une fois, pas à chaque trait.
-@st.cache_resource
-def cached_model() -> DigitClassifier:
-    return load_model(DEFAULT_MODEL_PATH)
+from dashboard.loaders import cached_model
+from dashboard.reasoning import render_reasoning
 
 
 def render_home() -> None:
-    st.set_page_config(page_title=SITE_TITLE)
     st.title(SITE_TITLE)
     st.write(SITE_DESCRIPTION)
     drawing_tab, upload_tab = st.tabs(["Dessiner", "Importer une image"])
@@ -32,7 +26,11 @@ def render_home() -> None:
     if image is None:
         st.info("Tracez un chiffre dans la zone de dessin, ou importez une image.")
         return
-    render_recognition(recognize(cached_model(), image))
+    model = cached_model()
+    recognition = recognize(model, image)
+    render_recognition(recognition)
+    if not recognition.is_blank:
+        render_reasoning(model, recognition)
 
 
 def read_image(drawing_tab: DeltaGenerator, upload_tab: DeltaGenerator) -> Image.Image | None:

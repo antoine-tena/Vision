@@ -1,0 +1,59 @@
+from streamlit.testing.v1 import AppTest
+
+from dashboard.constants import TRAINING_TITLE
+
+
+def render_the_training_page() -> None:
+    # Script lancé à part par AppTest : ses imports vivent dans la fonction.
+    from dashboard.training import render_training
+
+    render_training()
+
+
+def test_training_page_shows_curves_test_and_patterns() -> None:
+    app = AppTest.from_function(render_the_training_page).run()
+
+    assert not app.exception
+    assert app.title[0].value == TRAINING_TITLE
+    assert [header.value for header in app.subheader] == [
+        "Courbes d'apprentissage",
+        "Jeu de test (images jamais vues)",
+        "Ce que la couche cachée a appris",
+    ]
+    assert app.radio[0].options == ["manuscrits", "imprimés"]
+
+
+def test_training_page_switches_test_source() -> None:
+    app = AppTest.from_function(render_the_training_page).run()
+
+    app.radio[0].set_value("imprimés").run()
+
+    assert not app.exception
+    assert app.metric[-1].label == "Exactitude sur les imprimés"
+
+
+def render_reasoning_for_a_bar() -> None:
+    from network.model import DEFAULT_MODEL_PATH, load_model
+    from PIL import Image, ImageDraw
+    from pipeline.recognition import recognize
+
+    from dashboard.reasoning import render_reasoning
+
+    image = Image.new("L", (100, 100), 255)
+    ImageDraw.Draw(image).line((50, 15, 50, 85), fill=0, width=10)
+    model = load_model(DEFAULT_MODEL_PATH)
+    render_reasoning(model, recognize(model, image))
+
+
+def test_reasoning_explains_the_recognized_digit_then_another() -> None:
+    app = AppTest.from_function(render_reasoning_for_a_bar).run()
+
+    assert not app.exception
+    assert app.subheader[0].value == "Raisonnement interne"
+    assert app.caption[0].value.startswith(
+        f"Carte des pixels décisifs pour le {app.selectbox[0].value}"
+    )
+
+    app.selectbox[0].set_value(8).run()
+
+    assert app.caption[0].value.startswith("Carte des pixels décisifs pour le 8")

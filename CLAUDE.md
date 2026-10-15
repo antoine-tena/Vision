@@ -23,14 +23,18 @@ endroit, ce qu'on y trouve ; pas de copie du code.
   commité). `backend/tests/` : tests.
   - `sources.py` : MNIST téléchargé dans `data/raw/` (hors dépôt) ; `printed.py` : chiffres
     imprimés générés depuis les polices du poste ; `dataset.py` : un jeu (784 pixels + chiffre) ;
-    `transforms.py` : toute image ramenée au format MNIST ; `recognition.py` : image → prédiction.
+    `transforms.py` : toute image ramenée au format MNIST ; `recognition.py` : image → prédiction ;
+    `reasoning.py` : raisonnement interne (votes des neurones, pixels décisifs).
 - `backend/network/` : réseau de neurones écrit en NumPy, sans framework. `model.py` : le
   classifieur (784 → couche cachée ReLU → 10) ; `layers.py`, `activations.py`, `losses.py`,
   `optimizers.py` : briques ; `training.py` : mini-lots ; `train.py` : entraîne et enregistre
-  (`uv run python -m network.train`). Modèle entraîné commité dans `backend/data/models/`.
+  (`uv run python -m network.train`) ; `evaluate.py` : matrices de confusion du jeu de test.
+  Modèle entraîné et ses rapports commités dans `backend/data/models/`.
 - `frontend/app.py` : point d'entrée ; `frontend/dashboard/` : pages, mise en page et
   constantes ; `frontend/tests/` : tests.
-  - `home.py` : la page (dessiner ou importer un chiffre) ; `canvas.py` : zone de dessin
+  - `home.py` : la page d'accueil (dessiner ou importer un chiffre), avec `reasoning.py`, son
+    raisonnement interne ; `training.py` : page des courbes d'entraînement et du jeu de test ;
+    `loaders.py` : modèle et rapports en cache ; `canvas.py` : zone de dessin
     (`st.components.v2`) ; `images.py` : validation des images reçues ; `constants.py` : textes.
 - `docs/a-faire/` : suivi du travail ; `charte.toml` : règles contrôlées par `charte`.
 
