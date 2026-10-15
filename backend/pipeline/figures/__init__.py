@@ -1,6 +1,7 @@
 """Figures Plotly : une fonction par figure, qui reçoit des résultats déjà calculés."""
 
 from pipeline.figures.common import COLORBLIND_PALETTE, DIGITS, DIVERGING_COLORSCALE
+from pipeline.figures.network import network_description, network_figure
 from pipeline.figures.recognition import (
     evidence_description,
     evidence_figure,
@@ -26,6 +27,8 @@ __all__ = [
     "evidence_description",
     "evidence_figure",
     "hidden_patterns_figure",
+    "network_description",
+    "network_figure",
     "neurons_description",
     "neurons_figure",
     "probabilities_description",
