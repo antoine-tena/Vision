@@ -39,7 +39,7 @@ TEXT_SHARE = (2, 3)
 NARROW_TEXT_SHARE = (1, 2)
 SMALL_FORMULA_REM = 1.6
 RESULT_FORMULA_REM = 8
-TWO_LEVELS_HEIGHT = 250
+TWO_LEVELS_HEIGHT = 230
 
 
 def render_input_step(model: DigitClassifier, recognition: Recognition) -> None:
