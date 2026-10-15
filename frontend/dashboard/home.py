@@ -1,5 +1,7 @@
 """La présentation : le diaporama, du projet jusqu'au chiffre reconnu."""
 
+from pathlib import Path
+
 import streamlit as st
 from pipeline.recognition import Recognition
 
@@ -9,6 +11,8 @@ from dashboard.loaders import cached_model
 from dashboard.slides import CHOICE_INDEX, current_slide, go_to, render_navigation, render_slide
 
 AUTHORS = "Antoine Tena et Nathan Barrachin"
+LOGO_PATH = Path(__file__).parent / "assets" / "polytech.png"
+LOGO_WIDTH = 220
 
 
 def render_home() -> None:
@@ -18,10 +22,12 @@ def render_home() -> None:
     chosen: Recognition | None = st.session_state.get(RECOGNITION_KEY)
     if chosen is None and current_slide() > CHOICE_INDEX:
         go_to(CHOICE_INDEX)
+    if current_slide() == 0:
+        st.image(str(LOGO_PATH), width=LOGO_WIDTH)
     slide = render_navigation(can_go_on=chosen is not None or current_slide() != CHOICE_INDEX)
     # Avant le choix, les diapositives illustrent avec un exemple d'entraînement.
     recognition = chosen or example_recognition(model)
-    if slide == 0:
-        st.markdown(f"**{AUTHORS}**")
     if recognition is not None:
         render_slide(slide, model, recognition)
+    if slide == 0:
+        st.markdown(f"**{AUTHORS}**")
