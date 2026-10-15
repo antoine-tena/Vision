@@ -53,6 +53,7 @@ SLIDE_PAGE_STYLE = (
     "{display:flex;justify-content:center}"
     "[data-testid=stImageCaption]{text-align:center}"
     "[data-testid=stMarkdownContainer] li{font-size:1.15rem}"
+    ".st-key-raccourcis-clavier{display:none}"
     "</style>"
 )
 PROJECT_TITLE = "Le projet"
@@ -61,3 +62,5 @@ GLOSSARY_TITLE = "Lexique"
 TOP_CONFUSIONS = 3
 PREVIEW_WIDTH = 160
 SECTION_FIGURE_HEIGHT = 370
+SHORTCUTS_KEY = "raccourcis-clavier"
+EXTRA_NEXT_SHORTCUTS = ("Enter", "Space")

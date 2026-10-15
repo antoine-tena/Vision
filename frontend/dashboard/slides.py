@@ -7,7 +7,7 @@ from network.model import DigitClassifier
 from pipeline.recognition import Recognition
 
 from dashboard import reasoning
-from dashboard.constants import SLIDE_KEY
+from dashboard.constants import EXTRA_NEXT_SHORTCUTS, SHORTCUTS_KEY, SLIDE_KEY
 from dashboard.live import render_live_network
 from dashboard.sections import section, through_hidden, through_input, through_output
 
@@ -55,7 +55,8 @@ def render_navigation(can_go_on: bool) -> int:
         on_click=go_to,
         args=(slide - 1,),
         disabled=slide == 0,
-        help="Diapo précédente",
+        help="Diapo précédente (←)",
+        shortcut="Left",
         width="stretch",
     )
     title_column.subheader(slide_title(slide))
@@ -64,11 +65,28 @@ def render_navigation(can_go_on: bool) -> int:
         on_click=go_to,
         args=(slide + 1,),
         disabled=slide == SLIDE_COUNT - 1 or not can_go_on,
-        help="Diapo suivante",
+        help="Diapo suivante (→, Entrée ou Espace)",
+        shortcut="Right",
         type="primary",
         width="stretch",
     )
+    render_extra_shortcuts(slide, can_go_on)
     return slide
+
+
+def render_extra_shortcuts(slide: int, can_go_on: bool) -> None:
+    """Entrée et Espace avancent aussi : un bouton par touche, masqué (voir SLIDE_PAGE_STYLE)."""
+    is_disabled = slide == SLIDE_COUNT - 1 or not can_go_on
+    with st.container(key=SHORTCUTS_KEY):
+        for shortcut in EXTRA_NEXT_SHORTCUTS:
+            st.button(
+                f"Suivante ({shortcut})",
+                key=f"suivante-{shortcut}",
+                on_click=go_to,
+                args=(slide + 1,),
+                disabled=is_disabled,
+                shortcut=shortcut,
+            )
 
 
 def render_slide(slide: int, model: DigitClassifier, recognition: Recognition) -> None:
