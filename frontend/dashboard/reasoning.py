@@ -15,7 +15,7 @@ from pipeline.recognition import Recognition
 from pipeline.transforms import digit_image
 
 from dashboard import explanations
-from dashboard.constants import PREVIEW_WIDTH
+from dashboard.constants import PREVIEW_WIDTH, TOP_SHAPES
 
 
 def render_steps(model: DigitClassifier, recognition: Recognition) -> None:
@@ -36,7 +36,11 @@ def render_hidden_step(model: DigitClassifier, recognition: Recognition) -> Reas
     st.header("Étape 2 · Couche 1 : les neurones repèrent des motifs")
     reasoning = explain(model, recognition.pixels, recognition.digit)
     st.markdown(f"**{reasoning.active_count} / {reasoning.hidden_size} allumés** · motifs :")
-    st.markdown("\n".join(f"- **{count}** x {shape}" for shape, count in reasoning.active_shapes))
+    st.markdown(
+        "\n".join(
+            f"- **{count}** x {shape}" for shape, count in reasoning.active_shapes[:TOP_SHAPES]
+        )
+    )
     explanations.explain(explanations.HIDDEN_LAYER)
     explanations.explain(explanations.SHAPES)
     return reasoning

@@ -39,8 +39,7 @@ PROBABILITIES = r"""
 WEIGHT = r"""
 - **Poids** = combien un pixel compte pour un neurone
 - Positif : encre voulue ; négatif : encre refusée ; 0 : sans effet
-- Note = $\text{pixel}_1 \times \text{poids}_1 + \dots + \text{pixel}_{784} \times
-  \text{poids}_{784} + \text{biais}$
+- Note = $\sum \text{pixel} \times \text{poids} + \text{biais}$
 - Hasard au départ, corrigés à chaque erreur : **apprendre = régler les poids** (~100 000)
 - Carte : apport de chaque pixel ; bleu = pour, orange = contre
 """

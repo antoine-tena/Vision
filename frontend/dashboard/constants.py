@@ -38,3 +38,4 @@ MISSING_SAMPLE = (
     "Échantillon d'entraînement introuvable ou illisible ({error}). Le régénérer depuis "
     "backend/ : `uv run python -m network.sample`."
 )
+TOP_SHAPES = 6
