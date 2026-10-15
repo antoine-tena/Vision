@@ -55,17 +55,29 @@ def _center_by_mass(digit: Matrix) -> Matrix:
     return canvas
 
 
+def split_indices(size: int, validation_fraction: float, seed: int) -> tuple[Labels, Labels]:
+    """Indices d'entraînement et de validation : tirage aléatoire mais reproductible."""
+    order = np.random.default_rng(seed).permutation(size).astype(np.int64)
+    validation_size = int(size * validation_fraction)
+    return order[validation_size:], order[:validation_size]
+
+
 def split_dataset(
     dataset: DigitDataset, validation_fraction: float, seed: int
 ) -> tuple[DigitDataset, DigitDataset]:
-    """Découpage aléatoire mais reproductible en jeu d'entraînement et jeu de validation."""
-    order = np.random.default_rng(seed).permutation(len(dataset))
-    validation_size = int(len(dataset) * validation_fraction)
-    validation, training = order[:validation_size], order[validation_size:]
-    return (
-        DigitDataset(dataset.images[training], dataset.labels[training]),
-        DigitDataset(dataset.images[validation], dataset.labels[validation]),
-    )
+    """Découpage en jeu d'entraînement et jeu de validation (voir `split_indices`)."""
+    training, validation = split_indices(len(dataset), validation_fraction, seed)
+    return dataset.subset(training), dataset.subset(validation)
+
+
+def sample_per_digit(dataset: DigitDataset, per_digit: int, seed: int) -> DigitDataset:
+    """`per_digit` images de chaque chiffre (moins s'il en manque), triées par chiffre."""
+    rng = np.random.default_rng(seed)
+    chosen = [
+        rng.permutation(np.flatnonzero(dataset.labels == digit))[:per_digit]
+        for digit in range(DIGIT_COUNT)
+    ]
+    return dataset.subset(np.concatenate(chosen).astype(np.int64))
 
 
 def confusion_matrix(labels: Labels, predictions: Labels) -> Matrix:

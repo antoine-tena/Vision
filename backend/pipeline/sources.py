@@ -19,6 +19,8 @@ from pipeline.dataset import DigitDataset
 
 DATA_DIR = Path(__file__).resolve().parent.parent / "data"
 MNIST_DIR = DATA_DIR / "raw" / "mnist"
+# Échantillon du jeu d'entraînement écrit par network.sample, commité ([DONNEES-LOURDES]).
+SAMPLE_PATH = DATA_DIR / "sample" / "exemples.npz"
 MNIST_URL = "https://storage.googleapis.com/cvdf-datasets/mnist"
 MNIST_FILES = {
     "train": ("train-images-idx3-ubyte.gz", "train-labels-idx1-ubyte.gz"),
@@ -106,3 +108,31 @@ def load_evaluation(path: Path) -> dict[str, Matrix]:
         if matrix.shape != (DIGIT_COUNT, DIGIT_COUNT) or (matrix < 0).any():
             raise DatasetFormatError(f"{path.name} : matrice « {source} » invalide")
     return matrices
+
+
+def load_training_sample(path: Path = SAMPLE_PATH) -> dict[str, DigitDataset]:
+    """L'échantillon d'entraînement, un jeu par source, pixels ramenés entre 0 et 1."""
+    with np.load(path) as arrays:
+        sources = [
+            name.removesuffix("_images") for name in arrays.files if name.endswith("_images")
+        ]
+        if not sources:
+            raise DatasetFormatError(f"{path.name} : aucune image")
+        sample = {
+            source: DigitDataset(
+                arrays[f"{source}_images"].astype(np.float64) / PIXEL_MAX,
+                arrays[f"{source}_labels"].astype(np.int64),
+            )
+            for source in sources
+        }
+    for source, dataset in sample.items():
+        _check_sample(path, source, dataset)
+    return sample
+
+
+def _check_sample(path: Path, source: str, dataset: DigitDataset) -> None:
+    images, labels = dataset.as_tuple()
+    if images.ndim != 2 or images.shape[1] != PIXEL_COUNT or len(images) != len(labels):
+        raise DatasetFormatError(f"{path.name} : images « {source} » de forme {images.shape}")
+    if ((labels < 0) | (labels >= DIGIT_COUNT)).any():
+        raise DatasetFormatError(f"{path.name} : chiffre hors de 0-9 dans « {source} »")
