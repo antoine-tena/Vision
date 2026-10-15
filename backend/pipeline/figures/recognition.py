@@ -86,22 +86,30 @@ def evidence_description(evidence: Matrix, digit: int) -> str:
 
 def neurons_figure(reasoning: Reasoning) -> go.Figure:
     """Motif guetté par chacun des neurones cachés qui ont le plus voté, avec son vote."""
-    count = len(reasoning.neuron_ids)
-    rows = -(-count // NEURON_GRID_COLUMNS)
     titles = [
         f"n°{neuron} {vote:+.1f}<br>{shape[0]}<br>{shape[1]}"
         for neuron, vote, shape in zip(
             reasoning.neuron_ids, reasoning.neuron_votes, reasoning.neuron_shapes, strict=True
         )
     ]
+    return patterns_figure(
+        reasoning.neuron_patterns,
+        titles,
+        f"Neurones qui ont le plus voté pour ou contre le {reasoning.digit}",
+    )
+
+
+def patterns_figure(patterns: Matrix, titles: list[str], title: str) -> go.Figure:
+    """Motifs 28x28 (poids d'un neurone) en grille, chacun carré sous son titre."""
+    count = len(patterns)
     figure = make_subplots(
-        rows=rows,
+        rows=max(1, -(-count // NEURON_GRID_COLUMNS)),
         cols=NEURON_GRID_COLUMNS,
         subplot_titles=titles,
         horizontal_spacing=0.02,
         vertical_spacing=0.28,
     )
-    for index, pattern in enumerate(reasoning.neuron_patterns):
+    for index, pattern in enumerate(patterns):
         figure.add_trace(
             go.Heatmap(
                 z=pattern, coloraxis="coloraxis", hovertemplate="poids %{z:+.3f}<extra></extra>"
@@ -109,9 +117,9 @@ def neurons_figure(reasoning: Reasoning) -> go.Figure:
             row=index // NEURON_GRID_COLUMNS + 1,
             col=index % NEURON_GRID_COLUMNS + 1,
         )
-    limit = float(np.abs(reasoning.neuron_patterns).max()) if count else 1.0
+    limit = float(np.abs(patterns).max()) if count else 1.0
     figure.update_layout(
-        title=f"Neurones qui ont le plus voté pour ou contre le {reasoning.digit}",
+        title=title,
         coloraxis={
             "colorscale": DIVERGING_COLORSCALE,
             "cmin": -limit,

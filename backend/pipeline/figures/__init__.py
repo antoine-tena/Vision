@@ -7,6 +7,7 @@ from pipeline.figures.recognition import (
     evidence_figure,
     neurons_description,
     neurons_figure,
+    patterns_figure,
     probabilities_description,
     probabilities_figure,
 )
@@ -31,6 +32,7 @@ __all__ = [
     "network_figure",
     "neurons_description",
     "neurons_figure",
+    "patterns_figure",
     "probabilities_description",
     "probabilities_figure",
     "training_history_description",

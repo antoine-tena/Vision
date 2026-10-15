@@ -78,3 +78,9 @@ def test_saved_model_predicts_the_same(tmp_path: Path) -> None:
     restored = load_model(tmp_path / "modele.npz")
 
     assert np.array_equal(restored.predict(images), model.predict(images))
+
+
+def test_parameter_count_adds_weights_and_biases() -> None:
+    from network.model import DigitClassifier
+
+    assert DigitClassifier(hidden_size=128).parameter_count == 784 * 128 + 128 + 128 * 10 + 10

@@ -66,11 +66,14 @@ def shape_name(pattern: Matrix) -> str:
     return " ".join(part for part in shape_parts(pattern) if part)
 
 
-def active_shapes(patterns: Matrix, activations: Matrix) -> list[tuple[str, int]]:
-    """Motifs des neurones allumés, regroupés : (motif, nombre), les plus fréquents d'abord."""
-    counts = Counter(
-        shape_name(pattern)
-        for pattern, activation in zip(patterns, activations, strict=True)
-        if activation > 0
-    )
-    return counts.most_common()
+def active_shapes(patterns: Matrix, activations: Matrix) -> list[tuple[str, int, int]]:
+    """Motifs des neurones allumés, regroupés, les plus fréquents d'abord : (motif, nombre,
+    neurone le plus allumé de ce motif, qui sert d'exemple)."""
+    names = {
+        int(neuron): shape_name(patterns[neuron]) for neuron in np.flatnonzero(activations > 0)
+    }
+    counts = Counter(names.values())
+    examples: dict[str, int] = {}
+    for neuron in sorted(names, key=lambda neuron: -activations[neuron]):
+        examples.setdefault(names[neuron], neuron)
+    return [(name, count, examples[name]) for name, count in counts.most_common()]

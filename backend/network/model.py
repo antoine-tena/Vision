@@ -40,6 +40,11 @@ class DigitClassifier:
         predictions: Labels = np.argmax(self.logits(images), axis=1).astype(np.int64)
         return predictions
 
+    @property
+    def parameter_count(self) -> int:
+        """Nombre de poids et de biais : toute la « connaissance » du modèle."""
+        return sum(layer.weights.size + layer.biases.size for layer in self.layers)
+
     def train_step(
         self, images: Matrix, labels: Labels, optimizer: StochasticGradientDescent
     ) -> float:

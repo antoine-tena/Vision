@@ -33,7 +33,7 @@ class Reasoning:
     neuron_votes: Matrix
     neuron_patterns: Matrix
     neuron_shapes: list[tuple[str, str]]
-    active_shapes: list[tuple[str, int]]
+    active_shapes: list[tuple[str, int, int]]
 
 
 def hidden_activations(model: DigitClassifier, pixels: Matrix) -> Matrix:

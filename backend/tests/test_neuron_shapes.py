@@ -43,4 +43,4 @@ def test_active_shapes_counts_only_lit_neurons() -> None:
     top[6, 6:22] = 1.0
     bottom[21, 6:22] = 1.0
     shapes = active_shapes(np.stack([top, top, bottom]), np.array([1.0, 2.0, 0.0]))
-    assert shapes == [("trait horizontal en haut", 2)]
+    assert shapes == [("trait horizontal en haut", 2, 1)]
