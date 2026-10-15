@@ -28,7 +28,10 @@ logger = structlog.get_logger(__name__)
 
 
 def build_datasets(seed: int) -> tuple[DigitDataset, DigitDataset, DigitDataset]:
-    """Entraînement, validation et test, chacun mêlant manuscrits et imprimés."""
+    """Entraînement, validation et test, chacun mêlant manuscrits et imprimés.
+
+    Les imprimés du test sont tirés avec une autre graine : ce ne sont pas ceux de l'entraînement.
+    """
     printed = generate_printed_digits(PRINTED_PER_DIGIT, seed)
     training, validation = split_dataset(
         DigitDataset.concatenate(load_mnist("train"), printed), VALIDATION_FRACTION, seed
@@ -38,6 +41,7 @@ def build_datasets(seed: int) -> tuple[DigitDataset, DigitDataset, DigitDataset]
 
 
 def run(config: TrainingConfig, model_path: Path) -> None:
+    """Entraîne un réseau neuf, enregistre poids et historique, puis mesure le jeu de test."""
     training, validation, test = build_datasets(config.seed)
     logger.info("training.started", examples=len(training), **asdict(config))
     model = DigitClassifier(seed=config.seed)
@@ -54,6 +58,7 @@ def run(config: TrainingConfig, model_path: Path) -> None:
 
 
 def main() -> None:
+    """Lit les options (--epochs, --learning-rate, --seed, --output) et lance l'entraînement."""
     parser = argparse.ArgumentParser(description=__doc__)
     defaults = TrainingConfig()
     parser.add_argument("--epochs", type=int, default=defaults.epochs)

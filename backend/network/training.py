@@ -11,6 +11,8 @@ from network.optimizers import StochasticGradientDescent
 
 @dataclass(frozen=True)
 class TrainingConfig:
+    """Hyperparamètres de l'entraînement ; la graine rend le résultat reproductible."""
+
     epochs: int = 10
     batch_size: int = 128
     learning_rate: float = 0.1
@@ -21,6 +23,8 @@ class TrainingConfig:
 
 @dataclass(frozen=True)
 class EpochMetrics:
+    """Mesures prises à la fin d'une époque (un passage complet sur les données)."""
+
     epoch: int
     loss: float
     train_accuracy: float
@@ -28,6 +32,7 @@ class EpochMetrics:
 
 
 def accuracy(model: DigitClassifier, images: Matrix, labels: Labels) -> float:
+    """Part des images dont le chiffre prédit est le bon, entre 0 et 1."""
     return float(np.mean(model.predict(images) == labels))
 
 
@@ -37,7 +42,11 @@ def train(
     validation: tuple[Matrix, Labels],
     config: TrainingConfig,
 ) -> list[EpochMetrics]:
-    """Entraîne le modèle en place et renvoie l'historique, une mesure par époque."""
+    """Entraîne le modèle en place et renvoie l'historique, une mesure par époque.
+
+    Après chaque époque, l'exactitude est mesurée sur l'entraînement et sur la validation,
+    des images jamais apprises : un écart grandissant signale le surapprentissage.
+    """
     optimizer = StochasticGradientDescent(config.learning_rate, config.decay, config.momentum)
     rng = np.random.default_rng(config.seed)
     history = []
@@ -56,7 +65,11 @@ def _train_epoch(
     batch_size: int,
     rng: np.random.Generator,
 ) -> float:
-    """Une passe sur les données dans un ordre aléatoire ; renvoie la perte moyenne."""
+    """Une passe sur les données dans un ordre aléatoire ; renvoie la perte moyenne.
+
+    Les images sont mélangées puis découpées en mini-lots d'environ `batch_size` ; chaque lot
+    fait un pas d'apprentissage.
+    """
     images, labels = training
     order = rng.permutation(len(labels))
     losses = [

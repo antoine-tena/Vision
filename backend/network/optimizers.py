@@ -5,6 +5,11 @@ from network.layers import DenseLayer
 
 class StochasticGradientDescent:
     def __init__(self, learning_rate: float, decay: float = 0.0, momentum: float = 0.0) -> None:
+        """Règle l'optimiseur.
+
+        learning_rate : taille du pas de départ ; decay : vitesse à laquelle le pas rétrécit ;
+        momentum : part du déplacement précédent conservée (0 = pas d'inertie).
+        """
         self.learning_rate = learning_rate
         self.decay = decay
         self.momentum = momentum
@@ -19,6 +24,8 @@ class StochasticGradientDescent:
         """Met à jour chaque couche à partir de ses gradients, puis compte l'itération."""
         rate = self.current_learning_rate
         for layer in layers:
+            # Déplacement = inertie x déplacement précédent - pas x gradient : on descend la
+            # pente de la perte en gardant de l'élan, ce qui lisse et accélère la descente.
             layer.weight_momentums = (
                 self.momentum * layer.weight_momentums - rate * layer.weight_gradients
             )
