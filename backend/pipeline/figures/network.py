@@ -23,7 +23,7 @@ TITLE_Y = LAYER_HEIGHT + 0.35
 UNREACHED = {"color": "#BBBBBB", "opacity": 0.35, "size": 5}
 ACTIVITY_COLORSCALE = "Cividis"
 EDGE_OPACITY = 0.3
-FIGURE_HEIGHT = 480
+FIGURE_HEIGHT = 420
 PIXEL_SIZE = 9
 HIDDEN_SIZES = (6, 16)
 OUTPUT_SIZES = (12, 34)
@@ -172,7 +172,7 @@ def _network_layout(figure: go.Figure, activity: NetworkActivity, output_reached
         plot_bgcolor="rgba(0,0,0,0)",
     )
     figure.update_xaxes(visible=False, range=[-0.3, OUTPUT_X + 1.2])
-    figure.update_yaxes(visible=False, range=[-0.3, TITLE_Y + 0.2], scaleanchor="x")
+    figure.update_yaxes(visible=False, range=[-0.3, TITLE_Y + 0.2])
     return figure
 
 

@@ -37,6 +37,7 @@ def probabilities_figure(probabilities: Matrix) -> go.Figure:
         )
     )
     figure.update_layout(title="Probabilités", xaxis_title="Chiffre", yaxis_title="Probabilité (%)")
+    figure.update_xaxes(type="category")
     return figure
 
 
@@ -87,7 +88,7 @@ def neurons_figure(reasoning: Reasoning) -> go.Figure:
     count = len(reasoning.neuron_ids)
     rows = -(-count // NEURON_GRID_COLUMNS)
     titles = [
-        f"n°{neuron} : {vote:+.2f}"
+        f"n°{neuron} {vote:+.1f}"
         for neuron, vote in zip(reasoning.neuron_ids, reasoning.neuron_votes, strict=True)
     ]
     figure = make_subplots(
