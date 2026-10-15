@@ -23,7 +23,7 @@ PITCH = "Un réseau de neurones en NumPy, sans bibliothèque d'IA, qui reconnaî
 WHAT_IT_IS = """
 - **Apprentissage automatique** : il apprend sur des exemples, personne n'écrit les règles
 - **Pas un LLM** : un LLM traite du texte, avec des milliards de paramètres
-- **Rien de caché** : propagation, rétropropagation et descente de gradient codées dans le projet
+- **From scratch** : propagation, rétropropagation et descente de gradient codées dans le projet
 """
 
 ARCHITECTURE = """
