@@ -35,10 +35,7 @@ def render_input_step(recognition: Recognition) -> None:
 def render_hidden_step(model: DigitClassifier, recognition: Recognition) -> Reasoning:
     st.header("Étape 2 · Couche 1 : les neurones repèrent des motifs")
     reasoning = explain(model, recognition.pixels, recognition.digit)
-    st.markdown(
-        f"**{reasoning.active_count} neurones sur {reasoning.hidden_size}** se sont allumés. "
-        "Ce qu'ils ont reconnu dans l'image :"
-    )
+    st.markdown(f"**{reasoning.active_count} / {reasoning.hidden_size} allumés** · motifs :")
     st.markdown("\n".join(f"- **{count}** x {shape}" for shape, count in reasoning.active_shapes))
     explanations.explain(explanations.HIDDEN_LAYER)
     explanations.explain(explanations.SHAPES)
@@ -58,7 +55,7 @@ def render_vote_step(
     )
     if digit != reasoning.digit:
         reasoning = explain(model, recognition.pixels, digit)
-    st.markdown(f"Total des votes pour le {digit} : score **{reasoning.score:+.2f}**.")
+    st.markdown(f"Score du {digit} (somme des votes) : **{reasoning.score:+.2f}**")
     st.plotly_chart(neurons_figure(reasoning))
     st.caption(neurons_description(reasoning))
     explanations.explain(explanations.NEURON_VOTES)
@@ -78,7 +75,3 @@ def render_softmax_step(recognition: Recognition) -> None:
 def render_result(recognition: Recognition) -> None:
     st.header("Résultat")
     st.metric("Chiffre reconnu", recognition.digit, f"confiance {recognition.confidence:.0%}")
-    st.markdown(
-        f"Le réseau répond **{recognition.digit}**, le chiffre qui a la plus grande probabilité "
-        f"({recognition.confidence:.0%})."
-    )
