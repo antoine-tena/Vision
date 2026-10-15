@@ -42,11 +42,13 @@ def render_a_recognized_digit() -> None:
     from PIL import Image, ImageDraw
     from pipeline.recognition import recognize
 
-    from dashboard.home import render_recognition
+    from dashboard.reasoning import render_result, render_softmax_step
 
     image = Image.new("L", (100, 100), 255)
     ImageDraw.Draw(image).line((50, 15, 50, 85), fill=0, width=10)
-    render_recognition(recognize(load_model(DEFAULT_MODEL_PATH), image))
+    recognition = recognize(load_model(DEFAULT_MODEL_PATH), image)
+    render_softmax_step(recognition)
+    render_result(recognition)
 
 
 def test_recognition_shows_the_digit_and_its_probabilities() -> None:
@@ -54,7 +56,7 @@ def test_recognition_shows_the_digit_and_its_probabilities() -> None:
 
     assert not app.exception
     assert app.metric[0].label == "Chiffre reconnu"
-    assert app.caption[-1].value.startswith("Probabilités par chiffre")
+    assert app.caption[0].value.startswith("Probabilités par chiffre")
 
 
 @pytest.mark.parametrize(

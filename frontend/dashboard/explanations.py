@@ -2,6 +2,24 @@
 
 import streamlit as st
 
+INPUT = r"""
+**L'entrée.** L'image est d'abord réduite à 28 x 28 = 784 pixels, comme les images qui ont
+servi à l'entraînement. Chaque pixel devient un nombre : 0 pour le blanc, 1 pour l'encre noire,
+entre les deux pour le gris. Le réseau ne voit que cette liste de 784 nombres :
+$x = (x_1, x_2, \dots, x_{784})$. Ce n'est pas une couche : il n'y a aucun calcul ici.
+"""
+
+HIDDEN_LAYER = r"""
+**La couche 1.** Elle a 128 neurones. Chacun regarde les 784 pixels et leur donne une note
+avec ses poids, puis la ReLU éteint les notes négatives :
+
+$$h = \max(0,\ x \cdot W_1 + b_1)$$
+
+Un neurone dont la note est positive est **allumé** : il a trouvé son motif dans l'image. Les
+autres restent à 0 et ne comptent plus pour la suite. C'est le groupe de neurones allumés qui
+distingue un chiffre d'un autre.
+"""
+
 LIVE_NETWORK = r"""
 **Comment lire ce schéma.** Le réseau a **deux couches** qui calculent ; l'entrée n'en est pas
 une, ce sont juste les pixels de l'image.

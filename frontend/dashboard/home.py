@@ -2,18 +2,14 @@
 
 import streamlit as st
 from network.model import DigitClassifier
-from pipeline.figures import probabilities_description, probabilities_figure
 from pipeline.recognition import Recognition, recognize, recognize_pixels
-from pipeline.transforms import digit_image
 from streamlit.elements.lib.mutable_tab_container import TabContainer
 
-from dashboard import explanations
 from dashboard.canvas import draw_digit
 from dashboard.constants import (
     DRAWING_TAB,
     EXAMPLES_TAB,
     INPUT_TABS_KEY,
-    PREVIEW_WIDTH,
     SITE_DESCRIPTION,
     SITE_TITLE,
     UPLOAD_TAB,
@@ -23,7 +19,7 @@ from dashboard.examples import pick_example
 from dashboard.images import InvalidImageError, decode_image
 from dashboard.live import render_live_network
 from dashboard.loaders import cached_model
-from dashboard.reasoning import render_reasoning
+from dashboard.reasoning import render_steps
 
 
 def render_home() -> None:
@@ -43,8 +39,7 @@ def render_home() -> None:
         st.warning("L'image est vide : aucun trait n'a été trouvé.")
         return
     render_live_network(model, recognition)
-    render_recognition(recognition)
-    render_reasoning(model, recognition)
+    render_steps(model, recognition)
 
 
 def read_recognition(
@@ -67,17 +62,3 @@ def read_recognition(
     with drawing_tab:
         drawn = draw_digit()
     return None if drawn is None else recognize(model, drawn)
-
-
-def render_recognition(recognition: Recognition) -> None:
-    answer, preview = st.columns([2, 1])
-    answer.metric("Chiffre reconnu", recognition.digit, f"confiance {recognition.confidence:.0%}")
-    preview.image(
-        digit_image(recognition.pixels),
-        caption="Ce que voit le réseau (28 x 28)",
-        width=PREVIEW_WIDTH,
-    )
-    st.plotly_chart(probabilities_figure(recognition.probabilities))
-    # [FIGURES-ACCESSIBLES] : texte alternatif de la figure.
-    st.caption(probabilities_description(recognition.probabilities))
-    explanations.explain(explanations.PROBABILITIES)

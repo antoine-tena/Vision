@@ -14,6 +14,7 @@ from dashboard.constants import LAST_ANIMATED_KEY, LIVE_FRAME_SECONDS
 
 
 def render_live_network(model: DigitClassifier, recognition: Recognition) -> None:
+    st.header("Vue d'ensemble · Le réseau en direct")
     activity = network_activity(model, recognition.pixels)
     previous = st.session_state.get(LAST_ANIMATED_KEY)
     is_new_image = previous is None or not np.array_equal(previous, recognition.pixels)
