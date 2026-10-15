@@ -127,8 +127,8 @@ TWO_LEVELS_FORMULA: list[Part] = [
 ]
 
 TWO_LEVELS = """
-- **Poids d'entrée** : leur ensemble est le motif, il n'y a pas de « poids du trait » en plus
-- **Poids de sortie** : **bleu** = ce motif pousse vers le chiffre, **orange** = il l'en éloigne
+- **Poids d'entrée** : leur ensemble est le motif
+- **Poids de sortie** : **bleu** pousse vers le chiffre, **orange** l'en éloigne
 """
 
 INPUT_FORMULA: list[Part] = [
