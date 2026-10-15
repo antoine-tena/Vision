@@ -101,6 +101,13 @@ SHAPES = """
 - **Nom** déduit de la tache bleue (approximation : le réseau ignore ces mots)
 """
 
+EMERGENCE = """
+- **Fixé** : 128 neurones reliés aux 784 pixels, poids de départ **au hasard**
+- **L'entraînement** pousse chacun vers ce qui est utile → il se **spécialise**
+- **Départs différents** → motifs différents ; **autre graine** → autres motifs, même précision
+- **Les 10 sorties** : rôle imposé par les étiquettes (le n°7 devient « le 7 »)
+"""
+
 LIVE_NETWORK = """
 **Récapitulatif, chaque partie et son étape :**
 - **Entrée** (pixels) → Étape 1

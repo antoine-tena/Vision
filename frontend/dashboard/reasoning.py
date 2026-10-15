@@ -8,16 +8,28 @@ import streamlit as st
 from network.model import DIGIT_COUNT, PIXEL_COUNT, DigitClassifier
 from pipeline.figures import (
     evidence_figure,
+    hidden_patterns_figure,
     neurons_figure,
     patterns_figure,
     probabilities_figure,
 )
-from pipeline.reasoning import Reasoning, evidence_totals, explain, neuron_patterns
+from pipeline.reasoning import (
+    Reasoning,
+    evidence_totals,
+    explain,
+    hidden_patterns_mosaic,
+    neuron_patterns,
+)
 from pipeline.recognition import Recognition
 from pipeline.transforms import digit_image
 
 from dashboard import explanations
-from dashboard.constants import SLIDE_FIGURE_HEIGHT, SLIDE_IMAGE_WIDTH, TOP_SHAPES
+from dashboard.constants import (
+    PATTERN_GRID_COLUMNS,
+    SLIDE_FIGURE_HEIGHT,
+    SLIDE_IMAGE_WIDTH,
+    TOP_SHAPES,
+)
 from dashboard.explanations import key_fact
 from dashboard.formula import Term, show_formula
 
@@ -60,6 +72,16 @@ def render_neuron_step(model: DigitClassifier, recognition: Recognition) -> None
         show_formula(explanations.RELU_FORMULA)
     with text_column:
         explanations.explain(explanations.WEIGHT_SIGNS)
+
+
+def render_emergence_step(model: DigitClassifier, recognition: Recognition) -> None:
+    text_column, figure_column = st.columns(TEXT_SHARE, vertical_alignment="center")
+    with text_column:
+        key_fact("Personne ne programme les motifs : ils émergent de l'entraînement")
+        explanations.explain(explanations.EMERGENCE)
+    mosaic = hidden_patterns_mosaic(model, PATTERN_GRID_COLUMNS)
+    figure = hidden_patterns_figure(mosaic).update_layout(height=SLIDE_FIGURE_HEIGHT)
+    figure_column.plotly_chart(figure)
 
 
 def chosen_reasoning(model: DigitClassifier, recognition: Recognition, key: str) -> Reasoning:

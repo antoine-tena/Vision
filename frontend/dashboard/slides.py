@@ -9,17 +9,23 @@ from pipeline.recognition import Recognition
 from dashboard import reasoning
 from dashboard.constants import SLIDE_KEY
 from dashboard.live import render_live_network
+from dashboard.sections import section, through_hidden, through_input, through_output
 
 type SlideRenderer = Callable[[DigitClassifier, Recognition], None]
 
 # La diapositive 0 (choisir un chiffre) est rendue par l'accueil ; les suivantes l'expliquent.
 SLIDES: list[tuple[str, SlideRenderer]] = [
-    ("Étape 1 · Ce que voit le réseau", reasoning.render_input_step),
-    ("Étape 2 · Couche 1 : les neurones repèrent des motifs", reasoning.render_shapes_step),
-    ("Étape 2 · Couche 1 : le calcul d'un neurone", reasoning.render_neuron_step),
-    ("Étape 3 · Couche 2 : les neurones votent", reasoning.render_vote_step),
-    ("Étape 3 · Couche 2 : les pixels qui comptent", reasoning.render_evidence_step),
-    ("Étape 4 · La softmax change les scores en pourcentages", reasoning.render_softmax_step),
+    ("Étape 1", section("L'entrée : l'image", through_input)),
+    ("Étape 1.1 · Ce que voit le réseau", reasoning.render_input_step),
+    ("Étape 2", section("Couche 1 : repérer des motifs", through_hidden)),
+    ("Étape 2.1 · Les neurones repèrent des motifs", reasoning.render_shapes_step),
+    ("Étape 2.2 · Le calcul d'un neurone", reasoning.render_neuron_step),
+    ("Étape 2.3 · Qui a choisi les motifs ? Personne", reasoning.render_emergence_step),
+    ("Étape 3", section("Couche 2 : voter pour un chiffre", through_output)),
+    ("Étape 3.1 · Les neurones votent", reasoning.render_vote_step),
+    ("Étape 3.2 · Les pixels qui comptent", reasoning.render_evidence_step),
+    ("Étape 4", section("La softmax : des pourcentages", through_output)),
+    ("Étape 4.1 · Des scores aux pourcentages", reasoning.render_softmax_step),
     ("Résultat", reasoning.render_result),
     ("Conclusion · Le réseau en direct", render_live_network),
 ]
@@ -52,7 +58,7 @@ def render_navigation(can_go_on: bool) -> int:
         help="Diapo précédente",
         width="stretch",
     )
-    title_column.subheader(f"{slide_title(slide)}  ·  {slide + 1}/{SLIDE_COUNT}")
+    title_column.subheader(slide_title(slide))
     next_column.button(
         "Suiv. ▶",
         on_click=go_to,

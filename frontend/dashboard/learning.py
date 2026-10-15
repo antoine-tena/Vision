@@ -46,6 +46,9 @@ def render_learning() -> None:
     st.subheader("La descente de gradient : corriger chaque poids")
     show_formula(explanations.DESCENT_FORMULA)
     st.markdown(DESCENT_NOTES)
+    st.subheader("Qui décide des motifs ? Personne")
+    key_fact("On ne programme pas ce que détecte un neurone : ça émerge de l'entraînement")
+    explanations.explain(explanations.EMERGENCE)
     render_rhythm()
 
 
