@@ -15,6 +15,12 @@ class DigitDataset:
     def __len__(self) -> int:
         return len(self.labels)
 
+    def subset(self, indices: Labels) -> DigitDataset:
+        return DigitDataset(self.images[indices], self.labels[indices])
+
+    def of_digit(self, digit: int) -> DigitDataset:
+        return self.subset(np.flatnonzero(self.labels == digit).astype(np.int64))
+
     def as_tuple(self) -> tuple[Matrix, Labels]:
         return self.images, self.labels
 

@@ -1,4 +1,4 @@
-"""Figures Plotly : une fonction par figure, qui reçoit des résultats déjà calculés."""
+"""Figures de l'entraînement : courbes, matrice de confusion, motifs appris."""
 
 import numpy as np
 import plotly.graph_objects as go
@@ -6,12 +6,12 @@ import plotly.graph_objects as go
 from network.arrays import Matrix
 from network.model import DIGIT_COUNT
 from network.training import EpochMetrics
-
-# Palette Okabe-Ito, lisible par les daltoniens ([FIGURES-ACCESSIBLES]).
-COLORBLIND_PALETTE = ("#0072B2", "#E69F00", "#009E73", "#CC79A7", "#56B4E9", "#D55E00")
-DIGITS = [str(digit) for digit in range(DIGIT_COUNT)]
-PREDICTED_PATTERN = "/"
-TOP_DIGITS_DESCRIBED = 3
+from pipeline.figures.common import (
+    COLORBLIND_PALETTE,
+    DIGITS,
+    DIVERGING_COLORSCALE,
+)
+from pipeline.transforms import confusion_accuracy
 
 
 def training_history_figure(history: list[EpochMetrics]) -> go.Figure:
@@ -45,6 +45,15 @@ def training_history_figure(history: list[EpochMetrics]) -> go.Figure:
     return figure
 
 
+def training_history_description(history: list[EpochMetrics]) -> str:
+    first, last = history[0], history[-1]
+    return (
+        f"Sur {len(history)} époques, la perte passe de {first.loss:.3f} à {last.loss:.3f} ; "
+        f"l'exactitude de validation de {first.validation_accuracy:.1%} "
+        f"à {last.validation_accuracy:.1%}."
+    )
+
+
 def confusion_matrix_figure(matrix: Matrix) -> go.Figure:
     figure = go.Figure(
         go.Heatmap(
@@ -65,31 +74,31 @@ def confusion_matrix_figure(matrix: Matrix) -> go.Figure:
     return figure
 
 
-def probabilities_figure(probabilities: Matrix) -> go.Figure:
-    """Probabilité donnée à chaque chiffre pour une image ; la prédiction ressort par sa
-    couleur, un motif hachuré et son pourcentage écrit ([FIGURES-ACCESSIBLES])."""
-    row = probabilities.reshape(DIGIT_COUNT)
-    predicted = int(np.argmax(row))
-    is_predicted = [digit == predicted for digit in range(DIGIT_COUNT)]
+def confusion_description(matrix: Matrix) -> str:
+    """Texte alternatif de la matrice de confusion : exactitude et confusion la plus fréquente."""
+    errors = matrix * (1 - np.eye(DIGIT_COUNT))
+    real, predicted = np.unravel_index(int(np.argmax(errors)), errors.shape)
+    error_count = int(errors[real, predicted])
+    return (
+        f"{confusion_accuracy(matrix):.1%} de {int(matrix.sum())} images bien reconnues ; "
+        f"confusion la plus fréquente : {real} pris pour {predicted} ({error_count} fois)."
+    )
+
+
+def hidden_patterns_figure(mosaic: Matrix) -> go.Figure:
+    """Mosaïque des motifs appris par les neurones de la couche cachée."""
+    limit = float(np.nanmax(np.abs(mosaic))) if np.isfinite(mosaic).any() else 1.0
     figure = go.Figure(
-        go.Bar(
-            x=DIGITS,
-            y=row * 100,
-            marker={
-                "color": [COLORBLIND_PALETTE[1 if flag else 0] for flag in is_predicted],
-                "pattern": {"shape": [PREDICTED_PATTERN if flag else "" for flag in is_predicted]},
-            },
-            text=[f"{row[predicted]:.0%} (prédit)" if flag else "" for flag in is_predicted],
-            textposition="outside",
+        go.Heatmap(
+            z=mosaic,
+            colorscale=DIVERGING_COLORSCALE,
+            zmin=-limit,
+            zmax=limit,
+            colorbar={"title": "Poids"},
+            hoverinfo="skip",
         )
     )
-    figure.update_layout(title="Probabilités", xaxis_title="Chiffre", yaxis_title="Probabilité (%)")
+    figure.update_layout(title="Ce que guette chaque neurone caché (poids d'entrée)")
+    figure.update_xaxes(showticklabels=False, constrain="domain")
+    figure.update_yaxes(showticklabels=False, autorange="reversed", scaleanchor="x")
     return figure
-
-
-def probabilities_description(probabilities: Matrix) -> str:
-    """Texte alternatif de la figure des probabilités : ce qu'elle montre, en une phrase."""
-    row = probabilities.reshape(DIGIT_COUNT)
-    ranked = np.argsort(row)[::-1][:TOP_DIGITS_DESCRIBED]
-    parts = ", ".join(f"{digit} à {row[digit]:.0%}" for digit in ranked)
-    return f"Probabilités par chiffre ; les plus probables : {parts}."
