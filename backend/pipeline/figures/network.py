@@ -35,7 +35,7 @@ UNREACHED = {"color": "#BBBBBB", "opacity": 0.35, "size": 5}
 ACTIVITY_COLORSCALE = [[0.0, "#33415C"], [0.15, "#21918C"], [0.6, "#5EC962"], [1.0, "#FDE725"]]
 EDGE_OPACITY = 0.7
 EDGE_WIDTH = 1.5
-FIGURE_HEIGHT = 370
+FIGURE_HEIGHT = 330
 PIXEL_SIZE = 9
 HIDDEN_SIZES = (6, 16)
 OUTPUT_SIZES = (12, 34)
@@ -218,7 +218,10 @@ def _network_layout(figure: go.Figure, activity: NetworkActivity, output_reached
         plot_bgcolor="rgba(0,0,0,0)",
     )
     figure.update_xaxes(visible=False, range=[-0.4, OUTPUT_X + 1.4])
-    figure.update_yaxes(visible=False, range=[-0.3, TITLE_Y + 0.6])
+    # Même échelle sur les deux axes : les pixels d'entrée restent carrés.
+    figure.update_yaxes(
+        visible=False, range=[-0.3, TITLE_Y + 0.6], scaleanchor="x", constrain="domain"
+    )
     return figure
 
 
