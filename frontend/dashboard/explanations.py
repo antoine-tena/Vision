@@ -64,6 +64,12 @@ SHAPES = """
 """
 
 LIVE_NETWORK = """
+**Où chaque partie est détaillée plus bas :**
+- **Entrée** (pixels, à gauche) → **Étape 1**
+- **Couche 1** (128 neurones) → **Étape 2**
+- **Traits** entre la couche 1 et la sortie (les votes) → **Étape 3**
+- **Couche 2** (les 10 pourcentages, à droite) → **Étape 4**, puis **Résultat**
+
 - Gros point clair = neurone allumé ; petit sombre = éteint
 - Traits : votes, bleu = pour, orange = contre
 """
