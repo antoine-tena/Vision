@@ -19,7 +19,10 @@ HIDDEN_LEFT = 3.8
 HIDDEN_SPACING = 0.22
 OUTPUT_X = 7.0
 LAYER_HEIGHT = (IMAGE_SIZE - 1) * PIXEL_SPACING
-TITLE_Y = LAYER_HEIGHT + 0.35
+TITLE_Y = LAYER_HEIGHT + 0.25
+INPUT_FORMULA = "x = pixels ∈ [0, 1]"
+HIDDEN_FORMULA = "h = max(0, x·W₁ + b₁)"
+OUTPUT_FORMULA = "p = softmax(h·W₂ + b₂)"
 UNREACHED = {"color": "#BBBBBB", "opacity": 0.35, "size": 5}
 ACTIVITY_COLORSCALE = "Cividis"
 EDGE_OPACITY = 0.3
@@ -155,15 +158,18 @@ def _network_layout(figure: go.Figure, activity: NetworkActivity, output_reached
             showarrow=False,
             text=f"{digit} · {activity.probabilities[digit]:.0%}",
         )
-    for x, text in (
-        (LAYER_HEIGHT / 2, f"Entrée : {input_size} pixels"),
+    for x, text, formula in (
+        (LAYER_HEIGHT / 2, f"Entrée : {input_size} pixels", INPUT_FORMULA),
         (
             HIDDEN_LEFT + (HIDDEN_COLUMNS - 1) * HIDDEN_SPACING / 2,
             f"Couche cachée : {hidden_size} neurones",
+            HIDDEN_FORMULA,
         ),
-        (OUTPUT_X, f"Sortie : {output_size} chiffres"),
+        (OUTPUT_X, f"Sortie : {output_size} chiffres", OUTPUT_FORMULA),
     ):
-        figure.add_annotation(x=x, y=TITLE_Y, text=f"<b>{text}</b>", showarrow=False)
+        figure.add_annotation(
+            x=x, y=TITLE_Y, yanchor="bottom", text=f"<b>{text}</b><br>{formula}", showarrow=False
+        )
     figure.update_layout(
         title="Le réseau en direct",
         height=FIGURE_HEIGHT,
@@ -172,7 +178,7 @@ def _network_layout(figure: go.Figure, activity: NetworkActivity, output_reached
         plot_bgcolor="rgba(0,0,0,0)",
     )
     figure.update_xaxes(visible=False, range=[-0.3, OUTPUT_X + 1.2])
-    figure.update_yaxes(visible=False, range=[-0.3, TITLE_Y + 0.2])
+    figure.update_yaxes(visible=False, range=[-0.3, TITLE_Y + 0.6])
     return figure
 
 
