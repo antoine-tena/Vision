@@ -13,12 +13,6 @@ PEN_COLOR = "#ffffff"
 CANVAS_BORDER = "#888888"
 UPLOAD_TYPES = ("png", "jpg", "jpeg", "bmp", "webp")
 
-HOME_TITLE = "Reconnaître"
-TRAINING_TITLE = "Entraînement"
-TRAINING_DESCRIPTION = (
-    "Comment le réseau a appris : la perte et l'exactitude époque par époque, sa mesure sur des "
-    "images qu'il n'a jamais vues, et les motifs que ses neurones cachés ont appris à guetter."
-)
 MISSING_REPORT = (
     "Rapport d'entraînement introuvable ou illisible ({error}). Le régénérer depuis backend/ : "
     "`uv run python -m network.train` (ou `network.evaluate` pour la seule évaluation)."
@@ -54,13 +48,13 @@ SLIDE_PAGE_STYLE = (
     "[data-testid=stImageCaption]{text-align:center}"
     "[data-testid=stMarkdownContainer] li{font-size:1.15rem}"
     ".st-key-raccourcis-clavier{display:none}"
+    "[data-testid=stMarkdownContainer] table{margin:0 auto}"
     "</style>"
 )
-PROJECT_TITLE = "Le projet"
-LEARNING_TITLE = "Comment il apprend"
 GLOSSARY_TITLE = "Lexique"
 TOP_CONFUSIONS = 3
 PREVIEW_WIDTH = 160
 SECTION_FIGURE_HEIGHT = 370
 SHORTCUTS_KEY = "raccourcis-clavier"
 EXTRA_NEXT_SHORTCUTS = ("Enter", "Space")
+PRESENTATION_TITLE = "Présentation"

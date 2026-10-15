@@ -32,15 +32,15 @@ endroit, ce qu'on y trouve ; pas de copie du code.
   (`uv run python -m network.train`) ; `evaluate.py` : matrices de confusion du jeu de test ;
   `sample.py` : échantillon commité du jeu d'entraînement.
   Modèle entraîné et ses rapports commités dans `backend/data/models/`.
-- `frontend/app.py` : point d'entrée (pages : Le projet, Reconnaître, Comment il apprend,
-  Entraînement, Lexique — `project.py`, `home.py`, `learning.py`, `training.py`, `glossary.py`) ; `frontend/dashboard/` : pages, mise en page et
-  constantes ; `frontend/tests/` : tests.
-  - `home.py` : l'accueil en diaporama (`slides.py` : navigation ◀ ▶ ; `formula.py` : formules
-    fléchées), première diapo pour dessiner, choisir un exemple — `examples.py` —
-    ou importer un chiffre), avec `live.py`, le réseau en direct, et `reasoning.py`, son
-    raisonnement interne ; `training.py` : page des courbes d'entraînement et du jeu de test ;
-    `loaders.py` : modèle et rapports en cache ; `canvas.py` : zone de dessin
-    (`st.components.v2`) ; `images.py` : validation des images reçues ; `constants.py` : textes.
+- `frontend/app.py` : point d'entrée (pages : Présentation, Lexique — `home.py`, `glossary.py`) ;
+  `frontend/dashboard/` : diapositives, mise en page et constantes ; `frontend/tests/` : tests.
+  - `home.py` : la présentation en diaporama ; `slides.py` : ordre des diapositives et
+    navigation (◀ ▶, clavier) ; `sections.py` : diapositives de section avec leur plan.
+  - Parties : `project.py` (le projet), `learning.py` et `training.py` (l'apprentissage),
+    `choice.py` (choisir un chiffre : dessin `canvas.py`, `examples.py`, import `images.py`),
+    `reasoning.py` (étapes 1 à 4, résultat), `live.py` (conclusion, le réseau en direct).
+  - `formula.py` : formules fléchées ; `explanations.py` : textes et formules ; `loaders.py` :
+    modèle et rapports en cache ; `constants.py` : textes et réglages.
 - `docs/a-faire/` : suivi du travail ; `charte.toml` : règles contrôlées par `charte`.
 
 ## Langue

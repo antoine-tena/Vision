@@ -17,21 +17,24 @@ from dashboard.images import (
 APP_SCRIPT = "../app.py"
 
 
-def test_app_opens_on_the_project_page() -> None:
-    app = AppTest.from_file(APP_SCRIPT).run()
+def test_app_opens_on_the_first_part_of_the_presentation() -> None:
+    app = AppTest.from_file(APP_SCRIPT).run(timeout=20)
 
     assert not app.exception
-    assert app.title[0].value == "Le projet"
+    assert app.subheader[0].value == "Partie 1"
+    assert any("Le projet" in text.value for text in app.markdown)
 
 
 def render_the_home_page() -> None:
     # Onglet d'import : la zone de dessin n'est enregistrée que dans l'app complète.
     import streamlit as st
 
-    from dashboard.constants import INPUT_TABS_KEY, UPLOAD_TAB
+    from dashboard.constants import INPUT_TABS_KEY, SLIDE_KEY, UPLOAD_TAB
     from dashboard.home import render_home
+    from dashboard.slides import CHOICE_INDEX
 
     st.session_state.setdefault(INPUT_TABS_KEY, UPLOAD_TAB)
+    st.session_state.setdefault(SLIDE_KEY, CHOICE_INDEX)
     render_home()
 
 
@@ -39,8 +42,9 @@ def test_home_invites_to_draw_or_upload() -> None:
     app = AppTest.from_function(render_the_home_page).run()
 
     assert not app.exception
-    assert app.subheader[0].value.startswith("Choisir un chiffre")
+    assert app.subheader[0].value == "Choisir un chiffre"
     assert "Tracez un chiffre" in app.info[0].value
+    assert app.button[1].disabled
 
 
 def test_canvas_data_url_is_decoded() -> None:

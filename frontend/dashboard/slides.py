@@ -1,4 +1,5 @@
-"""Diaporama de l'accueil : une diapositive à l'écran, boutons précédent et suivant."""
+"""La présentation en diaporama : le projet, son apprentissage, puis un chiffre reconnu étape
+par étape. Une diapositive à l'écran, boutons précédent et suivant (ou le clavier)."""
 
 from collections.abc import Callable
 
@@ -6,7 +7,7 @@ import streamlit as st
 from network.model import DigitClassifier
 from pipeline.recognition import Recognition
 
-from dashboard import reasoning
+from dashboard import choice, learning, project, reasoning, training
 from dashboard.constants import EXTRA_NEXT_SHORTCUTS, SHORTCUTS_KEY, SLIDE_KEY
 from dashboard.live import render_live_network
 from dashboard.sections import (
@@ -18,9 +19,31 @@ from dashboard.sections import (
 )
 
 type SlideRenderer = Callable[[DigitClassifier, Recognition], None]
+type Group = tuple[str, LayerReach, list[tuple[str, SlideRenderer]]]
 
-# Chaque étape : son nom, la couche allumée sur sa diapositive de section, ses sous-étapes.
-STEPS: list[tuple[str, LayerReach, list[tuple[str, SlideRenderer]]]] = [
+PROJECT: Group = (
+    "Le projet",
+    through_output,
+    [
+        ("Ce que c'est", project.render_what_slide),
+        ("L'architecture", project.render_architecture_slide),
+        ("Le lien avec les LLM", project.render_llm_slide),
+    ],
+)
+LEARNING: Group = (
+    "Comment il apprend",
+    through_output,
+    [
+        ("Les 4 temps de l'apprentissage", learning.render_loop_slide),
+        ("La perte", learning.render_loss_slide),
+        ("La descente de gradient", learning.render_descent_slide),
+        ("Les données", training.render_split_slide),
+        ("Les courbes d'apprentissage", training.render_curves_slide),
+        ("Le test", training.render_test_slide),
+    ],
+)
+# Les étapes du raisonnement, sur le chiffre choisi par l'utilisateur.
+STEPS: list[Group] = [
     (
         "L'entrée : l'image",
         through_input,
@@ -49,28 +72,44 @@ STEPS: list[tuple[str, LayerReach, list[tuple[str, SlideRenderer]]]] = [
         [("Des scores aux pourcentages", reasoning.render_softmax_step)],
     ),
 ]
+CHOICE_TITLE = "Choisir un chiffre"
+RECOGNITION_AGENDA = [
+    CHOICE_TITLE,
+    *(f"Étape {number} · {name}" for number, (name, _, _) in enumerate(STEPS, start=1)),
+    "Résultat",
+]
 
 
-def build_slides() -> list[tuple[str, SlideRenderer]]:
-    """Pour chaque étape : sa diapositive de section (avec le plan), puis ses sous-étapes."""
-    slides: list[tuple[str, SlideRenderer]] = []
-    for number, (name, reach, parts) in enumerate(STEPS, start=1):
-        titles = [f"{number}.{index} · {title}" for index, (title, _) in enumerate(parts, 1)]
-        slides.append((f"Étape {number}", section(name, reach, titles)))
-        slides += [
-            (f"Étape {title}", render) for title, (_, render) in zip(titles, parts, strict=True)
-        ]
-    return slides
+def group_slides(
+    label: str, number: int, group: Group, sub_label: str = ""
+) -> list[tuple[str, SlideRenderer]]:
+    """La diapositive de section (avec le plan), puis les sous-parties numérotées n.1, n.2…"""
+    name, reach, parts = group
+    titles = [f"{number}.{index} · {title}" for index, (title, _) in enumerate(parts, 1)]
+    return [
+        (f"{label} {number}", section(name, reach, titles)),
+        *(
+            (f"{sub_label}{title}", render)
+            for title, (_, render) in zip(titles, parts, strict=True)
+        ),
+    ]
 
 
-# La diapositive 0 (choisir un chiffre) est rendue par l'accueil ; les suivantes l'expliquent.
-SLIDES = [
-    *build_slides(),
+SLIDES: list[tuple[str, SlideRenderer]] = [
+    *group_slides("Partie", 1, PROJECT),
+    *group_slides("Partie", 2, LEARNING),
+    ("Partie 3", section("Reconnaître un chiffre", through_output, RECOGNITION_AGENDA)),
+    (CHOICE_TITLE, choice.render_choice_slide),
+    *(
+        slide
+        for number, step in enumerate(STEPS, start=1)
+        for slide in group_slides("Étape", number, step, sub_label="Étape ")
+    ),
     ("Résultat", reasoning.render_result),
     ("Conclusion · Le réseau en direct", render_live_network),
 ]
-FIRST_TITLE = "Choisir un chiffre"
-SLIDE_COUNT = len(SLIDES) + 1
+CHOICE_INDEX = [title for title, _ in SLIDES].index(CHOICE_TITLE)
+SLIDE_COUNT = len(SLIDES)
 
 
 def current_slide() -> int:
@@ -83,7 +122,7 @@ def go_to(slide: int) -> None:
 
 
 def slide_title(slide: int) -> str:
-    return FIRST_TITLE if slide == 0 else SLIDES[slide - 1][0]
+    return SLIDES[slide][0]
 
 
 def render_navigation(can_go_on: bool) -> int:
@@ -130,4 +169,4 @@ def render_extra_shortcuts(slide: int, can_go_on: bool) -> None:
 
 
 def render_slide(slide: int, model: DigitClassifier, recognition: Recognition) -> None:
-    SLIDES[slide - 1][1](model, recognition)
+    SLIDES[slide][1](model, recognition)
