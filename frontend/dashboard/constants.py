@@ -1,7 +1,6 @@
 """[ZERO-MAGIE] : textes et réglages du tableau de bord, nommés une seule fois."""
 
 SITE_TITLE = "Vision"
-SITE_DESCRIPTION = "IA écrite à la main (NumPy) qui reconnaît les chiffres manuscrits ou imprimés."
 
 # [IDS] et réglages de la zone de dessin.
 CANVAS_KEY = "zone-de-dessin"
@@ -49,6 +48,7 @@ SLIDE_PAGE_STYLE = (
     "[data-testid=stMarkdownContainer] li{font-size:1.15rem}"
     ".st-key-raccourcis-clavier{display:none}"
     "[data-testid=stMarkdownContainer] table{margin:0 auto}"
+    "[data-testid=stMarkdownContainer] ul{display:table;margin-left:auto;margin-right:auto}"
     "</style>"
 )
 GLOSSARY_TITLE = "Lexique"

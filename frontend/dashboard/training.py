@@ -29,7 +29,7 @@ def render_split_slide(model: DigitClassifier, recognition: Recognition) -> None
             )
             for label, count, color in (
                 ("entraînement", sizes.training, explanations.WEIGHT_COLOR),
-                ("validation", sizes.validation, explanations.PIXEL_COLOR),
+                ("validation", sizes.validation, explanations.SCORE_COLOR),
                 ("test", sizes.test, explanations.OUTPUT_COLOR),
             )
         ]

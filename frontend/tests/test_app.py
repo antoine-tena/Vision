@@ -42,7 +42,7 @@ def test_home_invites_to_draw_or_upload() -> None:
     app = AppTest.from_function(render_the_home_page).run()
 
     assert not app.exception
-    assert app.subheader[0].value == "Choisir un chiffre"
+    assert app.subheader[0].value == "3.1 · Choisir un chiffre"
     assert "Tracez un chiffre" in app.info[0].value
     assert app.button[1].disabled
 
@@ -77,7 +77,7 @@ def test_recognition_shows_the_digit_and_its_probabilities() -> None:
     app = AppTest.from_function(render_a_recognized_digit).run()
 
     assert not app.exception
-    assert any(text.value.endswith("des chances") for text in app.markdown)
+    assert any("des chances" in text.value for text in app.markdown)
 
 
 @pytest.mark.parametrize(

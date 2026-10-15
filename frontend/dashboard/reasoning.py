@@ -10,6 +10,7 @@ from pipeline.figures import (
     evidence_figure,
     hidden_patterns_figure,
     neurons_figure,
+    output_weights_figure,
     patterns_figure,
     probabilities_figure,
 )
@@ -19,6 +20,7 @@ from pipeline.reasoning import (
     explain,
     hidden_patterns_mosaic,
     neuron_patterns,
+    output_weights,
 )
 from pipeline.recognition import Recognition
 from pipeline.transforms import digit_image
@@ -37,6 +39,7 @@ TEXT_SHARE = (2, 3)
 NARROW_TEXT_SHARE = (1, 2)
 SMALL_FORMULA_REM = 1.6
 RESULT_FORMULA_REM = 8
+TWO_LEVELS_HEIGHT = 250
 
 
 def render_input_step(model: DigitClassifier, recognition: Recognition) -> None:
@@ -56,7 +59,7 @@ def render_shapes_step(model: DigitClassifier, recognition: Recognition) -> None
     text_column, figure_column = st.columns(TEXT_SHARE, vertical_alignment="center")
     with text_column:
         key_fact(f"{reasoning.active_count} neurones allumés sur {reasoning.hidden_size}")
-        explanations.explain("\n".join(f"- **{count} x** {shape}" for shape, count, _ in shapes))
+        explanations.explain("\n".join(f"- **{count} x {shape}**" for shape, count, _ in shapes))
         explanations.explain(explanations.SHAPES)
     examples = neuron_patterns(model, np.array([neuron for _, _, neuron in shapes]))
     titles = [f"{shape}<br>(n°{neuron})" for shape, _, neuron in shapes]
@@ -82,6 +85,25 @@ def render_emergence_step(model: DigitClassifier, recognition: Recognition) -> N
     mosaic = hidden_patterns_mosaic(model, PATTERN_GRID_COLUMNS)
     figure = hidden_patterns_figure(mosaic).update_layout(height=SLIDE_FIGURE_HEIGHT)
     figure_column.plotly_chart(figure)
+
+
+def render_two_levels_step(model: DigitClassifier, recognition: Recognition) -> None:
+    hidden, output = model.hidden.weights, model.output.weights
+    key_fact(
+        f"{hidden.shape[1]} neurones x ({hidden.shape[0]} + {output.shape[1]}) = "
+        f"{hidden.size + output.size:,} poids".replace(",", " ")
+    )
+    show_formula(explanations.TWO_LEVELS_FORMULA, size_rem=SMALL_FORMULA_REM)
+    reasoning = explain(model, recognition.pixels, recognition.digit)
+    neuron = int(reasoning.neuron_ids[0])
+    pattern_column, weights_column, text_column = st.columns([2, 3, 2], vertical_alignment="center")
+    title = f"Ses 784 poids d'entrée : {' '.join(reasoning.neuron_shapes[0])}"
+    figure = patterns_figure(reasoning.neuron_patterns[:1], [""], title)
+    pattern_column.plotly_chart(figure.update_layout(height=TWO_LEVELS_HEIGHT))
+    figure = output_weights_figure(output_weights(model, neuron), neuron)
+    weights_column.plotly_chart(figure.update_layout(height=TWO_LEVELS_HEIGHT))
+    with text_column:
+        explanations.explain(explanations.TWO_LEVELS)
 
 
 def chosen_reasoning(model: DigitClassifier, recognition: Recognition, key: str) -> Reasoning:

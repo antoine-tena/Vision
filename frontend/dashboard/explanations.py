@@ -6,16 +6,47 @@ import streamlit as st
 
 from dashboard.formula import Part, Term
 
-WEIGHT_COLOR = "#56B4E9"
+# Une couleur par notion, la même dans les formules, les textes et le schéma du réseau.
 PIXEL_COLOR = "#E69F00"
-BIAS_COLOR = "#CC79A7"
-OUTPUT_COLOR = "#2EC27E"
+WEIGHT_COLOR = "#56B4E9"
+HIDDEN_COLOR = "#2EC27E"
+OUTPUT_COLOR = "#CC79A7"
 SCORE_COLOR = "#F0E442"
-ACCENT_COLORS = (WEIGHT_COLOR, PIXEL_COLOR, OUTPUT_COLOR, BIAS_COLOR)
+BIAS_COLOR = "#B39DDB"
+LOSS_COLOR = "#FF7B72"
+RATE_COLOR = "#9AA5B1"
+NEUTRAL_COLOR = "#E6EDF3"
+DEFAULT_BOLD_COLOR = SCORE_COLOR
+LIST_COLORS = (
+    WEIGHT_COLOR,
+    HIDDEN_COLOR,
+    PIXEL_COLOR,
+    OUTPUT_COLOR,
+    SCORE_COLOR,
+    BIAS_COLOR,
+    LOSS_COLOR,
+)
 BOLD_PATTERN = re.compile(r"\*\*(.+?)\*\*")
+# Mot en gras → couleur de sa notion (premier mot-clé trouvé) ; sinon gras sans couleur.
+KEYWORD_COLORS: tuple[tuple[tuple[str, ...], str], ...] = (
+    (("bleu",), WEIGHT_COLOR),
+    (("orange",), PIXEL_COLOR),
+    (("blanc",), NEUTRAL_COLOR),
+    (("biais",), BIAS_COLOR),
+    (("perte", "erreur", "gradient", "surapprentissage", "entropie", "pente"), LOSS_COLOR),
+    (("poids", "entraînement", "apprentissage"), WEIGHT_COLOR),
+    (("pixel", "entrée", "image", "dessin", "exemples", "784", "format"), PIXEL_COLOR),
+    (
+        ("neurone", "couche 1", "motif", "trait", "boucle", "tache", "diagonale", "n°", "128"),
+        HIDDEN_COLOR,
+    ),
+    (("vote", "score", "eᶻ", "total"), SCORE_COLOR),
+    (("sortie", "couche 2", "chiffre", "probabilit", "softmax", "test", "llm"), OUTPUT_COLOR),
+    (("validation",), SCORE_COLOR),
+)
 
 NEURON_FORMULA: list[Part] = [
-    Term("z", OUTPUT_COLOR, "note du neurone"),
+    Term("z", HIDDEN_COLOR, "note du neurone"),
     "=",
     Term("w<sub>1</sub>", WEIGHT_COLOR, "poids : importance du pixel 1"),
     "·",
@@ -27,16 +58,16 @@ NEURON_FORMULA: list[Part] = [
 ]
 
 RELU_FORMULA: list[Part] = [
-    Term("h", OUTPUT_COLOR, "sortie du neurone"),
+    Term("h", HIDDEN_COLOR, "sortie du neurone"),
     "= max(0,",
-    Term("z", OUTPUT_COLOR, "sa note"),
+    Term("z", HIDDEN_COLOR, "sa note"),
     ")",
 ]
 
 VOTE_FORMULA: list[Part] = [
     Term("vote", SCORE_COLOR, "points donnés au chiffre"),
     "=",
-    Term("h", OUTPUT_COLOR, "sortie du neurone caché"),
+    Term("h", HIDDEN_COLOR, "sortie du neurone caché"),
     "&times;",
     Term("w", WEIGHT_COLOR, "poids : neurone → chiffre"),
 ]
@@ -46,42 +77,59 @@ SOFTMAX_FORMULA: list[Part] = [
     "=",
     Term("e<sup>z<sub>k</sub></sup>", SCORE_COLOR, "score du chiffre k, amplifié"),
     "/",
-    Term("Σ eᶻ", PIXEL_COLOR, "somme des 10 scores amplifiés"),
+    Term("Σ eᶻ", SCORE_COLOR, "somme des 10 scores amplifiés"),
 ]
 
 FAMILY_FORMULA: list[Part] = [
-    Term("IA", WEIGHT_COLOR, "le grand domaine"),
+    Term("IA", SCORE_COLOR, "le grand domaine"),
     "&rarr;",
-    Term("apprentissage", PIXEL_COLOR, "il apprend sur des exemples"),
+    Term("apprentissage", WEIGHT_COLOR, "il apprend sur des exemples"),
     "&rarr;",
-    Term("réseau de neurones", OUTPUT_COLOR, "même famille que les LLM"),
+    Term("réseau de neurones", HIDDEN_COLOR, "même famille que les LLM"),
     "&rarr;",
-    Term("classifieur", BIAS_COLOR, "une image → un chiffre parmi 10"),
+    Term("classifieur", OUTPUT_COLOR, "une image → un chiffre parmi 10"),
 ]
 
 ARCHITECTURE_FORMULA: list[Part] = [
     Term("784", PIXEL_COLOR, "pixels d'entrée"),
     "&rarr;",
-    Term("128", OUTPUT_COLOR, "neurones cachés"),
+    Term("128", HIDDEN_COLOR, "neurones cachés"),
     "&rarr;",
-    Term("10", BIAS_COLOR, "neurones de sortie"),
+    Term("10", OUTPUT_COLOR, "neurones de sortie"),
 ]
 
 SIZE_FORMULA: list[Part] = [
-    Term("~100 000", OUTPUT_COLOR, "paramètres de Vision"),
+    Term("~100 000", WEIGHT_COLOR, "paramètres de Vision"),
     "&lt;&lt;",
-    Term("des milliards", PIXEL_COLOR, "paramètres d'un LLM"),
+    Term("des milliards", SCORE_COLOR, "paramètres d'un LLM"),
 ]
 
 LOOP_FORMULA: list[Part] = [
-    Term("propagation", WEIGHT_COLOR, "il voit une image et prédit"),
+    Term("propagation", OUTPUT_COLOR, "il voit une image et prédit"),
     "&rarr;",
-    Term("perte", PIXEL_COLOR, "on mesure son erreur"),
+    Term("perte", LOSS_COLOR, "on mesure son erreur"),
     "&rarr;",
-    Term("rétropropagation", OUTPUT_COLOR, "le sens de correction de chaque poids"),
+    Term("rétropropagation", LOSS_COLOR, "le sens de correction de chaque poids"),
     "&rarr;",
-    Term("descente", BIAS_COLOR, "chaque poids bouge d'un petit pas"),
+    Term("descente", WEIGHT_COLOR, "chaque poids bouge d'un petit pas"),
 ]
+
+TWO_LEVELS_FORMULA: list[Part] = [
+    Term("784 pixels", PIXEL_COLOR, "l'image"),
+    "&rarr;",
+    Term("784 poids", WEIGHT_COLOR, "dessinent le motif"),
+    "&rarr;",
+    Term("neurone", HIDDEN_COLOR, "détecte son motif"),
+    "&rarr;",
+    Term("10 poids", WEIGHT_COLOR, "pour quels chiffres il compte"),
+    "&rarr;",
+    Term("10 chiffres", OUTPUT_COLOR, "les sorties"),
+]
+
+TWO_LEVELS = """
+- **Poids d'entrée** : leur ensemble est le motif, il n'y a pas de « poids du trait » en plus
+- **Poids de sortie** : **bleu** = ce motif pousse vers le chiffre, **orange** = il l'en éloigne
+"""
 
 INPUT_FORMULA: list[Part] = [
     Term("x", PIXEL_COLOR, "l'entrée"),
@@ -101,7 +149,7 @@ EVIDENCE_FORMULA: list[Part] = [
 ]
 
 LOSS_FORMULA: list[Part] = [
-    Term("L", PIXEL_COLOR, "perte : l'erreur"),
+    Term("L", LOSS_COLOR, "perte : l'erreur"),
     "= &minus;log(",
     Term("&ycirc;<sub>vrai</sub>", OUTPUT_COLOR, "probabilité donnée au bon chiffre"),
     ")",
@@ -112,9 +160,9 @@ DESCENT_FORMULA: list[Part] = [
     "&larr;",
     Term("w", WEIGHT_COLOR, "ancien poids"),
     "&minus;",
-    Term("&eta;", BIAS_COLOR, "pas : 0,1 puis décroissant"),
+    Term("&eta;", RATE_COLOR, "pas : 0,1 puis décroissant"),
     "&middot;",
-    Term("&part;L / &part;w", SCORE_COLOR, "gradient : effet du poids sur l'erreur"),
+    Term("&part;L / &part;w", LOSS_COLOR, "gradient : effet du poids sur l'erreur"),
 ]
 
 INPUT = """
@@ -144,10 +192,10 @@ EMERGENCE = """
 
 LIVE_NETWORK = """
 **Récapitulatif, chaque partie et son étape :**
-- **Entrée** (pixels) → Étape 1
-- **Couche 1** (128 neurones) → Étape 2
-- **Traits** (les votes) → Étape 3
-- **Couche 2** (les 10 %) → Étape 4, puis Résultat
+- **Entrée** (pixels) → 3.2
+- **Couche 1** (128 neurones) → 3.3
+- **Traits** (les votes) → 3.4
+- **Couche 2** (les 10 %) → 3.5, puis 3.6
 """
 
 LIVE_LEGEND = """
@@ -194,19 +242,31 @@ CONFUSION = """
 
 
 def key_fact(text: str) -> None:
-    """L'information à retenir, en gros ; elle décrit aussi la figure ([FIGURES-ACCESSIBLES])."""
-    st.markdown(f"### {text}")
+    """L'information à retenir, en gros et centrée ; elle décrit aussi la figure
+    ([FIGURES-ACCESSIBLES])."""
+    st.markdown(f"<h3 style='text-align:center'>{text}</h3>", unsafe_allow_html=True)
 
 
 def explain(text: str) -> None:
-    """Quelques points courts, sans encadré ; les mots en gras prennent tour à tour une couleur
-    de la palette, comme les termes des formules."""
-    colors = iter(range(len(ACCENT_COLORS) * len(text)))
-    colored = BOLD_PATTERN.sub(
-        lambda match: (
-            f'<b style="color:{ACCENT_COLORS[next(colors) % len(ACCENT_COLORS)]}">'
-            f"{match.group(1)}</b>"
+    """Quelques points courts, sans encadré ; chaque mot en gras prend la couleur de sa notion."""
+    st.markdown(BOLD_PATTERN.sub(colored_bold, text), unsafe_allow_html=True)
+
+
+def explain_list(text: str) -> None:
+    """Une liste (un plan) : chaque mot en gras prend une couleur différente, dans l'ordre."""
+    colors = iter(LIST_COLORS * len(text))
+    st.markdown(
+        BOLD_PATTERN.sub(
+            lambda match: f'<b style="color:{next(colors)}">{match.group(1)}</b>', text
         ),
-        text,
+        unsafe_allow_html=True,
     )
-    st.markdown(colored, unsafe_allow_html=True)
+
+
+def colored_bold(match: re.Match[str]) -> str:
+    words = match.group(1)
+    lowered = words.lower()
+    for keywords, color in KEYWORD_COLORS:
+        if any(keyword in lowered for keyword in keywords):
+            return f'<b style="color:{color}">{words}</b>'
+    return f'<b style="color:{DEFAULT_BOLD_COLOR}">{words}</b>'

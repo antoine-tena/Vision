@@ -26,11 +26,11 @@ def test_every_slide_renders_and_follows_the_chosen_digit() -> None:
     assert app.metric[0].value == "101 770"
     assert any("l'emporte à" in text.value for text in app.markdown)
     digit = app.selectbox[1].value
-    assert any(text.value.startswith(f"### Pixels pour le {digit}") for text in app.markdown)
+    assert any(f"Pixels pour le {digit} :" in text.value for text in app.markdown)
 
     app.selectbox[1].set_value(8).run(timeout=30)
 
-    assert any(text.value.startswith("### Pixels pour le 8") for text in app.markdown)
+    assert any("Pixels pour le 8 :" in text.value for text in app.markdown)
 
 
 def test_test_slide_switches_source() -> None:
@@ -63,7 +63,7 @@ def test_examples_slide_then_next_slide_starts_step_one() -> None:
     app.button[1].click().run(timeout=20)
 
     assert not app.exception
-    assert app.subheader[0].value == "Étape 1"
+    assert app.subheader[0].value == "3.2"
 
 
 def render_the_glossary() -> None:
