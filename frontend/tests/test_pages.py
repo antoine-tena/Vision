@@ -57,13 +57,12 @@ def test_reasoning_explains_the_recognized_digit_then_another() -> None:
         "Étape 4 · La softmax change les scores en pourcentages",
         "Résultat",
     ]
-    assert app.caption[1].value.startswith(
-        f"Carte des pixels décisifs pour le {app.selectbox[0].value}"
-    )
+    digit = app.selectbox[0].value
+    assert any(text.value.startswith(f"### Pixels pour le {digit}") for text in app.markdown)
 
     app.selectbox[0].set_value(8).run()
 
-    assert app.caption[1].value.startswith("Carte des pixels décisifs pour le 8")
+    assert any(text.value.startswith("### Pixels pour le 8") for text in app.markdown)
 
 
 def render_home_on_examples() -> None:
@@ -82,7 +81,7 @@ def test_examples_tab_runs_a_training_digit_through_the_live_network() -> None:
     assert not app.exception
     assert app.radio[0].options == ["manuscrits", "imprimés"]
     assert app.metric[0].label == "Chiffre reconnu"
-    assert any(caption.value.startswith("Le réseau entier") for caption in app.caption)
+    assert any("l'emporte à" in text.value for text in app.markdown)
 
     app.selectbox[0].set_value(7).run(timeout=20)
 

@@ -56,7 +56,7 @@ def test_recognition_shows_the_digit_and_its_probabilities() -> None:
 
     assert not app.exception
     assert app.metric[0].label == "Chiffre reconnu"
-    assert app.caption[0].value.startswith("Probabilités par chiffre")
+    assert any(text.value.endswith("des chances") for text in app.markdown)
 
 
 @pytest.mark.parametrize(

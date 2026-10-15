@@ -6,7 +6,7 @@ import numpy as np
 import streamlit as st
 from network.model import DigitClassifier
 from pipeline.activity import network_activity, propagation_schedule
-from pipeline.figures import network_description, network_figure
+from pipeline.figures import network_figure
 from pipeline.recognition import Recognition
 
 from dashboard import explanations
@@ -30,5 +30,7 @@ def render_live_network(model: DigitClassifier, recognition: Recognition) -> Non
         if step:
             time.sleep(LIVE_FRAME_SECONDS)
         placeholder.plotly_chart(network_figure(activity, int(reached)))
-    explanations.describe(network_description(activity))
+    explanations.key_fact(
+        f"Le {activity.digit} l'emporte à {activity.probabilities[activity.digit]:.0%}"
+    )
     explanations.explain(explanations.LIVE_NETWORK)

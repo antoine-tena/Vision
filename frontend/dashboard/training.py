@@ -6,10 +6,8 @@ from network.model import DigitClassifier
 from network.split_sizes import split_sizes
 from network.training import EpochMetrics
 from pipeline.figures import (
-    confusion_description,
     confusion_matrix_figure,
     hidden_patterns_figure,
-    training_history_description,
     training_history_figure,
 )
 from pipeline.reasoning import hidden_patterns_mosaic
@@ -63,7 +61,6 @@ def render_history(history: list[EpochMetrics]) -> None:
     train_accuracy.metric("Exactitude (entraînement)", f"{last.train_accuracy:.1%}")
     validation_accuracy.metric("Exactitude (validation)", f"{last.validation_accuracy:.1%}")
     st.plotly_chart(training_history_figure(history))
-    explanations.describe(training_history_description(history))
     explanations.explain(explanations.TRAINING_CURVES)
 
 
@@ -73,15 +70,10 @@ def render_evaluation(evaluation: dict[str, Matrix]) -> None:
     matrix = evaluation[source]
     st.metric(f"Exactitude sur les {source}", f"{confusion_accuracy(matrix):.1%}")
     st.plotly_chart(confusion_matrix_figure(matrix))
-    explanations.describe(confusion_description(matrix))
     explanations.explain(explanations.CONFUSION)
 
 
 def render_hidden_patterns(model: DigitClassifier) -> None:
     st.subheader("Ce que la couche cachée a appris")
     st.plotly_chart(hidden_patterns_figure(hidden_patterns_mosaic(model, PATTERN_GRID_COLUMNS)))
-    explanations.describe(
-        f"Les {model.hidden.weights.shape[1]} neurones cachés, chacun en 28 x 28 : en bleu les "
-        "pixels où il attend de l'encre, en orange ceux où l'encre le fait taire."
-    )
     explanations.explain(explanations.HIDDEN_PATTERNS)

@@ -1,115 +1,113 @@
-"""Explications courtes et formules affichées sous chaque figure, pour présenter le projet."""
+"""Textes et formules de présentation : l'info clé en gros, puis quelques points courts."""
 
 import streamlit as st
 
-INPUT = r"""
-- Dessin : 280 x 280 = 78 400 pixels ; image importée : toute taille
-- Ramenée au format d'entraînement : chiffre centré, **28 x 28 = 784 pixels**
+from dashboard.formula import Part, Term
+
+WEIGHT_COLOR = "#56B4E9"
+PIXEL_COLOR = "#E69F00"
+BIAS_COLOR = "#CC79A7"
+OUTPUT_COLOR = "#2EC27E"
+SCORE_COLOR = "#F0E442"
+
+NEURON_FORMULA: list[Part] = [
+    Term("z", OUTPUT_COLOR, "note du neurone"),
+    "=",
+    Term("w<sub>1</sub>", WEIGHT_COLOR, "poids : importance du pixel 1"),
+    "·",
+    Term("x<sub>1</sub>", PIXEL_COLOR, "pixel 1 : 0 = blanc, 1 = noir"),
+    "+ … +",
+    Term("w<sub>784</sub>·x<sub>784</sub>", WEIGHT_COLOR, "pareil pour les 784 pixels"),
+    "+",
+    Term("b", BIAS_COLOR, "biais : décalage propre au neurone"),
+]
+
+RELU_FORMULA: list[Part] = [
+    Term("h", OUTPUT_COLOR, "sortie du neurone"),
+    "= max(0,",
+    Term("z", OUTPUT_COLOR, "sa note"),
+    ")",
+]
+
+VOTE_FORMULA: list[Part] = [
+    Term("vote", SCORE_COLOR, "points donnés au chiffre"),
+    "=",
+    Term("h", OUTPUT_COLOR, "sortie du neurone caché"),
+    "&times;",
+    Term("w", WEIGHT_COLOR, "poids : neurone → chiffre"),
+]
+
+SOFTMAX_FORMULA: list[Part] = [
+    Term("p<sub>k</sub>", OUTPUT_COLOR, "probabilité du chiffre k"),
+    "=",
+    Term("e<sup>z<sub>k</sub></sup>", SCORE_COLOR, "score du chiffre k, amplifié"),
+    "/",
+    Term("Σ e<sup>z</sup>", PIXEL_COLOR, "somme des 10 scores amplifiés"),
+]
+
+INPUT = """
+- Dessin 280 x 280 ou image importée → ramené au format d'entraînement, chiffre centré
 - Exemples d'entraînement : déjà en 28 x 28
-- Pixel → nombre : 0 = blanc, 1 = encre
-- $x = (x_1, \dots, x_{784})$
-- Pas une couche : aucun calcul
+- Pas une couche : aucun calcul, juste 784 nombres
 """
 
-HIDDEN_LAYER = r"""
-- 128 neurones, chacun reçoit les 784 pixels
-- Chaque pixel arrive avec son propre **poids**
-- Puis ReLU : $z$ gardé s'il est positif, sinon 0 → $h = \max(0, z)$
-- $h > 0$ : neurone **allumé** (motif trouvé) ; sinon éteint
+WEIGHT_SIGNS = """
+- **Poids positif élevé** : pixel noir → active fort le neurone
+- **Poids négatif** : pixel noir → va contre le neurone
+- **Poids proche de 0** : le pixel ne compte pas
+- Poids tirés au hasard, puis corrigés à chaque erreur : **apprendre = régler les poids**
 """
 
-# Somme pondérée d'un neurone caché, chaque terme annoté d'une flèche (KaTeX).
-NEURON_FORMULA = r"""
-z \;=\;
-\underset{\substack{\uparrow \\ \text{poids du pixel 1} \\ \text{pour ce neurone}}}{w_1}
-\cdot
-\underset{\substack{\uparrow \\ \text{pixel 1} \\ \text{0 = blanc, 1 = noir}}}{x_1}
-\;+\;
-\underset{\substack{\uparrow \\ \text{poids du pixel 2}}}{w_2}
-\cdot
-\underset{\substack{\uparrow \\ \text{pixel 2}}}{x_2}
-\;+\; \dots \;+\;
-w_{784} \cdot x_{784}
-\;+\;
-\underset{\substack{\uparrow \\ \text{biais :} \\ \text{décalage du neurone}}}{b}
-"""
-
-WEIGHT_SIGNS = r"""
-**Le poids w : son signe et sa taille donnent son effet**
-- **Positif élevé** : pixel noir → active fort le neurone
-- **Négatif** : pixel noir → va contre le neurone
-- **Proche de 0** : ce pixel ne compte pas pour ce neurone
-"""
-
-SHAPES = r"""
-- Noms déduits des poids les plus forts de chaque neurone
-- Allongé → **trait** / **diagonale** ; anneau → **boucle** ; ramassé → **tache**
+SHAPES = """
+- Noms déduits des poids les plus forts de chaque neurone : allongé → trait, anneau → boucle
 - Approximation : le réseau ne connaît pas ces mots
 """
 
-LIVE_NETWORK = r"""
-- **Entrée** : 784 pixels, $x$
-- **Couche 1** : 128 neurones, $h = \max(0,\ x \cdot W_1 + b_1)$
-- **Couche 2** : 10 chiffres, $p = \mathrm{softmax}(h \cdot W_2 + b_2)$
-- Gros point clair = allumé ; petit sombre = éteint
+LIVE_NETWORK = """
+- Gros point clair = neurone allumé ; petit sombre = éteint
 - Traits : votes, bleu = pour, orange = contre
 """
 
-PROBABILITIES = r"""
-- 10 scores → 10 probabilités, total 100 %
-- $p_k = \dfrac{e^{z_k}}{e^{z_0} + \dots + e^{z_9}}$
+NEURON_VOTES = """
+- « n°35 +2.9 » : le neurone 35 donne +2.9 points au chiffre
+- Image = motif guetté (ses 784 poids) ; bleu = encre voulue, orange = refusée
+"""
+
+EVIDENCE = """
+- Apport de chaque pixel au score ; bleu = pour, orange = contre
+"""
+
+PROBABILITIES = """
 - L'exponentielle creuse les écarts : le meilleur score prend presque tout
+- Total des 10 probabilités = 100 %
 """
 
-WEIGHT = r"""
-- **Poids** = combien un pixel compte pour un neurone
-- Positif : encre voulue ; négatif : encre refusée ; 0 : sans effet
-- Note = $\sum \text{pixel} \times \text{poids} + \text{biais}$
-- Hasard au départ, corrigés à chaque erreur : **apprendre = régler les poids** (~100 000)
-- Carte : apport de chaque pixel ; bleu = pour, orange = contre
-"""
-
-NEURON_VOTES = r"""
-- « n°35 +2.9 » : neurone 35 donne +2.9 points au chiffre
-- $\text{vote} = \text{sortie du neurone} \times \text{poids vers le chiffre}$
-- Score du chiffre = somme des votes + biais
-- Image = motif guetté (784 poids en 28 x 28) ; bleu = encre voulue, orange = refusée
-"""
-
-SPLIT = r"""
-- **Total : 77 000 images** (70 000 manuscrites MNIST + 7 000 imprimées)
-- **Entraînement 77 %** (59 400) : les poids apprennent dessus
-- **Validation 9 %** (6 600) : 10 % mis de côté au départ, mesurés à chaque époque, jamais appris
-- **Test 14 %** (11 000) : jeu séparé, mesuré une seule fois à la fin
-- Sans le test : 90 % entraînement / 10 % validation
+SPLIT = """
+- 70 000 manuscrites (MNIST) + 7 000 imprimées
+- Validation : 10 % mis de côté au départ, jamais appris
+- Test : jeu séparé, mesuré une seule fois à la fin
 """
 
 TRAINING_CURVES = r"""
 - Mini-lots de 128 images ; 1 époque = toutes les images ; 10 époques
 - Perte : $L = -\log(p_{\text{bon chiffre}})$, doit baisser
-- Correction : $W \leftarrow W - \eta \cdot \partial L / \partial W$
-- Pas $\eta = 0{,}1$, puis décroissant
-- Validation : images jamais apprises → vrai niveau du réseau
+- Correction : $W \leftarrow W - \eta \cdot \partial L / \partial W$, pas $\eta = 0{,}1$ décroissant
 """
 
-CONFUSION = r"""
-- Images jamais vues
-- Ligne = vrai chiffre ; colonne = réponse
-- Diagonale = bonnes réponses ; hors diagonale = confusions
+CONFUSION = """
+- Ligne = vrai chiffre ; colonne = réponse ; diagonale = bonnes réponses
 """
 
-HIDDEN_PATTERNS = r"""
-- 1 image = les 784 poids d'un neurone
-- Appris seuls pendant l'entraînement
+HIDDEN_PATTERNS = """
+- 1 image = les 784 poids d'un neurone, appris seuls pendant l'entraînement
 """
+
+
+def key_fact(text: str) -> None:
+    """L'information à retenir, en gros ; elle décrit aussi la figure ([FIGURES-ACCESSIBLES])."""
+    st.markdown(f"### {text}")
 
 
 def explain(text: str) -> None:
-    """Encadré d'explication sous une figure."""
-    st.info(text)
-
-
-def describe(text: str) -> None:
-    """Texte alternatif d'une figure ([FIGURES-ACCESSIBLES]), replié pour ne pas encombrer."""
-    with st.expander("Description du graphique"):
-        st.caption(text)
+    """Quelques points courts, sans encadré."""
+    st.markdown(text)
