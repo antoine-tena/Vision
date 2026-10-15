@@ -13,7 +13,8 @@ def render_every_slide_but_the_choice_for_a_bar() -> None:
     ImageDraw.Draw(image).line((50, 15, 50, 85), fill=0, width=10)
     model = load_model(DEFAULT_MODEL_PATH)
     recognition = recognize(model, image)
-    for index, (_, render) in enumerate(SLIDES):
+    # La zone de dessin (choix, dernière diapositive) n'existe que dans l'app complète.
+    for index, (_, render) in enumerate(SLIDES[:-1]):
         if index != CHOICE_INDEX:
             render(model, recognition)
 

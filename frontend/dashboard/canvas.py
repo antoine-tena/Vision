@@ -28,7 +28,7 @@ HTML = f"""
 """
 
 CSS = f"""
-.vision-canvas {{ display: flex; flex-direction: column; gap: 0.5rem; align-items: flex-start; }}
+.vision-canvas {{ display: flex; flex-direction: column; gap: 0.5rem; align-items: center; }}
 .vision-canvas canvas {{ border: 2px solid {CANVAS_BORDER}; border-radius: 8px; touch-action: none;
                         cursor: crosshair; width: {CANVAS_PIXELS}px; height: {CANVAS_PIXELS}px; }}
 .vision-canvas button {{ padding: 0.3rem 1rem; border-radius: 6px;
@@ -78,8 +78,8 @@ export default function (component) {{
 _canvas = st.components.v2.component("vision_canvas", html=HTML, css=CSS, js=JS)
 
 
-def draw_digit() -> Image.Image | None:
+def draw_digit(key: str = CANVAS_KEY) -> Image.Image | None:
     """Affiche la zone de dessin ; renvoie le dernier dessin, ou None s'il n'y en a pas."""
-    result = _canvas(key=CANVAS_KEY, on_image_change=lambda: None)
+    result = _canvas(key=key, on_image_change=lambda: None)
     data_url = getattr(result, "image", None)
     return decode_data_url(data_url) if isinstance(data_url, str) else None

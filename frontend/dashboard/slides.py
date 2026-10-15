@@ -10,6 +10,7 @@ from pipeline.recognition import Recognition
 from dashboard import choice, learning, project, reasoning, training
 from dashboard.constants import EXTRA_NEXT_SHORTCUTS, SHORTCUTS_KEY, SLIDE_KEY
 from dashboard.live import render_live_network
+from dashboard.playground import render_playground
 from dashboard.sections import (
     Visual,
     image_visual,
@@ -113,6 +114,7 @@ SLIDES: list[tuple[str, SlideRenderer]] = [
     ),
     (RESULT_TITLE, reasoning.render_result),
     ("Conclusion · Le réseau en direct", render_live_network),
+    ("À vous de jouer", render_playground),
 ]
 CHOICE_INDEX = [title for title, _ in SLIDES].index(CHOICE_TITLE)
 SLIDE_COUNT = len(SLIDES)

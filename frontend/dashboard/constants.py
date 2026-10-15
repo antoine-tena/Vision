@@ -58,3 +58,5 @@ SECTION_FIGURE_HEIGHT = 370
 SHORTCUTS_KEY = "raccourcis-clavier"
 EXTRA_NEXT_SHORTCUTS = ("Enter", "Space")
 PRESENTATION_TITLE = "Présentation"
+PLAYGROUND_CANVAS_KEY = "zone-de-dessin-libre"
+PLAYGROUND_FIGURE_HEIGHT = 290
