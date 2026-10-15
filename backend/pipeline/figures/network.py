@@ -23,7 +23,9 @@ TITLE_Y = LAYER_HEIGHT + 0.25
 FRAME_PADDING = 0.2
 FRAME_OPACITY = 0.18
 OUTPUT_LABEL_WIDTH = 1.0
-LAYER_COLORS = (COLORBLIND_PALETTE[4], COLORBLIND_PALETTE[2], COLORBLIND_PALETTE[3])
+INPUT_FRAME_COLOR = "#BBBBBB"
+FRAME_COLORS = (INPUT_FRAME_COLOR, COLORBLIND_PALETTE[2], COLORBLIND_PALETTE[3])
+FRAME_DASHES = ("dot", "solid", "solid")
 INPUT_FORMULA = "x = pixels ∈ [0, 1]"
 HIDDEN_FORMULA = "h = max(0, x·W₁ + b₁)"
 OUTPUT_FORMULA = "p = softmax(h·W₂ + b₂)"
@@ -152,28 +154,29 @@ def network_figure(activity: NetworkActivity, reached: int) -> go.Figure:
 
 
 def _layer_frames(figure: go.Figure, layer_sizes: tuple[int, int, int]) -> None:
-    """Un cadre teinté et un titre numéroté par couche, pour distinguer les trois couches."""
+    """Un cadre et un titre par bloc ; seules les deux couches qui calculent sont numérotées,
+    l'entrée (les pixels, sans poids) a un cadre gris en pointillés."""
     input_size, hidden_size, output_size = layer_sizes
     hidden_right = HIDDEN_LEFT + (HIDDEN_COLUMNS - 1) * HIDDEN_SPACING
     frames = (
-        (0.0, LAYER_HEIGHT, f"1. Entrée : {input_size} pixels", INPUT_FORMULA),
-        (HIDDEN_LEFT, hidden_right, f"2. Couche cachée : {hidden_size} neurones", HIDDEN_FORMULA),
+        (0.0, LAYER_HEIGHT, f"Entrée : {input_size} pixels", INPUT_FORMULA),
+        (HIDDEN_LEFT, hidden_right, f"Couche 1, cachée : {hidden_size} neurones", HIDDEN_FORMULA),
         (
             OUTPUT_X,
             OUTPUT_X + OUTPUT_LABEL_WIDTH,
-            f"3. Sortie : {output_size} chiffres",
+            f"Couche 2, sortie : {output_size} chiffres",
             OUTPUT_FORMULA,
         ),
     )
     for index, (left, right, title, formula) in enumerate(frames):
-        color = LAYER_COLORS[index]
+        color = FRAME_COLORS[index]
         figure.add_shape(
             type="rect",
             x0=left - FRAME_PADDING,
             x1=right + FRAME_PADDING,
             y0=-FRAME_PADDING,
             y1=LAYER_HEIGHT + FRAME_PADDING,
-            line={"color": color, "width": 2},
+            line={"color": color, "width": 2, "dash": FRAME_DASHES[index]},
             fillcolor=color,
             opacity=FRAME_OPACITY,
             layer="below",

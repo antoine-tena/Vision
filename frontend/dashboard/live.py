@@ -1,4 +1,4 @@
-"""Le réseau en direct : tous ses neurones, qui s'allument couche après couche."""
+"""Le réseau en direct : tous ses neurones, qui s'allument de l'entrée à la sortie."""
 
 import time
 
