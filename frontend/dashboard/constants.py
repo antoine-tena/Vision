@@ -46,3 +46,7 @@ SLIDE_IMAGE_WIDTH = 260
 SLIDE_PAGE_STYLE = (
     "<style>[data-testid=stMainBlockContainer]{padding-top:1.5rem;padding-bottom:0.5rem}</style>"
 )
+PROJECT_TITLE = "Le projet"
+LEARNING_TITLE = "Comment il apprend"
+GLOSSARY_TITLE = "Lexique"
+TOP_CONFUSIONS = 3

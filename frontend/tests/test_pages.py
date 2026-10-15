@@ -81,5 +81,23 @@ def test_examples_slide_then_next_slide_shows_the_live_network() -> None:
     app.button[1].click().run(timeout=20)
 
     assert not app.exception
-    assert app.subheader[0].value.startswith("Vue d'ensemble")
-    assert any("l'emporte à" in text.value for text in app.markdown)
+    assert app.subheader[0].value.startswith("Étape 1")
+
+
+def render_the_new_pages() -> None:
+    from dashboard.glossary import render_glossary
+    from dashboard.learning import render_learning
+    from dashboard.project import render_project
+
+    render_project()
+    render_learning()
+    render_glossary()
+
+
+def test_project_learning_and_glossary_pages_render() -> None:
+    app = AppTest.from_function(render_the_new_pages).run(timeout=20)
+
+    assert not app.exception
+    assert [title.value for title in app.title] == ["Le projet", "Comment il apprend", "Lexique"]
+    assert app.metric[0].label == "Paramètres (poids + biais)"
+    assert app.metric[0].value == "101 770"

@@ -32,7 +32,8 @@ endroit, ce qu'on y trouve ; pas de copie du code.
   (`uv run python -m network.train`) ; `evaluate.py` : matrices de confusion du jeu de test ;
   `sample.py` : échantillon commité du jeu d'entraînement.
   Modèle entraîné et ses rapports commités dans `backend/data/models/`.
-- `frontend/app.py` : point d'entrée ; `frontend/dashboard/` : pages, mise en page et
+- `frontend/app.py` : point d'entrée (pages : Le projet, Reconnaître, Comment il apprend,
+  Entraînement, Lexique — `project.py`, `home.py`, `learning.py`, `training.py`, `glossary.py`) ; `frontend/dashboard/` : pages, mise en page et
   constantes ; `frontend/tests/` : tests.
   - `home.py` : l'accueil en diaporama (`slides.py` : navigation ◀ ▶ ; `formula.py` : formules
     fléchées), première diapo pour dessiner, choisir un exemple — `examples.py` —
