@@ -16,10 +16,15 @@ from dashboard.images import InvalidImageError, decode_image
 # [CACHE] : le modèle se charge une fois, pas à chaque trait.
 @st.cache_resource
 def cached_model() -> DigitClassifier:
+    """Le réseau entraîné, chargé depuis `vision.npz`."""
     return load_model(DEFAULT_MODEL_PATH)
 
 
 def render_home() -> None:
+    """Construit la page : titre, onglets Dessiner et Importer, puis la réponse du réseau.
+
+    Une image refusée affiche une erreur ; sans image, un message invite à dessiner.
+    """
     st.set_page_config(page_title=SITE_TITLE)
     st.title(SITE_TITLE)
     st.write(SITE_DESCRIPTION)
@@ -47,6 +52,8 @@ def read_image(drawing_tab: DeltaGenerator, upload_tab: DeltaGenerator) -> Image
 
 
 def render_recognition(recognition: Recognition) -> None:
+    """Affiche le chiffre reconnu et sa confiance, l'image 28x28 vue par le réseau et le
+    graphique des probabilités, avec son texte alternatif."""
     if recognition.is_blank:
         st.warning("L'image est vide : aucun trait n'a été trouvé.")
         return

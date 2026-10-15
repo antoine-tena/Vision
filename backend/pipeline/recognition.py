@@ -12,6 +12,8 @@ from pipeline.transforms import to_mnist_pixels
 
 @dataclass(frozen=True)
 class Recognition:
+    """Réponse du réseau pour une image : chiffre, confiance, probabilités et pixels vus."""
+
     digit: int
     confidence: float
     probabilities: Matrix
@@ -19,10 +21,12 @@ class Recognition:
 
     @property
     def is_blank(self) -> bool:
+        """Vrai si l'image ne contient aucun trait (tous les pixels à 0)."""
         return not self.pixels.any()
 
 
 def recognize(model: DigitClassifier, image: Image.Image) -> Recognition:
+    """Met l'image au format MNIST, demande les probabilités au réseau, retient la plus forte."""
     pixels = to_mnist_pixels(image)
     probabilities = model.predict_proba(pixels)
     digit = int(np.argmax(probabilities))

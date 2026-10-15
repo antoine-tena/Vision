@@ -54,7 +54,9 @@ def render_digit(digit: int, font_path: Path | None, rng: np.random.Generator) -
         if font_path
         else ImageFont.load_default(size=FALLBACK_FONT_SIZE)
     )
+    # Image en niveaux de gris, noire, où le chiffre est écrit en blanc au centre.
     canvas = Image.new("L", (CANVAS_SIZE, CANVAS_SIZE), 0)
+    # Un contour plus ou moins épais imite les graisses (normal, gras).
     stroke_width = int(rng.integers(0, MAX_STROKE_WIDTH + 1))
     ImageDraw.Draw(canvas).text(
         (CANVAS_SIZE / 2, CANVAS_SIZE / 2),
@@ -79,6 +81,7 @@ def generate_printed_digits(
     for digit in range(DIGIT_COUNT):
         for _ in range(count_per_digit):
             font_path = available[int(rng.integers(len(available)))]
+            # Même prétraitement qu'une image de l'app : le réseau voit tout au format MNIST.
             images.append(to_mnist_pixels(render_digit(digit, font_path, rng))[0])
             labels.append(digit)
     label_array: Labels = np.array(labels, dtype=np.int64)

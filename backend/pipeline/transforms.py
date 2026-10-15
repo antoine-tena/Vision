@@ -20,11 +20,14 @@ PIXEL_MAX = 255.0
 def to_mnist_pixels(image: Image.Image) -> Matrix:
     """Une ligne de 784 pixels prête pour le modèle (fond clair inversé, chiffre recentré)."""
     gray = np.asarray(image.convert("L"), dtype=np.float64) / PIXEL_MAX
+    # Image surtout claire (papier, capture) : inversée pour un chiffre clair sur fond noir.
     if gray.mean() > LIGHT_BACKGROUND_MEAN:
         gray = 1.0 - gray
+    # Pixels d'encre ; s'il n'y en a aucun, l'image est vide.
     ink_rows, ink_columns = np.nonzero(gray > INK_THRESHOLD)
     if len(ink_rows) == 0:
         return np.zeros((1, PIXEL_COUNT))
+    # Recadrage au plus près de l'encre, puis mise à 20x20 et centrage dans 28x28.
     cropped = gray[ink_rows.min() : ink_rows.max() + 1, ink_columns.min() : ink_columns.max() + 1]
     return _center_by_mass(_fit_in_box(cropped)).reshape(1, PIXEL_COUNT)
 
@@ -44,10 +47,12 @@ def _fit_in_box(cropped: Matrix) -> Matrix:
 def _center_by_mass(digit: Matrix) -> Matrix:
     """Place le chiffre dans 28x28 de sorte que son centre de masse tombe au centre."""
     height, width = digit.shape
+    # Centre de masse : moyenne des positions des pixels, pondérée par leur intensité.
     rows, columns = np.indices(digit.shape)
     total = digit.sum()
     center_row = (rows * digit).sum() / total if total else height / 2
     center_column = (columns * digit).sum() / total if total else width / 2
+    # Décalage qui amène ce centre au milieu, sans faire sortir le chiffre du cadre.
     top = int(np.clip(round(IMAGE_SIZE / 2 - center_row), 0, IMAGE_SIZE - height))
     left = int(np.clip(round(IMAGE_SIZE / 2 - center_column), 0, IMAGE_SIZE - width))
     canvas = np.zeros((IMAGE_SIZE, IMAGE_SIZE))
@@ -71,6 +76,7 @@ def split_dataset(
 def confusion_matrix(labels: Labels, predictions: Labels) -> Matrix:
     """Nombre d'images de chaque chiffre (lignes) prédites comme chaque chiffre (colonnes)."""
     matrix = np.zeros((DIGIT_COUNT, DIGIT_COUNT))
+    # Un 1 ajouté dans la case (vrai chiffre, chiffre prédit) de chaque image.
     np.add.at(matrix, (labels, predictions), 1)
     return matrix
 

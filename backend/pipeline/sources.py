@@ -33,6 +33,11 @@ class DatasetFormatError(ValueError):
 
 
 def read_idx_images(payload: bytes) -> Matrix:
+    """Décode un fichier d'images IDX : en-tête de 16 octets, puis un octet (0 à 255) par pixel.
+
+    L'en-tête (nombre magique, nombre d'images, lignes, colonnes) est vérifié avant la lecture ;
+    les pixels sont ramenés entre 0 et 1.
+    """
     magic, count, rows, columns = np.frombuffer(payload[:16], dtype=">i4")
     if magic != IMAGES_MAGIC or rows * columns != PIXEL_COUNT:
         raise DatasetFormatError(f"images IDX inattendues (magique {magic}, {rows}x{columns})")
@@ -42,6 +47,7 @@ def read_idx_images(payload: bytes) -> Matrix:
 
 
 def read_idx_labels(payload: bytes) -> Labels:
+    """Décode un fichier d'étiquettes IDX : en-tête de 8 octets, puis un chiffre par octet."""
     magic, count = np.frombuffer(payload[:8], dtype=">i4")
     if magic != LABELS_MAGIC:
         raise DatasetFormatError(f"étiquettes IDX inattendues (magique {magic})")
@@ -62,6 +68,10 @@ def download_mnist(target_dir: Path = MNIST_DIR) -> None:
 
 
 def load_mnist(split: Literal["train", "test"], source_dir: Path = MNIST_DIR) -> DigitDataset:
+    """MNIST d'entraînement (60 000 images) ou de test (10 000), téléchargé au premier appel.
+
+    Échoue si le nombre d'images et le nombre d'étiquettes diffèrent.
+    """
     images_file, labels_file = MNIST_FILES[split]
     if not (source_dir / images_file).exists():
         download_mnist(source_dir)

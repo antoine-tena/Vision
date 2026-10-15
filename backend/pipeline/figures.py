@@ -46,6 +46,11 @@ def training_history_figure(history: list[EpochMetrics]) -> go.Figure:
 
 
 def confusion_matrix_figure(matrix: Matrix) -> go.Figure:
+    """Carte de chaleur : ligne = chiffre réel, colonne = chiffre prédit, case = nombre d'images.
+
+    La diagonale compte les bonnes réponses ; une case forte hors diagonale montre une confusion
+    fréquente. Le nombre est écrit dans chaque case : l'information ne tient pas qu'à la couleur.
+    """
     figure = go.Figure(
         go.Heatmap(
             z=matrix,

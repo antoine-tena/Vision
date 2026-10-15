@@ -23,6 +23,7 @@ class InvalidImageError(ValueError):
 
 def decode_image(payload: bytes) -> Image.Image:
     """Image PIL entièrement lue, ou InvalidImageError si elle est refusée."""
+    # Poids vérifié avant toute lecture, dimensions avant de décoder les pixels.
     if len(payload) > MAX_IMAGE_BYTES:
         raise InvalidImageError(
             f"L'image dépasse {MAX_IMAGE_MEGABYTES} Mo : choisissez un fichier plus léger."

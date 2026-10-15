@@ -41,6 +41,7 @@ export default function (component) {{
   const {{ parentElement, setStateValue }} = component;
   const canvas = parentElement.querySelector("canvas");
   const context = canvas.getContext("2d");
+  // Repeint tout le canevas en noir (fond MNIST).
   const reset = () => {{
     context.fillStyle = "{CANVAS_BACKGROUND}";
     context.fillRect(0, 0, canvas.width, canvas.height);
@@ -49,25 +50,30 @@ export default function (component) {{
   Object.assign(context, {{ strokeStyle: "{PEN_COLOR}", lineWidth: {PEN_WIDTH},
                            lineCap: "round", lineJoin: "round" }});
   let isDrawing = false;
+  // Position du pointeur en pixels du canevas, même si l'affichage est redimensionné.
   const point = (event) => {{
     const box = canvas.getBoundingClientRect();
     return [(event.clientX - box.left) * canvas.width / box.width,
             (event.clientY - box.top) * canvas.height / box.height];
   }};
+  // Pointeur posé : début d'un trait.
   canvas.onpointerdown = (event) => {{
     isDrawing = true;
     canvas.setPointerCapture(event.pointerId);
     context.beginPath();
     context.moveTo(...point(event));
   }};
+  // Pointeur déplacé : le trait suit tant qu'il est posé.
   canvas.onpointermove = (event) => {{
     if (isDrawing) {{ context.lineTo(...point(event)); context.stroke(); }}
   }};
+  // Pointeur levé : l'image entière part vers Python, en PNG.
   canvas.onpointerup = () => {{
     if (!isDrawing) return;
     isDrawing = false;
     setStateValue("image", canvas.toDataURL("image/png"));
   }};
+  // Bouton Effacer : canevas vidé, et plus d'image côté Python.
   parentElement.querySelector("button").onclick = () => {{
     reset();
     setStateValue("image", null);
@@ -81,5 +87,6 @@ _canvas = st.components.v2.component("vision_canvas", html=HTML, css=CSS, js=JS)
 def draw_digit() -> Image.Image | None:
     """Affiche la zone de dessin ; renvoie le dernier dessin, ou None s'il n'y en a pas."""
     result = _canvas(key=CANVAS_KEY, on_image_change=lambda: None)
+    # `image` est l'URL de données du dernier dessin ; absente avant le premier trait.
     data_url = getattr(result, "image", None)
     return decode_data_url(data_url) if isinstance(data_url, str) else None
