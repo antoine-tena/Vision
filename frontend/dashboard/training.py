@@ -3,6 +3,7 @@
 import streamlit as st
 from network.arrays import Matrix
 from network.model import DigitClassifier
+from network.split_sizes import split_sizes
 from network.training import EpochMetrics
 from pipeline.figures import (
     confusion_description,
@@ -34,9 +35,24 @@ def render_training() -> None:
     except (OSError, DatasetFormatError) as error:
         st.error(MISSING_REPORT.format(error=error))
         return
+    render_split()
     render_history(history)
     render_evaluation(evaluation)
     render_hidden_patterns(cached_model())
+
+
+def render_split() -> None:
+    st.subheader("Données utilisées")
+    sizes = split_sizes()
+    columns = st.columns(3)
+    for column, label, count in zip(
+        columns,
+        ("Entraînement", "Validation", "Test"),
+        (sizes.training, sizes.validation, sizes.test),
+        strict=True,
+    ):
+        column.metric(label, f"{sizes.share(count):.0%}", f"{count:,} images".replace(",", " "))
+    explanations.explain(explanations.SPLIT)
 
 
 def render_history(history: list[EpochMetrics]) -> None:

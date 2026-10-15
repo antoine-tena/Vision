@@ -76,6 +76,14 @@ NEURON_VOTES = r"""
 - Image = motif guetté (784 poids en 28 x 28) ; bleu = encre voulue, orange = refusée
 """
 
+SPLIT = r"""
+- **Total : 77 000 images** (70 000 manuscrites MNIST + 7 000 imprimées)
+- **Entraînement 77 %** (59 400) : les poids apprennent dessus
+- **Validation 9 %** (6 600) : 10 % mis de côté au départ, mesurés à chaque époque, jamais appris
+- **Test 14 %** (11 000) : jeu séparé, mesuré une seule fois à la fin
+- Sans le test : 90 % entraînement / 10 % validation
+"""
+
 TRAINING_CURVES = r"""
 - Mini-lots de 128 images ; 1 époque = toutes les images ; 10 époques
 - Perte : $L = -\log(p_{\text{bon chiffre}})$, doit baisser

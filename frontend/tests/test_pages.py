@@ -16,6 +16,7 @@ def test_training_page_shows_curves_test_and_patterns() -> None:
     assert not app.exception
     assert app.title[0].value == TRAINING_TITLE
     assert [header.value for header in app.subheader] == [
+        "Données utilisées",
         "Courbes d'apprentissage",
         "Jeu de test (images jamais vues)",
         "Ce que la couche cachée a appris",
