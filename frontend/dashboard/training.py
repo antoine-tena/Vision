@@ -12,12 +12,13 @@ from pipeline.figures import (
 )
 from pipeline.reasoning import hidden_patterns_mosaic
 from pipeline.sources import DatasetFormatError
-from pipeline.transforms import confusion_accuracy
+from pipeline.transforms import confusion_accuracy, top_confusions
 
 from dashboard import explanations
 from dashboard.constants import (
     MISSING_REPORT,
     PATTERN_GRID_COLUMNS,
+    TOP_CONFUSIONS,
     TRAINING_DESCRIPTION,
     TRAINING_TITLE,
 )
@@ -60,6 +61,8 @@ def render_history(history: list[EpochMetrics]) -> None:
     loss.metric("Perte finale", f"{last.loss:.3f}")
     train_accuracy.metric("Exactitude (entraînement)", f"{last.train_accuracy:.1%}")
     validation_accuracy.metric("Exactitude (validation)", f"{last.validation_accuracy:.1%}")
+    gap = last.train_accuracy - last.validation_accuracy
+    explanations.key_fact(f"Écart entraînement - validation : {gap:.1%} → léger surapprentissage")
     st.plotly_chart(training_history_figure(history))
     explanations.explain(explanations.TRAINING_CURVES)
 
@@ -69,6 +72,11 @@ def render_evaluation(evaluation: dict[str, Matrix]) -> None:
     source = st.radio("Source des images", list(evaluation), horizontal=True)
     matrix = evaluation[source]
     st.metric(f"Exactitude sur les {source}", f"{confusion_accuracy(matrix):.1%}")
+    mistakes = " · ".join(
+        f"{true} pris pour {answer} ({times} fois)"
+        for true, answer, times in top_confusions(matrix, TOP_CONFUSIONS)
+    )
+    explanations.key_fact(f"Erreurs les plus fréquentes : {mistakes}")
     st.plotly_chart(confusion_matrix_figure(matrix))
     explanations.explain(explanations.CONFUSION)
 

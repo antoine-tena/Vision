@@ -3,10 +3,16 @@
 Chaque diapositive tient sur un écran : le texte à gauche, la figure ou la formule à droite.
 """
 
+import numpy as np
 import streamlit as st
 from network.model import DIGIT_COUNT, PIXEL_COUNT, DigitClassifier
-from pipeline.figures import evidence_figure, neurons_figure, probabilities_figure
-from pipeline.reasoning import Reasoning, evidence_totals, explain
+from pipeline.figures import (
+    evidence_figure,
+    neurons_figure,
+    patterns_figure,
+    probabilities_figure,
+)
+from pipeline.reasoning import Reasoning, evidence_totals, explain, neuron_patterns
 from pipeline.recognition import Recognition
 from pipeline.transforms import digit_image
 
@@ -32,13 +38,16 @@ def render_input_step(model: DigitClassifier, recognition: Recognition) -> None:
 
 def render_shapes_step(model: DigitClassifier, recognition: Recognition) -> None:
     reasoning = explain(model, recognition.pixels, recognition.digit)
-    key_fact(f"{reasoning.active_count} neurones allumés sur {reasoning.hidden_size}")
-    st.markdown(
-        "\n".join(
-            f"- **{count}** x {shape}" for shape, count in reasoning.active_shapes[:TOP_SHAPES]
-        )
-    )
-    explanations.explain(explanations.SHAPES)
+    shapes = reasoning.active_shapes[:TOP_SHAPES]
+    text_column, figure_column = st.columns(TEXT_SHARE)
+    with text_column:
+        key_fact(f"{reasoning.active_count} neurones allumés sur {reasoning.hidden_size}")
+        st.markdown("\n".join(f"- **{count}** x {shape}" for shape, count, _ in shapes))
+        explanations.explain(explanations.SHAPES)
+    examples = neuron_patterns(model, np.array([neuron for _, _, neuron in shapes]))
+    titles = [f"{shape}<br>(n°{neuron})" for shape, _, neuron in shapes]
+    figure = patterns_figure(examples, titles, "Un neurone exemple par motif : ses poids")
+    figure_column.plotly_chart(figure.update_layout(height=SLIDE_FIGURE_HEIGHT))
 
 
 def render_neuron_step(model: DigitClassifier, recognition: Recognition) -> None:

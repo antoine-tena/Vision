@@ -42,7 +42,24 @@ SOFTMAX_FORMULA: list[Part] = [
     "=",
     Term("e<sup>z<sub>k</sub></sup>", SCORE_COLOR, "score du chiffre k, amplifié"),
     "/",
-    Term("Σ e<sup>z</sup>", PIXEL_COLOR, "somme des 10 scores amplifiés"),
+    Term("Σ eᶻ", PIXEL_COLOR, "somme des 10 scores amplifiés"),
+]
+
+LOSS_FORMULA: list[Part] = [
+    Term("L", PIXEL_COLOR, "perte : l'erreur"),
+    "= &minus;log(",
+    Term("&ycirc;<sub>vrai</sub>", OUTPUT_COLOR, "probabilité donnée au bon chiffre"),
+    ")",
+]
+
+DESCENT_FORMULA: list[Part] = [
+    Term("w", WEIGHT_COLOR, "nouveau poids"),
+    "&larr;",
+    Term("w", WEIGHT_COLOR, "ancien poids"),
+    "&minus;",
+    Term("&eta;", BIAS_COLOR, "pas : 0,1 puis décroissant"),
+    "&middot;",
+    Term("&part;L / &part;w", SCORE_COLOR, "gradient : effet du poids sur l'erreur"),
 ]
 
 INPUT = """
@@ -59,12 +76,13 @@ WEIGHT_SIGNS = """
 """
 
 SHAPES = """
-- Noms déduits des poids les plus forts de chaque neurone : allongé → trait, anneau → boucle
+- Image = les 784 poids d'un neurone : **bleu** = encre voulue, **orange** = encre refusée
+- Nom déduit de la tache bleue : allongée → trait, anneau → boucle
 - Approximation : le réseau ne connaît pas ces mots
 """
 
 LIVE_NETWORK = """
-**Détaillé dans les diapos suivantes :**
+**Récapitulatif, chaque partie et son étape :**
 - **Entrée** (pixels) → Étape 1
 - **Couche 1** (128 neurones) → Étape 2
 - **Traits** (les votes) → Étape 3
@@ -86,8 +104,13 @@ EVIDENCE = """
 """
 
 PROBABILITIES = """
-- L'exponentielle creuse les écarts : le meilleur score prend presque tout
-- Total des 10 probabilités = 100 %
+| Chiffre | Score z | eᶻ | Probabilité |
+|---|---|---|---|
+| 1 | 2 | 7,4 | 12 % |
+| 7 | **4** | **54,6** | **87 %** |
+| 9 | -1 | 0,4 | 1 % |
+
+- eᶻ rend tout positif, creuse les écarts ; puis ÷ total (62,4)
 """
 
 SPLIT = """
@@ -97,6 +120,7 @@ SPLIT = """
 """
 
 TRAINING_CURVES = r"""
+- **Surapprentissage** : le réseau apprend par cœur au lieu de comprendre ; il se voit à l'écart
 - Mini-lots de 128 images ; 1 époque = toutes les images ; 10 époques
 - Perte : $L = -\log(p_{\text{bon chiffre}})$, doit baisser
 - Correction : $W \leftarrow W - \eta \cdot \partial L / \partial W$, pas $\eta = 0{,}1$ décroissant
@@ -104,6 +128,7 @@ TRAINING_CURVES = r"""
 
 CONFUSION = """
 - Ligne = vrai chiffre ; colonne = réponse ; diagonale = bonnes réponses
+- Ces confusions sont intuitives : les formes se ressemblent
 """
 
 HIDDEN_PATTERNS = """
