@@ -12,10 +12,33 @@ INPUT = r"""
 """
 
 HIDDEN_LAYER = r"""
-- 128 neurones, chacun voit les 784 pixels
-- Note = pixels x poids + biais, puis ReLU (note négative → 0)
-- $h = \max(0,\ x \cdot W_1 + b_1)$
-- Note > 0 : neurone **allumé** (motif trouvé) ; sinon éteint
+- 128 neurones, chacun reçoit les 784 pixels
+- Chaque pixel arrive avec son propre **poids**
+- Puis ReLU : $z$ gardé s'il est positif, sinon 0 → $h = \max(0, z)$
+- $h > 0$ : neurone **allumé** (motif trouvé) ; sinon éteint
+"""
+
+# Somme pondérée d'un neurone caché, chaque terme annoté d'une flèche (KaTeX).
+NEURON_FORMULA = r"""
+z \;=\;
+\underset{\substack{\uparrow \\ \text{poids du pixel 1} \\ \text{pour ce neurone}}}{w_1}
+\cdot
+\underset{\substack{\uparrow \\ \text{pixel 1} \\ \text{0 = blanc, 1 = noir}}}{x_1}
+\;+\;
+\underset{\substack{\uparrow \\ \text{poids du pixel 2}}}{w_2}
+\cdot
+\underset{\substack{\uparrow \\ \text{pixel 2}}}{x_2}
+\;+\; \dots \;+\;
+w_{784} \cdot x_{784}
+\;+\;
+\underset{\substack{\uparrow \\ \text{biais :} \\ \text{décalage du neurone}}}{b}
+"""
+
+WEIGHT_SIGNS = r"""
+**Le poids w : son signe et sa taille donnent son effet**
+- **Positif élevé** : pixel noir → active fort le neurone
+- **Négatif** : pixel noir → va contre le neurone
+- **Proche de 0** : ce pixel ne compte pas pour ce neurone
 """
 
 SHAPES = r"""

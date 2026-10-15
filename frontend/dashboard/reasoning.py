@@ -41,6 +41,9 @@ def render_hidden_step(model: DigitClassifier, recognition: Recognition) -> Reas
             f"- **{count}** x {shape}" for shape, count in reasoning.active_shapes[:TOP_SHAPES]
         )
     )
+    st.markdown("**Ce que calcule chaque neurone : une somme pondérée**")
+    st.latex(explanations.NEURON_FORMULA)
+    explanations.explain(explanations.WEIGHT_SIGNS)
     explanations.explain(explanations.HIDDEN_LAYER)
     explanations.explain(explanations.SHAPES)
     return reasoning
