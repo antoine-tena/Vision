@@ -7,7 +7,6 @@ from plotly.subplots import make_subplots
 from network.arrays import Matrix
 from network.model import DIGIT_COUNT
 from pipeline.figures.common import (
-    COLORBLIND_PALETTE,
     DIGITS,
     DIVERGING_COLORSCALE,
 )
@@ -16,6 +15,13 @@ from pipeline.reasoning import Reasoning
 PREDICTED_PATTERN = "/"
 TOP_DIGITS_DESCRIBED = 3
 NEURON_GRID_COLUMNS = 4
+# Couche 2 (les sorties) en rose, comme dans la présentation ; scores bruts en jaune.
+OUTPUT_COLOR = "#CC79A7"
+MUTED_OUTPUT_COLOR = "#6E5A68"
+SCORE_COLOR = "#F0E442"
+# Signe d'un poids, comme les traits du réseau : bleu pour, orange contre.
+SUPPORT_COLOR = "#56B4E9"
+AGAINST_COLOR = "#E69F00"
 SHAPE_TITLE_SIZE = 11
 
 
@@ -30,7 +36,7 @@ def probabilities_figure(probabilities: Matrix) -> go.Figure:
             x=DIGITS,
             y=row * 100,
             marker={
-                "color": [COLORBLIND_PALETTE[1 if flag else 0] for flag in is_predicted],
+                "color": [OUTPUT_COLOR if flag else MUTED_OUTPUT_COLOR for flag in is_predicted],
                 "pattern": {"shape": [PREDICTED_PATTERN if flag else "" for flag in is_predicted]},
             },
             text=[f"{row[predicted]:.0%} (prédit)" if flag else "" for flag in is_predicted],
@@ -38,6 +44,45 @@ def probabilities_figure(probabilities: Matrix) -> go.Figure:
         )
     )
     figure.update_layout(title="Probabilités", xaxis_title="Chiffre", yaxis_title="Probabilité (%)")
+    figure.update_xaxes(type="category")
+    return figure
+
+
+def scores_figure(scores: Matrix) -> go.Figure:
+    """Les 10 scores bruts de la sortie, avant la softmax : des nombres quelconques."""
+    figure = go.Figure(
+        go.Bar(
+            x=DIGITS,
+            y=scores,
+            marker={"color": SCORE_COLOR},
+            text=[f"{score:+.1f}" for score in scores],
+            textposition="outside",
+        )
+    )
+    figure.update_layout(title="Scores bruts", xaxis_title="Chiffre", yaxis_title="Score z")
+    figure.update_xaxes(type="category")
+    return figure
+
+
+def output_weights_figure(weights: Matrix, neuron: int) -> go.Figure:
+    """Les 10 poids de sortie d'un neurone caché, un par chiffre : bleu si son motif pousse
+    vers ce chiffre, orange s'il l'en éloigne ; la valeur est écrite ([FIGURES-ACCESSIBLES])."""
+    figure = go.Figure(
+        go.Bar(
+            x=DIGITS,
+            y=weights,
+            marker={
+                "color": [SUPPORT_COLOR if weight > 0 else AGAINST_COLOR for weight in weights]
+            },
+            text=[f"{weight:+.1f}" for weight in weights],
+            textposition="outside",
+        )
+    )
+    figure.update_layout(
+        title=f"Ses 10 poids de sortie (neurone n°{neuron})",
+        xaxis_title="Vers le chiffre",
+        yaxis_title="Poids",
+    )
     figure.update_xaxes(type="category")
     return figure
 

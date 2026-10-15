@@ -107,3 +107,27 @@ def tile_patterns(patterns: Matrix, columns: int) -> Matrix:
 def evidence_totals(evidence: Matrix) -> tuple[float, float]:
     """Apport total des pixels pour le chiffre et contre lui (les deux positifs)."""
     return float(evidence[evidence > 0].sum()), float(-evidence[evidence < 0].sum())
+
+
+def digit_scores(model: DigitClassifier, pixels: Matrix) -> Matrix:
+    """Les 10 scores bruts de la couche de sortie, avant la softmax."""
+    scores: Matrix = model.logits(pixels).reshape(-1)
+    return scores
+
+
+def before_and_after(model: DigitClassifier, neuron_ids: Labels, seed: int) -> Matrix:
+    """Pour chaque neurone : ses poids tirés au hasard au départ (même graine que
+    l'entraînement), puis ses poids appris ; en images 28x28, alternées."""
+    initial = DigitClassifier(model.hidden.weights.shape[1], seed=seed)
+    pairs = np.stack(
+        [neuron_patterns(initial, neuron_ids), neuron_patterns(model, neuron_ids)], axis=1
+    )
+    patterns: Matrix = pairs.reshape(-1, IMAGE_SIZE, IMAGE_SIZE)
+    return patterns
+
+
+def output_weights(model: DigitClassifier, neuron: int) -> Matrix:
+    """Les 10 poids qui sortent d'un neurone caché : combien son motif compte pour chaque
+    chiffre."""
+    weights: Matrix = model.output.weights[neuron]
+    return weights

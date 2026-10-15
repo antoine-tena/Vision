@@ -24,8 +24,8 @@ TITLE_Y = LAYER_HEIGHT + 0.25
 FRAME_PADDING = 0.2
 FRAME_FILL_ALPHA = 0.06
 OUTPUT_LABEL_WIDTH = 1.0
-INPUT_FRAME_COLOR = "#BBBBBB"
-FRAME_COLORS = (INPUT_FRAME_COLOR, COLORBLIND_PALETTE[2], COLORBLIND_PALETTE[3])
+# Mêmes couleurs que les formules de la présentation : pixels, couche 1, couche 2.
+FRAME_COLORS = ("#E69F00", "#2EC27E", "#CC79A7")
 FRAME_DASHES = ("dot", "solid", "solid")
 INPUT_FORMULA = "x = pixels ∈ [0, 1]"
 HIDDEN_FORMULA = "h = max(0, x·W₁ + b₁)"
