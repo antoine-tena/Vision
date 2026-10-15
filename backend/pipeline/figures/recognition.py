@@ -18,7 +18,7 @@ NEURON_GRID_COLUMNS = 4
 # Couche 2 (les sorties) en rose, comme dans la présentation ; scores bruts en jaune.
 OUTPUT_COLOR = "#CC79A7"
 MUTED_OUTPUT_COLOR = "#6E5A68"
-SCORE_COLOR = "#F0E442"
+SCORE_COLOR = "#E9C46A"
 # Signe d'un poids, comme les traits du réseau : bleu pour, orange contre.
 SUPPORT_COLOR = "#56B4E9"
 AGAINST_COLOR = "#E69F00"
