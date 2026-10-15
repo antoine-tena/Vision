@@ -1,20 +1,18 @@
-"""Page « Comment il apprend » : la perte, la rétropropagation et la descente de gradient."""
+"""Partie 2 du diaporama, « Comment il apprend » : la boucle, la perte, la descente de gradient."""
 
 import streamlit as st
+from network.model import DigitClassifier
 from network.training import TrainingConfig
-from pipeline.sources import DatasetFormatError
+from pipeline.recognition import Recognition
 
 from dashboard import explanations
-from dashboard.constants import LEARNING_TITLE, MISSING_REPORT
 from dashboard.explanations import key_fact
 from dashboard.formula import show_formula
-from dashboard.loaders import cached_history
 
 LOOP = """
-1. **Propagation avant** : on montre une image, il fait une prédiction
-2. **Perte** : un nombre qui mesure son erreur
-3. **Rétropropagation** : pour chaque poids, dans quel sens le changer (le **gradient**)
-4. **Descente de gradient** : chaque poids bouge d'un petit pas dans ce sens
+- **Au départ** : poids tirés au hasard, le réseau répond n'importe quoi
+- **Puis** on répète ces 4 temps des milliers de fois, image après image
+- **Le gradient** dit, pour chaque poids, dans quel sens le changer pour moins se tromper
 """
 
 LOSS_TABLE = """
@@ -24,46 +22,42 @@ LOSS_TABLE = """
 """
 
 LOSS_NOTES = """
-- Nulle si le réseau est parfait ; énorme s'il est sûr de lui **et** se trompe
-- Le « - » rend la perte positive (le log d'un nombre entre 0 et 1 est négatif)
-- Nom officiel : **entropie croisée**
+- **Nulle** si le réseau est parfait ; **énorme** s'il est sûr de lui et se trompe
+- Le « - » rend la perte positive ; nom officiel : **entropie croisée**
 """
 
 DESCENT_NOTES = """
-- Image : en pleine montagne dans le brouillard, on cherche la vallée (l'erreur minimale)
-- À chaque pas, on sent la pente sous ses pieds (le **gradient**) et on descend un peu
+- **Image** : dans le brouillard en montagne, on cherche la vallée (l'erreur minimale)
+- À chaque pas, on sent **la pente** (le gradient) et on descend un peu
 """
 
 
-def render_learning() -> None:
-    st.title(LEARNING_TITLE)
+def render_loop_slide(model: DigitClassifier, recognition: Recognition) -> None:
     key_fact("Poids tirés au hasard, puis corrigés des milliers de fois")
-    st.markdown(LOOP)
-    st.subheader("La perte : à quel point il se trompe")
+    show_formula(explanations.LOOP_FORMULA, size_rem=1.8)
+    explanations.explain(LOOP)
+
+
+def render_loss_slide(model: DigitClassifier, recognition: Recognition) -> None:
+    key_fact("La perte : un nombre qui mesure l'erreur")
     show_formula(explanations.LOSS_FORMULA)
     st.markdown(LOSS_TABLE)
-    st.markdown(LOSS_NOTES)
-    st.subheader("La descente de gradient : corriger chaque poids")
+    explanations.explain(LOSS_NOTES)
+
+
+def render_descent_slide(model: DigitClassifier, recognition: Recognition) -> None:
+    key_fact("Chaque poids bouge d'un petit pas, dans le sens qui réduit l'erreur")
     show_formula(explanations.DESCENT_FORMULA)
-    st.markdown(DESCENT_NOTES)
-    st.subheader("Qui décide des motifs ? Personne")
-    key_fact("On ne programme pas ce que détecte un neurone : ça émerge de l'entraînement")
-    explanations.explain(explanations.EMERGENCE)
-    render_rhythm()
-
-
-def render_rhythm() -> None:
-    st.subheader("Le rythme de l'entraînement")
+    explanations.explain(DESCENT_NOTES)
     config = TrainingConfig()
-    batch, epochs, rate, loss_drop = st.columns(4)
-    batch.metric("Mini-lot", f"{config.batch_size} images", "une correction par lot")
-    epochs.metric("Époques", config.epochs, "passages sur toutes les images")
-    rate.metric("Pas η", f"{config.learning_rate}", "puis il diminue")
-    try:
-        history = cached_history()
-    except (OSError, DatasetFormatError) as error:
-        st.error(MISSING_REPORT.format(error=error))
-        return
-    loss_drop.metric(
-        "Perte", f"{history[-1].loss:.3f}", f"{history[-1].loss - history[0].loss:+.3f}"
-    )
+    for column, (label, value, meaning) in zip(
+        st.columns(3),
+        (
+            ("Mini-lot", f"{config.batch_size} images", "une correction par lot"),
+            ("Époques", str(config.epochs), "passages sur toutes les images"),
+            ("Pas η", f"{config.learning_rate}", "puis il diminue"),
+        ),
+        strict=True,
+    ):
+        column.metric(label, value)
+        column.caption(meaning)

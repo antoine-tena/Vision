@@ -66,7 +66,7 @@ def render_shapes_step(model: DigitClassifier, recognition: Recognition) -> None
 
 def render_neuron_step(model: DigitClassifier, recognition: Recognition) -> None:
     key_fact("Chaque neurone calcule une note, puis s'allume si elle est positive")
-    show_formula(explanations.NEURON_FORMULA)
+    show_formula(explanations.NEURON_FORMULA, size_rem=2.1)
     formula_column, text_column = st.columns(2)
     with formula_column:
         show_formula(explanations.RELU_FORMULA)

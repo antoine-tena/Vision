@@ -49,6 +49,40 @@ SOFTMAX_FORMULA: list[Part] = [
     Term("Σ eᶻ", PIXEL_COLOR, "somme des 10 scores amplifiés"),
 ]
 
+FAMILY_FORMULA: list[Part] = [
+    Term("IA", WEIGHT_COLOR, "le grand domaine"),
+    "&rarr;",
+    Term("apprentissage", PIXEL_COLOR, "il apprend sur des exemples"),
+    "&rarr;",
+    Term("réseau de neurones", OUTPUT_COLOR, "même famille que les LLM"),
+    "&rarr;",
+    Term("classifieur", BIAS_COLOR, "une image → un chiffre parmi 10"),
+]
+
+ARCHITECTURE_FORMULA: list[Part] = [
+    Term("784", PIXEL_COLOR, "pixels d'entrée"),
+    "&rarr;",
+    Term("128", OUTPUT_COLOR, "neurones cachés"),
+    "&rarr;",
+    Term("10", BIAS_COLOR, "neurones de sortie"),
+]
+
+SIZE_FORMULA: list[Part] = [
+    Term("~100 000", OUTPUT_COLOR, "paramètres de Vision"),
+    "&lt;&lt;",
+    Term("des milliards", PIXEL_COLOR, "paramètres d'un LLM"),
+]
+
+LOOP_FORMULA: list[Part] = [
+    Term("propagation", WEIGHT_COLOR, "il voit une image et prédit"),
+    "&rarr;",
+    Term("perte", PIXEL_COLOR, "on mesure son erreur"),
+    "&rarr;",
+    Term("rétropropagation", OUTPUT_COLOR, "le sens de correction de chaque poids"),
+    "&rarr;",
+    Term("descente", BIAS_COLOR, "chaque poids bouge d'un petit pas"),
+]
+
 INPUT_FORMULA: list[Part] = [
     Term("x", PIXEL_COLOR, "l'entrée"),
     "= (",
@@ -90,10 +124,10 @@ INPUT = """
 """
 
 WEIGHT_SIGNS = """
-- **Poids positif élevé** : pixel noir → active fort le neurone
-- **Poids négatif** : pixel noir → va contre le neurone
-- **Poids proche de 0** : le pixel ne compte pas
-- Poids tirés au hasard, puis corrigés à chaque erreur : **apprendre = régler les poids**
+- **Poids positif** : « cette entrée me pousse à m'activer »
+- **Poids négatif** : « cette entrée m'en empêche »
+- **Poids proche de 0** : « cette entrée ne m'intéresse pas »
+- **Plus il est grand** (en positif ou en négatif), plus l'entrée compte
 """
 
 SHAPES = """
@@ -144,25 +178,18 @@ PROBABILITIES = """
 """
 
 SPLIT = """
-- 70 000 manuscrites (MNIST) + 7 000 imprimées
-- Validation : 10 % mis de côté au départ, jamais appris
-- Test : jeu séparé, mesuré une seule fois à la fin
+- **Entraînement** : les poids apprennent dessus (MNIST manuscrits + chiffres imprimés)
+- **Validation** : 10 % mis de côté au départ, mesurés à chaque époque, jamais appris
+- **Test** : jeu séparé, mesuré une seule fois à la fin : le vrai score
 """
 
-TRAINING_CURVES = r"""
-- **Surapprentissage** : le réseau apprend par cœur au lieu de comprendre ; il se voit à l'écart
-- Mini-lots de 128 images ; 1 époque = toutes les images ; 10 époques
-- Perte : $L = -\log(p_{\text{bon chiffre}})$, doit baisser
-- Correction : $W \leftarrow W - \eta \cdot \partial L / \partial W$, pas $\eta = 0{,}1$ décroissant
+TRAINING_CURVES = """
+- **Surapprentissage** : apprendre par cœur au lieu de comprendre ; il se voit à l'écart
 """
 
 CONFUSION = """
 - Ligne = vrai chiffre ; colonne = réponse ; diagonale = bonnes réponses
 - Ces confusions sont intuitives : les formes se ressemblent
-"""
-
-HIDDEN_PATTERNS = """
-- 1 image = les 784 poids d'un neurone, appris seuls pendant l'entraînement
 """
 
 

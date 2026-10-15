@@ -5,7 +5,7 @@ from dataclasses import dataclass
 import streamlit as st
 
 ARROW_WIDTH = 28
-ARROW_HEIGHT = 56
+ARROW_HEIGHT = 48
 ARROW_HEAD = 20
 ARROW_STROKE = 6
 
