@@ -8,6 +8,8 @@ from dashboard.constants import RECOGNITION_KEY, SLIDE_PAGE_STYLE
 from dashboard.loaders import cached_model
 from dashboard.slides import CHOICE_INDEX, current_slide, go_to, render_navigation, render_slide
 
+AUTHORS = "Antoine Tena et Nathan Barrachin"
+
 
 def render_home() -> None:
     # Diaporama : marges du haut et du bas réduites pour qu'une diapositive tienne à l'écran.
@@ -19,5 +21,7 @@ def render_home() -> None:
     slide = render_navigation(can_go_on=chosen is not None or current_slide() != CHOICE_INDEX)
     # Avant le choix, les diapositives illustrent avec un exemple d'entraînement.
     recognition = chosen or example_recognition(model)
+    if slide == 0:
+        st.markdown(f"**{AUTHORS}**")
     if recognition is not None:
         render_slide(slide, model, recognition)
