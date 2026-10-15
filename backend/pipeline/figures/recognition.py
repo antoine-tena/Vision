@@ -16,6 +16,7 @@ from pipeline.reasoning import Reasoning
 PREDICTED_PATTERN = "/"
 TOP_DIGITS_DESCRIBED = 3
 NEURON_GRID_COLUMNS = 4
+SHAPE_TITLE_SIZE = 11
 
 
 def probabilities_figure(probabilities: Matrix) -> go.Figure:
@@ -88,15 +89,17 @@ def neurons_figure(reasoning: Reasoning) -> go.Figure:
     count = len(reasoning.neuron_ids)
     rows = -(-count // NEURON_GRID_COLUMNS)
     titles = [
-        f"n°{neuron} {vote:+.1f}"
-        for neuron, vote in zip(reasoning.neuron_ids, reasoning.neuron_votes, strict=True)
+        f"n°{neuron} {vote:+.1f}<br>{shape}"
+        for neuron, vote, shape in zip(
+            reasoning.neuron_ids, reasoning.neuron_votes, reasoning.neuron_shapes, strict=True
+        )
     ]
     figure = make_subplots(
         rows=rows,
         cols=NEURON_GRID_COLUMNS,
         subplot_titles=titles,
         horizontal_spacing=0.02,
-        vertical_spacing=0.12,
+        vertical_spacing=0.2,
     )
     for index, pattern in enumerate(reasoning.neuron_patterns):
         figure.add_trace(
@@ -116,6 +119,7 @@ def neurons_figure(reasoning: Reasoning) -> go.Figure:
             "colorbar": {"title": "Poids"},
         },
     )
+    figure.update_annotations(font_size=SHAPE_TITLE_SIZE)
     figure.update_xaxes(showticklabels=False, constrain="domain")
     figure.update_yaxes(showticklabels=False, autorange="reversed", scaleanchor="x")
     return figure

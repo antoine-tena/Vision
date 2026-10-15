@@ -13,6 +13,7 @@ import numpy as np
 
 from network.arrays import Labels, Matrix
 from network.model import IMAGE_SIZE, DigitClassifier
+from pipeline.neuron_shapes import active_shapes, shape_name
 
 TOP_NEURONS = 8
 
@@ -31,6 +32,8 @@ class Reasoning:
     neuron_activations: Matrix
     neuron_votes: Matrix
     neuron_patterns: Matrix
+    neuron_shapes: list[str]
+    active_shapes: list[tuple[str, int]]
 
 
 def hidden_activations(model: DigitClassifier, pixels: Matrix) -> Matrix:
@@ -59,6 +62,7 @@ def explain(
     activations = hidden_activations(model, pixels)
     votes = neuron_votes(model, activations, digit)
     ranked = np.argsort(-np.abs(votes))[:top_neurons].astype(np.int64)
+    patterns = neuron_patterns(model, np.arange(len(activations)))
     return Reasoning(
         digit=digit,
         score=float(votes.sum() + model.output.biases[0, digit]),
@@ -68,7 +72,9 @@ def explain(
         neuron_ids=ranked,
         neuron_activations=activations[ranked],
         neuron_votes=votes[ranked],
-        neuron_patterns=neuron_patterns(model, ranked),
+        neuron_patterns=patterns[ranked],
+        neuron_shapes=[shape_name(pattern) for pattern in patterns[ranked]],
+        active_shapes=active_shapes(patterns, activations),
     )
 
 

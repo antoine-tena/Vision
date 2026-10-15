@@ -33,6 +33,7 @@ def render_reasoning(model: DigitClassifier, recognition: Recognition) -> None:
         "4. **Décision** : les dix scores passent par un softmax, qui en fait les probabilités "
         "ci-dessus."
     )
+    render_active_shapes(reasoning.active_shapes)
     evidence_column, neurons_column = st.columns(2)
     with evidence_column:
         st.plotly_chart(evidence_figure(reasoning.evidence, digit))
@@ -42,3 +43,10 @@ def render_reasoning(model: DigitClassifier, recognition: Recognition) -> None:
         st.plotly_chart(neurons_figure(reasoning))
         st.caption(neurons_description(reasoning))
         explanations.explain(explanations.NEURON_VOTES)
+
+
+def render_active_shapes(shapes: list[tuple[str, int]]) -> None:
+    """Les motifs guettés par les neurones allumés, regroupés et comptés."""
+    lines = "\n".join(f"- **{count}** x {shape}" for shape, count in shapes)
+    st.markdown(f"**Ce que les neurones allumés ont reconnu dans l'image :**\n{lines}")
+    explanations.explain(explanations.SHAPES)

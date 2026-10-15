@@ -24,7 +24,7 @@ endroit, ce qu'on y trouve ; pas de copie du code.
   - `sources.py` : MNIST téléchargé dans `data/raw/` (hors dépôt) ; `printed.py` : chiffres
     imprimés générés depuis les polices du poste ; `dataset.py` : un jeu (784 pixels + chiffre) ;
     `transforms.py` : toute image ramenée au format MNIST ; `recognition.py` : image → prédiction ;
-    `reasoning.py` : raisonnement interne (votes des neurones, pixels décisifs) ; `activity.py` :
+    `reasoning.py` : raisonnement interne (votes des neurones, pixels décisifs) ; `neuron_shapes.py` : nom du motif d'un neurone (trait, boucle…) ; `activity.py` :
     activité de tous les neurones et ordre de propagation, pour le réseau en direct.
 - `backend/network/` : réseau de neurones écrit en NumPy, sans framework. `model.py` : le
   classifieur (784 → couche cachée ReLU → 10) ; `layers.py`, `activations.py`, `losses.py`,

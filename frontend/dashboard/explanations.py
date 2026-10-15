@@ -89,6 +89,15 @@ HIDDEN_PATTERNS = r"""
 ressemblent à des morceaux de chiffres (un trait, une boucle), d'autres à des mélanges.
 """
 
+SHAPES = r"""
+**Comment on nomme un motif.** Le réseau ne connaît pas les mots « boucle » ou « diagonale » :
+c'est une lecture faite après coup sur les poids de chaque neurone. On garde ses poids les plus
+forts (là où il veut de l'encre) et on regarde leur forme : allongée dans un sens, c'est un
+**trait** (horizontal, vertical) ou une **diagonale** ; en anneau autour d'un creux, une
+**boucle** ; ramassée, une **tache**. La zone (en haut, en bas, à gauche…) est l'endroit où ces
+poids se concentrent. C'est une approximation : les motifs appris sont souvent flous.
+"""
+
 
 def explain(text: str) -> None:
     """Encadré d'explication sous une figure."""
