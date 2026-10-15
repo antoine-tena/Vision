@@ -15,6 +15,7 @@ from pipeline.reasoning import hidden_patterns_mosaic
 from pipeline.sources import DatasetFormatError
 from pipeline.transforms import confusion_accuracy
 
+from dashboard import explanations
 from dashboard.constants import (
     MISSING_REPORT,
     PATTERN_GRID_COLUMNS,
@@ -47,6 +48,7 @@ def render_history(history: list[EpochMetrics]) -> None:
     validation_accuracy.metric("Exactitude (validation)", f"{last.validation_accuracy:.1%}")
     st.plotly_chart(training_history_figure(history))
     st.caption(training_history_description(history))
+    explanations.explain(explanations.TRAINING_CURVES)
 
 
 def render_evaluation(evaluation: dict[str, Matrix]) -> None:
@@ -56,6 +58,7 @@ def render_evaluation(evaluation: dict[str, Matrix]) -> None:
     st.metric(f"Exactitude sur les {source}", f"{confusion_accuracy(matrix):.1%}")
     st.plotly_chart(confusion_matrix_figure(matrix))
     st.caption(confusion_description(matrix))
+    explanations.explain(explanations.CONFUSION)
 
 
 def render_hidden_patterns(model: DigitClassifier) -> None:
@@ -65,3 +68,4 @@ def render_hidden_patterns(model: DigitClassifier) -> None:
         f"Les {model.hidden.weights.shape[1]} neurones cachés, chacun en 28 x 28 : en bleu les "
         "pixels où il attend de l'encre, en orange ceux où l'encre le fait taire."
     )
+    explanations.explain(explanations.HIDDEN_PATTERNS)

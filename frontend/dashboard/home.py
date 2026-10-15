@@ -7,6 +7,7 @@ from pipeline.recognition import Recognition, recognize, recognize_pixels
 from pipeline.transforms import digit_image
 from streamlit.elements.lib.mutable_tab_container import TabContainer
 
+from dashboard import explanations
 from dashboard.canvas import draw_digit
 from dashboard.constants import (
     DRAWING_TAB,
@@ -79,3 +80,4 @@ def render_recognition(recognition: Recognition) -> None:
     st.plotly_chart(probabilities_figure(recognition.probabilities))
     # [FIGURES-ACCESSIBLES] : texte alternatif de la figure.
     st.caption(probabilities_description(recognition.probabilities))
+    explanations.explain(explanations.PROBABILITIES)

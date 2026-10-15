@@ -9,6 +9,7 @@ from pipeline.activity import network_activity, propagation_schedule
 from pipeline.figures import network_description, network_figure
 from pipeline.recognition import Recognition
 
+from dashboard import explanations
 from dashboard.constants import LAST_ANIMATED_KEY, LIVE_FRAME_SECONDS
 
 
@@ -29,3 +30,4 @@ def render_live_network(model: DigitClassifier, recognition: Recognition) -> Non
             time.sleep(LIVE_FRAME_SECONDS)
         placeholder.plotly_chart(network_figure(activity, int(reached)))
     st.caption(network_description(activity))
+    explanations.explain(explanations.LIVE_NETWORK)

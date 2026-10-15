@@ -11,6 +11,8 @@ from pipeline.figures import (
 from pipeline.reasoning import explain
 from pipeline.recognition import Recognition
 
+from dashboard import explanations
+
 
 def render_reasoning(model: DigitClassifier, recognition: Recognition) -> None:
     st.subheader("Raisonnement interne")
@@ -35,6 +37,8 @@ def render_reasoning(model: DigitClassifier, recognition: Recognition) -> None:
     with evidence_column:
         st.plotly_chart(evidence_figure(reasoning.evidence, digit))
         st.caption(evidence_description(reasoning.evidence, digit))
+        explanations.explain(explanations.WEIGHT)
     with neurons_column:
         st.plotly_chart(neurons_figure(reasoning))
         st.caption(neurons_description(reasoning))
+        explanations.explain(explanations.NEURON_VOTES)
