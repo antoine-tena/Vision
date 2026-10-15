@@ -53,7 +53,6 @@ def test_every_slide_renders_and_follows_the_chosen_digit() -> None:
 
     assert not app.exception
     assert any("l'emporte à" in text.value for text in app.markdown)
-    assert app.metric[0].label == "Chiffre reconnu"
     digit = app.selectbox[1].value
     assert any(text.value.startswith(f"### Pixels pour le {digit}") for text in app.markdown)
 

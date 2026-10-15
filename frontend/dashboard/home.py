@@ -3,6 +3,7 @@
 import streamlit as st
 from network.model import DigitClassifier
 from pipeline.recognition import Recognition, recognize, recognize_pixels
+from pipeline.transforms import digit_image
 from streamlit.elements.lib.mutable_tab_container import TabContainer
 
 from dashboard.canvas import draw_digit
@@ -10,6 +11,7 @@ from dashboard.constants import (
     DRAWING_TAB,
     EXAMPLES_TAB,
     INPUT_TABS_KEY,
+    PREVIEW_WIDTH,
     RECOGNITION_KEY,
     SITE_DESCRIPTION,
     SLIDE_PAGE_STYLE,
@@ -53,6 +55,7 @@ def render_input(model: DigitClassifier) -> None:
         st.warning("L'image est vide : aucun trait n'a été trouvé.")
         return
     remember(recognition)
+    st.image(digit_image(recognition.pixels), caption="Ce que voit le réseau", width=PREVIEW_WIDTH)
     st.success(f"Chiffre prêt : {recognition.digit}. Cliquez sur ▶ pour suivre le raisonnement.")
 
 

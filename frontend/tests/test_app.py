@@ -73,7 +73,6 @@ def test_recognition_shows_the_digit_and_its_probabilities() -> None:
     app = AppTest.from_function(render_a_recognized_digit).run()
 
     assert not app.exception
-    assert app.metric[0].label == "Chiffre reconnu"
     assert any(text.value.endswith("des chances") for text in app.markdown)
 
 

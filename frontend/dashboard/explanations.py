@@ -1,5 +1,7 @@
 """Textes et formules de présentation : l'info clé en gros, puis quelques points courts."""
 
+import re
+
 import streamlit as st
 
 from dashboard.formula import Part, Term
@@ -9,6 +11,8 @@ PIXEL_COLOR = "#E69F00"
 BIAS_COLOR = "#CC79A7"
 OUTPUT_COLOR = "#2EC27E"
 SCORE_COLOR = "#F0E442"
+ACCENT_COLORS = (WEIGHT_COLOR, PIXEL_COLOR, OUTPUT_COLOR, BIAS_COLOR)
+BOLD_PATTERN = re.compile(r"\*\*(.+?)\*\*")
 
 NEURON_FORMULA: list[Part] = [
     Term("z", OUTPUT_COLOR, "note du neurone"),
@@ -45,6 +49,23 @@ SOFTMAX_FORMULA: list[Part] = [
     Term("Σ eᶻ", PIXEL_COLOR, "somme des 10 scores amplifiés"),
 ]
 
+INPUT_FORMULA: list[Part] = [
+    Term("x", PIXEL_COLOR, "l'entrée"),
+    "= (",
+    Term("x<sub>1</sub>", PIXEL_COLOR, "pixel 1 : 0 = vide, 1 = encre"),
+    ", … ,",
+    Term("x<sub>784</sub>", PIXEL_COLOR, "pixel 784"),
+    ")",
+]
+
+EVIDENCE_FORMULA: list[Part] = [
+    Term("apport", SCORE_COLOR, "ce que le pixel donne au chiffre"),
+    "=",
+    Term("x", PIXEL_COLOR, "le pixel"),
+    "&times;",
+    Term("poids", WEIGHT_COLOR, "son poids total vers le chiffre"),
+]
+
 LOSS_FORMULA: list[Part] = [
     Term("L", PIXEL_COLOR, "perte : l'erreur"),
     "= &minus;log(",
@@ -63,9 +84,9 @@ DESCENT_FORMULA: list[Part] = [
 ]
 
 INPUT = """
-- Dessin 280 x 280 ou image importée → ramené au format d'entraînement, chiffre centré
-- Exemples d'entraînement : déjà en 28 x 28
-- Pas une couche : aucun calcul, juste 784 nombres
+- **Dessin 280 x 280** ou **image importée** → ramené au **format d'entraînement**, centré
+- **Exemples** : déjà en 28 x 28
+- **Pas une couche** : aucun calcul, juste 784 nombres
 """
 
 WEIGHT_SIGNS = """
@@ -77,8 +98,7 @@ WEIGHT_SIGNS = """
 
 SHAPES = """
 - Image = les 784 poids d'un neurone : **bleu** = encre voulue, **orange** = encre refusée
-- Nom déduit de la tache bleue : allongée → trait, anneau → boucle
-- Approximation : le réseau ne connaît pas ces mots
+- **Nom** déduit de la tache bleue (approximation : le réseau ignore ces mots)
 """
 
 LIVE_NETWORK = """
@@ -90,17 +110,20 @@ LIVE_NETWORK = """
 """
 
 LIVE_LEGEND = """
-- Gros point clair = neurone allumé ; petit sombre = éteint
-- Traits : votes, bleu = pour, orange = contre
+- **Gros point clair** = neurone allumé ; petit sombre = éteint
+- **Traits** = votes : bleu pour, orange contre
 """
 
 NEURON_VOTES = """
-- « n°35 +2.9 » : le neurone 35 donne +2.9 points au chiffre
-- Image = motif guetté (ses 784 poids) ; bleu = encre voulue, orange = refusée
+- **« n°35 +2.9 »** : le neurone 35 donne +2.9 points au chiffre
+- **Image** = motif guetté, ses 784 poids
+- **Bleu** = encre voulue ; **orange** = encre refusée
 """
 
 EVIDENCE = """
-- Apport de chaque pixel au score ; bleu = pour, orange = contre
+- **Bleu** : ce trait pousse vers le chiffre
+- **Orange** : ce trait l'en éloigne
+- **Blanc** : pixel vide ou sans effet
 """
 
 PROBABILITIES = """
@@ -110,7 +133,7 @@ PROBABILITIES = """
 | 7 | **4** | **54,6** | **87 %** |
 | 9 | -1 | 0,4 | 1 % |
 
-- eᶻ rend tout positif, creuse les écarts ; puis ÷ total (62,4)
+**eᶻ** rend tout positif et creuse les écarts, puis **÷ total** (62,4)
 """
 
 SPLIT = """
@@ -142,5 +165,14 @@ def key_fact(text: str) -> None:
 
 
 def explain(text: str) -> None:
-    """Quelques points courts, sans encadré."""
-    st.markdown(text)
+    """Quelques points courts, sans encadré ; les mots en gras prennent tour à tour une couleur
+    de la palette, comme les termes des formules."""
+    colors = iter(range(len(ACCENT_COLORS) * len(text)))
+    colored = BOLD_PATTERN.sub(
+        lambda match: (
+            f'<b style="color:{ACCENT_COLORS[next(colors) % len(ACCENT_COLORS)]}">'
+            f"{match.group(1)}</b>"
+        ),
+        text,
+    )
+    st.markdown(colored, unsafe_allow_html=True)

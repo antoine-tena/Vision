@@ -37,16 +37,26 @@ MISSING_SAMPLE = (
     "Échantillon d'entraînement introuvable ou illisible ({error}). Le régénérer depuis "
     "backend/ : `uv run python -m network.sample`."
 )
-TOP_SHAPES = 6
+TOP_SHAPES = 5
 # Diaporama de l'accueil : une diapositive par écran, sans défiler.
 SLIDE_KEY = "diapositive"
 RECOGNITION_KEY = "chiffre-reconnu"
-SLIDE_FIGURE_HEIGHT = 440
+SLIDE_FIGURE_HEIGHT = 390
 SLIDE_IMAGE_WIDTH = 260
+# Diaporama : sous la barre de Streamlit (60 px), titres centrés, images centrées, texte lisible.
 SLIDE_PAGE_STYLE = (
-    "<style>[data-testid=stMainBlockContainer]{padding-top:1.5rem;padding-bottom:0.5rem}</style>"
+    "<style>"
+    "[data-testid=stMainBlockContainer]{padding-top:4.5rem;padding-bottom:0.5rem;"
+    "max-width:1500px;margin:0 auto}"
+    "[data-testid=stHeading]{text-align:center}"
+    "[data-testid=stFullScreenFrame]:has([data-testid=stImage])"
+    "{display:flex;justify-content:center}"
+    "[data-testid=stImageCaption]{text-align:center}"
+    "[data-testid=stMarkdownContainer] li{font-size:1.15rem}"
+    "</style>"
 )
 PROJECT_TITLE = "Le projet"
 LEARNING_TITLE = "Comment il apprend"
 GLOSSARY_TITLE = "Lexique"
 TOP_CONFUSIONS = 3
+PREVIEW_WIDTH = 160

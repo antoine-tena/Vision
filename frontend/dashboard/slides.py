@@ -45,15 +45,22 @@ def render_navigation(can_go_on: bool) -> int:
     slide = current_slide()
     previous_column, title_column, next_column = st.columns([1, 8, 1], vertical_alignment="center")
     previous_column.button(
-        "◀", on_click=go_to, args=(slide - 1,), disabled=slide == 0, help="Diapo précédente"
+        "◀ Préc.",
+        on_click=go_to,
+        args=(slide - 1,),
+        disabled=slide == 0,
+        help="Diapo précédente",
+        width="stretch",
     )
     title_column.subheader(f"{slide_title(slide)}  ·  {slide + 1}/{SLIDE_COUNT}")
     next_column.button(
-        "▶",
+        "Suiv. ▶",
         on_click=go_to,
         args=(slide + 1,),
         disabled=slide == SLIDE_COUNT - 1 or not can_go_on,
         help="Diapo suivante",
+        type="primary",
+        width="stretch",
     )
     return slide
 
