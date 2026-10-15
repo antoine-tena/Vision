@@ -57,3 +57,26 @@ def test_reasoning_explains_the_recognized_digit_then_another() -> None:
     app.selectbox[0].set_value(8).run()
 
     assert app.caption[0].value.startswith("Carte des pixels décisifs pour le 8")
+
+
+def render_home_on_examples() -> None:
+    import streamlit as st
+
+    from dashboard.constants import EXAMPLES_TAB, INPUT_TABS_KEY
+    from dashboard.home import render_home
+
+    st.session_state.setdefault(INPUT_TABS_KEY, EXAMPLES_TAB)
+    render_home()
+
+
+def test_examples_tab_runs_a_training_digit_through_the_live_network() -> None:
+    app = AppTest.from_function(render_home_on_examples).run(timeout=20)
+
+    assert not app.exception
+    assert app.radio[0].options == ["manuscrits", "imprimés"]
+    assert app.metric[0].label == "Chiffre reconnu"
+    assert any(caption.value.startswith("Le réseau entier") for caption in app.caption)
+
+    app.selectbox[0].set_value(7).run(timeout=20)
+
+    assert app.metric[0].value == "7"

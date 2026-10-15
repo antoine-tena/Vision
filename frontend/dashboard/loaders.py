@@ -4,7 +4,15 @@ import streamlit as st
 from network.arrays import Matrix
 from network.model import DEFAULT_MODEL_PATH, DigitClassifier, load_model
 from network.training import EpochMetrics
-from pipeline.sources import EVALUATION_FILE, HISTORY_FILE, load_evaluation, load_training_history
+from pipeline.dataset import DigitDataset
+from pipeline.sources import (
+    EVALUATION_FILE,
+    HISTORY_FILE,
+    SAMPLE_PATH,
+    load_evaluation,
+    load_training_history,
+    load_training_sample,
+)
 
 
 # Le modèle se charge une fois, pas à chaque trait.
@@ -21,3 +29,8 @@ def cached_history() -> list[EpochMetrics]:
 @st.cache_data
 def cached_evaluation() -> dict[str, Matrix]:
     return load_evaluation(DEFAULT_MODEL_PATH.with_name(EVALUATION_FILE))
+
+
+@st.cache_data
+def cached_training_sample() -> dict[str, DigitDataset]:
+    return load_training_sample(SAMPLE_PATH)

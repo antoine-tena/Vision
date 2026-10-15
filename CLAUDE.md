@@ -19,20 +19,23 @@ commit qui ajoute, déplace ou retire un dossier, un domaine ou un point d'entr�
 endroit, ce qu'on y trouve ; pas de copie du code.
 
 - `backend/pipeline/` : chargement (`sources.py`), transformations (`transforms.py`), figures
-  (paquet `figures/`, un module par écran) ; `backend/notebooks/` : carnets marimo ; `backend/data/` : données (`sample/`
-  commité). `backend/tests/` : tests.
+  (paquet `figures/`, un module par écran) ; `backend/notebooks/` : carnets marimo ;
+  `backend/data/` : données (`sample/`, exemples d'entraînement, commité). `backend/tests/` : tests.
   - `sources.py` : MNIST téléchargé dans `data/raw/` (hors dépôt) ; `printed.py` : chiffres
     imprimés générés depuis les polices du poste ; `dataset.py` : un jeu (784 pixels + chiffre) ;
     `transforms.py` : toute image ramenée au format MNIST ; `recognition.py` : image → prédiction ;
-    `reasoning.py` : raisonnement interne (votes des neurones, pixels décisifs).
+    `reasoning.py` : raisonnement interne (votes des neurones, pixels décisifs) ; `activity.py` :
+    activité de tous les neurones et ordre de propagation, pour le réseau en direct.
 - `backend/network/` : réseau de neurones écrit en NumPy, sans framework. `model.py` : le
   classifieur (784 → couche cachée ReLU → 10) ; `layers.py`, `activations.py`, `losses.py`,
   `optimizers.py` : briques ; `training.py` : mini-lots ; `train.py` : entraîne et enregistre
-  (`uv run python -m network.train`) ; `evaluate.py` : matrices de confusion du jeu de test.
+  (`uv run python -m network.train`) ; `evaluate.py` : matrices de confusion du jeu de test ;
+  `sample.py` : échantillon commité du jeu d'entraînement.
   Modèle entraîné et ses rapports commités dans `backend/data/models/`.
 - `frontend/app.py` : point d'entrée ; `frontend/dashboard/` : pages, mise en page et
   constantes ; `frontend/tests/` : tests.
-  - `home.py` : la page d'accueil (dessiner ou importer un chiffre), avec `reasoning.py`, son
+  - `home.py` : la page d'accueil (dessiner, choisir un exemple d'entraînement — `examples.py` —
+    ou importer un chiffre), avec `live.py`, le réseau en direct, et `reasoning.py`, son
     raisonnement interne ; `training.py` : page des courbes d'entraînement et du jeu de test ;
     `loaders.py` : modèle et rapports en cache ; `canvas.py` : zone de dessin
     (`st.components.v2`) ; `images.py` : validation des images reçues ; `constants.py` : textes.
