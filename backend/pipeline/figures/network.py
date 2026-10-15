@@ -7,6 +7,7 @@ portent leur probabilité écrite).
 
 import numpy as np
 import plotly.graph_objects as go
+from plotly.colors import hex_to_rgb
 
 from network.arrays import Matrix
 from network.model import IMAGE_SIZE
@@ -21,7 +22,7 @@ OUTPUT_X = 7.0
 LAYER_HEIGHT = (IMAGE_SIZE - 1) * PIXEL_SPACING
 TITLE_Y = LAYER_HEIGHT + 0.25
 FRAME_PADDING = 0.2
-FRAME_OPACITY = 0.18
+FRAME_FILL_ALPHA = 0.06
 OUTPUT_LABEL_WIDTH = 1.0
 INPUT_FRAME_COLOR = "#BBBBBB"
 FRAME_COLORS = (INPUT_FRAME_COLOR, COLORBLIND_PALETTE[2], COLORBLIND_PALETTE[3])
@@ -30,14 +31,21 @@ INPUT_FORMULA = "x = pixels ∈ [0, 1]"
 HIDDEN_FORMULA = "h = max(0, x·W₁ + b₁)"
 OUTPUT_FORMULA = "p = softmax(h·W₂ + b₂)"
 UNREACHED = {"color": "#BBBBBB", "opacity": 0.35, "size": 5}
-ACTIVITY_COLORSCALE = "Cividis"
-EDGE_OPACITY = 0.3
+# Éteint : bleu-gris discret ; allumé : du turquoise au jaune vif, lisible sur fond sombre.
+ACTIVITY_COLORSCALE = [[0.0, "#33415C"], [0.15, "#21918C"], [0.6, "#5EC962"], [1.0, "#FDE725"]]
+EDGE_OPACITY = 0.7
+EDGE_WIDTH = 1.5
 FIGURE_HEIGHT = 420
 PIXEL_SIZE = 9
 HIDDEN_SIZES = (6, 16)
 OUTPUT_SIZES = (12, 34)
 
 type Positions = tuple[Matrix, Matrix]
+
+
+def translucent(hex_color: str, alpha: float) -> str:
+    red, green, blue = hex_to_rgb(hex_color)
+    return f"rgba({red}, {green}, {blue}, {alpha})"
 
 
 def input_positions() -> Positions:
@@ -93,8 +101,8 @@ def vote_edges(activity: NetworkActivity) -> list[go.Scatter]:
     output_xs, output_ys = output_positions(len(activity.probabilities))
     traces = []
     for is_selected, color in (
-        (activity.votes > 0, COLORBLIND_PALETTE[0]),
-        (activity.votes < 0, COLORBLIND_PALETTE[5]),
+        (activity.votes > 0, COLORBLIND_PALETTE[4]),
+        (activity.votes < 0, COLORBLIND_PALETTE[1]),
     ):
         ends = np.ones(int(is_selected.sum()))
         xs = np.column_stack(
@@ -109,7 +117,7 @@ def vote_edges(activity: NetworkActivity) -> list[go.Scatter]:
                 y=ys.ravel(),
                 mode="lines",
                 hoverinfo="skip",
-                line={"color": color, "width": 1},
+                line={"color": color, "width": EDGE_WIDTH},
                 opacity=EDGE_OPACITY,
             )
         )
@@ -177,8 +185,7 @@ def _layer_frames(figure: go.Figure, layer_sizes: tuple[int, int, int]) -> None:
             y0=-FRAME_PADDING,
             y1=LAYER_HEIGHT + FRAME_PADDING,
             line={"color": color, "width": 2, "dash": FRAME_DASHES[index]},
-            fillcolor=color,
-            opacity=FRAME_OPACITY,
+            fillcolor=translucent(color, FRAME_FILL_ALPHA),
             layer="below",
         )
         figure.add_annotation(
