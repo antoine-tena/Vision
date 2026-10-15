@@ -135,3 +135,9 @@ def test_broken_evaluation_is_refused(tmp_path: Path, broken: object) -> None:
 
     with pytest.raises(DatasetFormatError):
         load_evaluation(path)
+
+
+def test_evidence_totals_split_support_and_against() -> None:
+    from pipeline.reasoning import evidence_totals
+
+    assert evidence_totals(np.array([[1.0, -0.5], [0.0, 2.0]])) == (3.0, 0.5)

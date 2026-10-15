@@ -102,3 +102,8 @@ def tile_patterns(patterns: Matrix, columns: int) -> Matrix:
     grid = padded.reshape(rows, columns, cell, cell).transpose(0, 2, 1, 3)
     mosaic: Matrix = grid.reshape(rows * cell, columns * cell)[:-1, :-1]
     return mosaic
+
+
+def evidence_totals(evidence: Matrix) -> tuple[float, float]:
+    """Apport total des pixels pour le chiffre et contre lui (les deux positifs)."""
+    return float(evidence[evidence > 0].sum()), float(-evidence[evidence < 0].sum())
