@@ -76,3 +76,9 @@ HIDDEN_PATTERNS = r"""
 def explain(text: str) -> None:
     """Encadré d'explication sous une figure."""
     st.info(text)
+
+
+def describe(text: str) -> None:
+    """Texte alternatif d'une figure ([FIGURES-ACCESSIBLES]), replié pour ne pas encombrer."""
+    with st.expander("Description du graphique"):
+        st.caption(text)

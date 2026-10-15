@@ -61,18 +61,17 @@ def render_vote_step(
         reasoning = explain(model, recognition.pixels, digit)
     st.markdown(f"Score du {digit} (somme des votes) : **{reasoning.score:+.2f}**")
     st.plotly_chart(neurons_figure(reasoning))
-    st.caption(neurons_description(reasoning))
+    explanations.describe(neurons_description(reasoning))
     explanations.explain(explanations.NEURON_VOTES)
     st.plotly_chart(evidence_figure(reasoning.evidence, digit))
-    st.caption(evidence_description(reasoning.evidence, digit))
+    explanations.describe(evidence_description(reasoning.evidence, digit))
     explanations.explain(explanations.WEIGHT)
 
 
 def render_softmax_step(recognition: Recognition) -> None:
     st.header("Étape 4 · La softmax change les scores en pourcentages")
     st.plotly_chart(probabilities_figure(recognition.probabilities))
-    # [FIGURES-ACCESSIBLES] : texte alternatif de la figure.
-    st.caption(probabilities_description(recognition.probabilities))
+    explanations.describe(probabilities_description(recognition.probabilities))
     explanations.explain(explanations.PROBABILITIES)
 
 

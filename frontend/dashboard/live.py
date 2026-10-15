@@ -30,5 +30,5 @@ def render_live_network(model: DigitClassifier, recognition: Recognition) -> Non
         if step:
             time.sleep(LIVE_FRAME_SECONDS)
         placeholder.plotly_chart(network_figure(activity, int(reached)))
-    st.caption(network_description(activity))
+    explanations.describe(network_description(activity))
     explanations.explain(explanations.LIVE_NETWORK)
