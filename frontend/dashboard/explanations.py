@@ -17,7 +17,7 @@ NEURON_FORMULA: list[Part] = [
     "·",
     Term("x<sub>1</sub>", PIXEL_COLOR, "pixel 1 : 0 = blanc, 1 = noir"),
     "+ … +",
-    Term("w<sub>784</sub>·x<sub>784</sub>", WEIGHT_COLOR, "pareil pour les 784 pixels"),
+    Term("w<sub>784</sub>x<sub>784</sub>", WEIGHT_COLOR, "pareil pour les 784 pixels"),
     "+",
     Term("b", BIAS_COLOR, "biais : décalage propre au neurone"),
 ]
@@ -64,12 +64,14 @@ SHAPES = """
 """
 
 LIVE_NETWORK = """
-**Où chaque partie est détaillée plus bas :**
-- **Entrée** (pixels, à gauche) → **Étape 1**
-- **Couche 1** (128 neurones) → **Étape 2**
-- **Traits** entre la couche 1 et la sortie (les votes) → **Étape 3**
-- **Couche 2** (les 10 pourcentages, à droite) → **Étape 4**, puis **Résultat**
+**Détaillé dans les diapos suivantes :**
+- **Entrée** (pixels) → Étape 1
+- **Couche 1** (128 neurones) → Étape 2
+- **Traits** (les votes) → Étape 3
+- **Couche 2** (les 10 %) → Étape 4, puis Résultat
+"""
 
+LIVE_LEGEND = """
 - Gros point clair = neurone allumé ; petit sombre = éteint
 - Traits : votes, bleu = pour, orange = contre
 """

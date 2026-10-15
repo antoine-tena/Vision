@@ -33,34 +33,31 @@ def test_training_page_switches_test_source() -> None:
     assert app.metric[-1].label == "Exactitude sur les imprimés"
 
 
-def render_reasoning_for_a_bar() -> None:
+def render_every_slide_for_a_bar() -> None:
     from network.model import DEFAULT_MODEL_PATH, load_model
     from PIL import Image, ImageDraw
     from pipeline.recognition import recognize
 
-    from dashboard.reasoning import render_steps
+    from dashboard.slides import SLIDES
 
     image = Image.new("L", (100, 100), 255)
     ImageDraw.Draw(image).line((50, 15, 50, 85), fill=0, width=10)
     model = load_model(DEFAULT_MODEL_PATH)
-    render_steps(model, recognize(model, image))
+    recognition = recognize(model, image)
+    for _, render in SLIDES:
+        render(model, recognition)
 
 
-def test_reasoning_explains_the_recognized_digit_then_another() -> None:
-    app = AppTest.from_function(render_reasoning_for_a_bar).run()
+def test_every_slide_renders_and_follows_the_chosen_digit() -> None:
+    app = AppTest.from_function(render_every_slide_for_a_bar).run(timeout=20)
 
     assert not app.exception
-    assert [header.value for header in app.header] == [
-        "Étape 1 · Ce que voit le réseau",
-        "Étape 2 · Couche 1 : les neurones repèrent des motifs",
-        "Étape 3 · Couche 2 : les neurones votent pour chaque chiffre",
-        "Étape 4 · La softmax change les scores en pourcentages",
-        "Résultat",
-    ]
-    digit = app.selectbox[0].value
+    assert any("l'emporte à" in text.value for text in app.markdown)
+    assert app.metric[0].label == "Chiffre reconnu"
+    digit = app.selectbox[1].value
     assert any(text.value.startswith(f"### Pixels pour le {digit}") for text in app.markdown)
 
-    app.selectbox[0].set_value(8).run()
+    app.selectbox[1].set_value(8).run(timeout=20)
 
     assert any(text.value.startswith("### Pixels pour le 8") for text in app.markdown)
 
@@ -75,14 +72,14 @@ def render_home_on_examples() -> None:
     render_home()
 
 
-def test_examples_tab_runs_a_training_digit_through_the_live_network() -> None:
+def test_examples_slide_then_next_slide_shows_the_live_network() -> None:
     app = AppTest.from_function(render_home_on_examples).run(timeout=20)
 
     assert not app.exception
-    assert app.radio[0].options == ["manuscrits", "imprimés"]
-    assert app.metric[0].label == "Chiffre reconnu"
+    assert "Chiffre prêt" in app.success[0].value
+
+    app.button[1].click().run(timeout=20)
+
+    assert not app.exception
+    assert app.subheader[0].value.startswith("Vue d'ensemble")
     assert any("l'emporte à" in text.value for text in app.markdown)
-
-    app.selectbox[0].set_value(7).run(timeout=20)
-
-    assert app.metric[0].value == "7"

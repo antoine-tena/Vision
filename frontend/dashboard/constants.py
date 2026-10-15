@@ -12,7 +12,6 @@ CANVAS_BACKGROUND = "#000000"
 PEN_COLOR = "#ffffff"
 CANVAS_BORDER = "#888888"
 UPLOAD_TYPES = ("png", "jpg", "jpeg", "bmp", "webp")
-PREVIEW_WIDTH = 140
 
 HOME_TITLE = "Reconnaître"
 TRAINING_TITLE = "Entraînement"
@@ -39,3 +38,11 @@ MISSING_SAMPLE = (
     "backend/ : `uv run python -m network.sample`."
 )
 TOP_SHAPES = 6
+# Diaporama de l'accueil : une diapositive par écran, sans défiler.
+SLIDE_KEY = "diapositive"
+RECOGNITION_KEY = "chiffre-reconnu"
+SLIDE_FIGURE_HEIGHT = 440
+SLIDE_IMAGE_WIDTH = 260
+SLIDE_PAGE_STYLE = (
+    "<style>[data-testid=stMainBlockContainer]{padding-top:1.5rem;padding-bottom:0.5rem}</style>"
+)

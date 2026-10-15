@@ -5,7 +5,6 @@ import pytest
 from PIL import Image, ImageDraw
 from streamlit.testing.v1 import AppTest
 
-from dashboard.constants import SITE_TITLE
 from dashboard.images import (
     DATA_URL_PREFIX,
     MAX_IMAGE_BYTES,
@@ -22,7 +21,7 @@ def test_home_invites_to_draw_or_upload() -> None:
     app = AppTest.from_file(APP_SCRIPT).run()
 
     assert not app.exception
-    assert app.title[0].value == SITE_TITLE
+    assert app.subheader[0].value.startswith("Choisir un chiffre")
     assert "Tracez un chiffre" in app.info[0].value
 
 
@@ -46,9 +45,10 @@ def render_a_recognized_digit() -> None:
 
     image = Image.new("L", (100, 100), 255)
     ImageDraw.Draw(image).line((50, 15, 50, 85), fill=0, width=10)
-    recognition = recognize(load_model(DEFAULT_MODEL_PATH), image)
-    render_softmax_step(recognition)
-    render_result(recognition)
+    model = load_model(DEFAULT_MODEL_PATH)
+    recognition = recognize(model, image)
+    render_softmax_step(model, recognition)
+    render_result(model, recognition)
 
 
 def test_recognition_shows_the_digit_and_its_probabilities() -> None:

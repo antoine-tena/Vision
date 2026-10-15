@@ -14,7 +14,6 @@ from dashboard.constants import LAST_ANIMATED_KEY, LIVE_FRAME_SECONDS
 
 
 def render_live_network(model: DigitClassifier, recognition: Recognition) -> None:
-    st.header("Vue d'ensemble · Le réseau en direct")
     activity = network_activity(model, recognition.pixels)
     previous = st.session_state.get(LAST_ANIMATED_KEY)
     is_new_image = previous is None or not np.array_equal(previous, recognition.pixels)
@@ -30,7 +29,11 @@ def render_live_network(model: DigitClassifier, recognition: Recognition) -> Non
         if step:
             time.sleep(LIVE_FRAME_SECONDS)
         placeholder.plotly_chart(network_figure(activity, int(reached)))
-    explanations.key_fact(
-        f"Le {activity.digit} l'emporte à {activity.probabilities[activity.digit]:.0%}"
-    )
-    explanations.explain(explanations.LIVE_NETWORK)
+    fact_column, map_column = st.columns(2)
+    with fact_column:
+        explanations.key_fact(
+            f"Le {activity.digit} l'emporte à {activity.probabilities[activity.digit]:.0%}"
+        )
+        explanations.explain(explanations.LIVE_LEGEND)
+    with map_column:
+        explanations.explain(explanations.LIVE_NETWORK)
