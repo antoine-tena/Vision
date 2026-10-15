@@ -19,7 +19,7 @@ commit qui ajoute, déplace ou retire un dossier, un domaine ou un point d'entr�
 endroit, ce qu'on y trouve ; pas de copie du code.
 
 - `backend/pipeline/` : chargement (`sources.py`), transformations (`transforms.py`), figures
-  (`figures.py`) ; `backend/notebooks/` : carnets marimo ; `backend/data/` : données (`sample/`
+  (paquet `figures/`, un module par écran) ; `backend/notebooks/` : carnets marimo ; `backend/data/` : données (`sample/`
   commité). `backend/tests/` : tests.
   - `sources.py` : MNIST téléchargé dans `data/raw/` (hors dépôt) ; `printed.py` : chiffres
     imprimés générés depuis les polices du poste ; `dataset.py` : un jeu (784 pixels + chiffre) ;
