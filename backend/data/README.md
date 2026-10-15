@@ -10,3 +10,4 @@ reproductible est commité (`models/`, le modèle entraîné : sa commande est n
 | chiffres imprimés | Générés à la volée par `pipeline.printed`, à partir des polices du poste (ou de la police livrée avec Pillow) ; rien n'est stocké | à chaque entraînement | — |
 | `models/vision.npz` | Poids du réseau entraîné par `uv run python -m network.train` (graine 0, 10 époques) | 10 octobre 2026 | celle du projet |
 | `models/historique.json` | Mesures de cet entraînement, époque par époque | 10 octobre 2026 | celle du projet |
+| `models/evaluation.json` | Matrices de confusion du modèle sur le jeu de test (MNIST, imprimés), par `uv run python -m network.evaluate` (aussi écrit par `network.train`) | 15 octobre 2026 | celle du projet |

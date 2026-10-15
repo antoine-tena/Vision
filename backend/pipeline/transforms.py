@@ -75,6 +75,12 @@ def confusion_matrix(labels: Labels, predictions: Labels) -> Matrix:
     return matrix
 
 
+def confusion_accuracy(matrix: Matrix) -> float:
+    """Part des images bien reconnues (diagonale) ; 0 pour une matrice vide."""
+    total = matrix.sum()
+    return float(np.trace(matrix) / total) if total else 0.0
+
+
 def digit_image(pixels: Matrix) -> Matrix:
     """Une ligne de 784 pixels remise en image 28x28, bornée entre 0 et 1 pour l'afficher."""
     image: Matrix = np.clip(pixels.reshape(IMAGE_SIZE, IMAGE_SIZE), 0.0, 1.0)

@@ -5,6 +5,7 @@ CC BY-SA 3.0, servie par le miroir public de Google (voir data/README.md, [SOURC
 """
 
 import gzip
+import json
 import urllib.request
 from pathlib import Path
 from typing import Literal
@@ -12,7 +13,8 @@ from typing import Literal
 import numpy as np
 
 from network.arrays import Labels, Matrix
-from network.model import PIXEL_COUNT
+from network.model import DIGIT_COUNT, PIXEL_COUNT
+from network.training import EpochMetrics
 from pipeline.dataset import DigitDataset
 
 DATA_DIR = Path(__file__).resolve().parent.parent / "data"
@@ -26,6 +28,11 @@ IMAGES_MAGIC = 2051
 LABELS_MAGIC = 2049
 PIXEL_MAX = 255.0
 DOWNLOAD_TIMEOUT_SECONDS = 60
+# Rapports écrits à côté du modèle par network.train et network.evaluate.
+HISTORY_FILE = "historique.json"
+EVALUATION_FILE = "evaluation.json"
+HANDWRITTEN_SOURCE = "manuscrits"
+PRINTED_SOURCE = "imprimés"
 
 
 class DatasetFormatError(ValueError):
@@ -70,3 +77,32 @@ def load_mnist(split: Literal["train", "test"], source_dir: Path = MNIST_DIR) ->
     if len(images) != len(labels):
         raise DatasetFormatError(f"{len(images)} images pour {len(labels)} étiquettes")
     return DigitDataset(images, labels)
+
+
+def load_training_history(path: Path) -> list[EpochMetrics]:
+    """L'historique d'entraînement, une mesure par époque, validé ([SCHEMA-DONNEES])."""
+    entries = json.loads(path.read_text())
+    if not isinstance(entries, list) or not entries:
+        raise DatasetFormatError(f"{path.name} : liste d'époques attendue, non vide")
+    try:
+        history = [EpochMetrics(**entry) for entry in entries]
+    except TypeError as error:
+        raise DatasetFormatError(f"{path.name} : époque mal formée ({error})") from error
+    if any(not 0 <= metrics.validation_accuracy <= 1 for metrics in history):
+        raise DatasetFormatError(f"{path.name} : exactitude hors de [0, 1]")
+    return history
+
+
+def load_evaluation(path: Path) -> dict[str, Matrix]:
+    """Matrices de confusion du jeu de test, une par source, chacune 10x10 et positive."""
+    entries = json.loads(path.read_text())
+    if not isinstance(entries, dict) or not entries:
+        raise DatasetFormatError(f"{path.name} : une matrice par source attendue")
+    try:
+        matrices = {source: np.asarray(rows, dtype=np.float64) for source, rows in entries.items()}
+    except (TypeError, ValueError) as error:
+        raise DatasetFormatError(f"{path.name} : matrice illisible ({error})") from error
+    for source, matrix in matrices.items():
+        if matrix.shape != (DIGIT_COUNT, DIGIT_COUNT) or (matrix < 0).any():
+            raise DatasetFormatError(f"{path.name} : matrice « {source} » invalide")
+    return matrices
