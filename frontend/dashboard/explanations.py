@@ -3,7 +3,9 @@
 import streamlit as st
 
 INPUT = r"""
-- Image réduite à 28 x 28 = **784 pixels**
+- Dessin : 280 x 280 = 78 400 pixels ; image importée : toute taille
+- Ramenée au format d'entraînement : chiffre centré, **28 x 28 = 784 pixels**
+- Exemples d'entraînement : déjà en 28 x 28
 - Pixel → nombre : 0 = blanc, 1 = encre
 - $x = (x_1, \dots, x_{784})$
 - Pas une couche : aucun calcul
