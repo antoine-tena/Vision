@@ -46,7 +46,7 @@ SLIDE_IMAGE_WIDTH = 260
 # Diaporama : sous la barre de Streamlit (60 px), titres centrés, images centrées, texte lisible.
 SLIDE_PAGE_STYLE = (
     "<style>"
-    "[data-testid=stMainBlockContainer]{padding-top:4.5rem;padding-bottom:0.5rem;"
+    "[data-testid=stMainBlockContainer]{padding-top:4.1rem;padding-bottom:0.25rem;"
     "max-width:1500px;margin:0 auto}"
     "[data-testid=stHeading]{text-align:center}"
     "[data-testid=stFullScreenFrame]:has([data-testid=stImage])"

@@ -9,23 +9,63 @@ from pipeline.recognition import Recognition
 from dashboard import reasoning
 from dashboard.constants import EXTRA_NEXT_SHORTCUTS, SHORTCUTS_KEY, SLIDE_KEY
 from dashboard.live import render_live_network
-from dashboard.sections import section, through_hidden, through_input, through_output
+from dashboard.sections import (
+    LayerReach,
+    section,
+    through_hidden,
+    through_input,
+    through_output,
+)
 
 type SlideRenderer = Callable[[DigitClassifier, Recognition], None]
 
+# Chaque étape : son nom, la couche allumée sur sa diapositive de section, ses sous-étapes.
+STEPS: list[tuple[str, LayerReach, list[tuple[str, SlideRenderer]]]] = [
+    (
+        "L'entrée : l'image",
+        through_input,
+        [("Ce que voit le réseau", reasoning.render_input_step)],
+    ),
+    (
+        "Couche 1 : repérer des motifs",
+        through_hidden,
+        [
+            ("Les neurones repèrent des motifs", reasoning.render_shapes_step),
+            ("Le calcul d'un neurone", reasoning.render_neuron_step),
+            ("Qui a choisi les motifs ? Personne", reasoning.render_emergence_step),
+        ],
+    ),
+    (
+        "Couche 2 : voter pour un chiffre",
+        through_output,
+        [
+            ("Les neurones votent", reasoning.render_vote_step),
+            ("Les pixels qui comptent", reasoning.render_evidence_step),
+        ],
+    ),
+    (
+        "La softmax : des pourcentages",
+        through_output,
+        [("Des scores aux pourcentages", reasoning.render_softmax_step)],
+    ),
+]
+
+
+def build_slides() -> list[tuple[str, SlideRenderer]]:
+    """Pour chaque étape : sa diapositive de section (avec le plan), puis ses sous-étapes."""
+    slides: list[tuple[str, SlideRenderer]] = []
+    for number, (name, reach, parts) in enumerate(STEPS, start=1):
+        titles = [f"{number}.{index} · {title}" for index, (title, _) in enumerate(parts, 1)]
+        slides.append((f"Étape {number}", section(name, reach, titles)))
+        slides += [
+            (f"Étape {title}", render) for title, (_, render) in zip(titles, parts, strict=True)
+        ]
+    return slides
+
+
 # La diapositive 0 (choisir un chiffre) est rendue par l'accueil ; les suivantes l'expliquent.
-SLIDES: list[tuple[str, SlideRenderer]] = [
-    ("Étape 1", section("L'entrée : l'image", through_input)),
-    ("Étape 1.1 · Ce que voit le réseau", reasoning.render_input_step),
-    ("Étape 2", section("Couche 1 : repérer des motifs", through_hidden)),
-    ("Étape 2.1 · Les neurones repèrent des motifs", reasoning.render_shapes_step),
-    ("Étape 2.2 · Le calcul d'un neurone", reasoning.render_neuron_step),
-    ("Étape 2.3 · Qui a choisi les motifs ? Personne", reasoning.render_emergence_step),
-    ("Étape 3", section("Couche 2 : voter pour un chiffre", through_output)),
-    ("Étape 3.1 · Les neurones votent", reasoning.render_vote_step),
-    ("Étape 3.2 · Les pixels qui comptent", reasoning.render_evidence_step),
-    ("Étape 4", section("La softmax : des pourcentages", through_output)),
-    ("Étape 4.1 · Des scores aux pourcentages", reasoning.render_softmax_step),
+SLIDES = [
+    *build_slides(),
     ("Résultat", reasoning.render_result),
     ("Conclusion · Le réseau en direct", render_live_network),
 ]
