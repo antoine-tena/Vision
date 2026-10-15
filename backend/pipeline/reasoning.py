@@ -13,7 +13,7 @@ import numpy as np
 
 from network.arrays import Labels, Matrix
 from network.model import IMAGE_SIZE, DigitClassifier
-from pipeline.neuron_shapes import active_shapes, shape_name
+from pipeline.neuron_shapes import active_shapes, shape_parts
 
 TOP_NEURONS = 8
 
@@ -32,7 +32,7 @@ class Reasoning:
     neuron_activations: Matrix
     neuron_votes: Matrix
     neuron_patterns: Matrix
-    neuron_shapes: list[str]
+    neuron_shapes: list[tuple[str, str]]
     active_shapes: list[tuple[str, int]]
 
 
@@ -73,7 +73,7 @@ def explain(
         neuron_activations=activations[ranked],
         neuron_votes=votes[ranked],
         neuron_patterns=patterns[ranked],
-        neuron_shapes=[shape_name(pattern) for pattern in patterns[ranked]],
+        neuron_shapes=[shape_parts(pattern) for pattern in patterns[ranked]],
         active_shapes=active_shapes(patterns, activations),
     )
 

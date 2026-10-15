@@ -34,7 +34,8 @@ endroit, ce qu'on y trouve ; pas de copie du code.
   Modèle entraîné et ses rapports commités dans `backend/data/models/`.
 - `frontend/app.py` : point d'entrée ; `frontend/dashboard/` : pages, mise en page et
   constantes ; `frontend/tests/` : tests.
-  - `home.py` : la page d'accueil (dessiner, choisir un exemple d'entraînement — `examples.py` —
+  - `home.py` : l'accueil en diaporama (`slides.py` : navigation ◀ ▶ ; `formula.py` : formules
+    fléchées), première diapo pour dessiner, choisir un exemple — `examples.py` —
     ou importer un chiffre), avec `live.py`, le réseau en direct, et `reasoning.py`, son
     raisonnement interne ; `training.py` : page des courbes d'entraînement et du jeu de test ;
     `loaders.py` : modèle et rapports en cache ; `canvas.py` : zone de dessin

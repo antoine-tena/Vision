@@ -41,24 +41,29 @@ def stroke_name(direction: Matrix) -> str:
     return "diagonale /" if angle < 90 else "diagonale \\"
 
 
-def shape_name(pattern: Matrix) -> str:
-    """Motif d'un neurone (ses 784 poids en 28 x 28) en quelques mots : « boucle en bas »."""
+def shape_parts(pattern: Matrix) -> tuple[str, str]:
+    """Forme et zone du motif d'un neurone (ses 784 poids en 28 x 28) : (« boucle », « en bas »)."""
     ink = np.where(pattern >= STRONG_WEIGHT_SHARE * pattern.max(), pattern, 0.0)
     rows, columns = np.indices(ink.shape)
     mass = float(ink.sum())
     if mass <= 0:
-        return "aucun motif net"
+        return "aucun motif net", ""
     center = np.array([(rows * ink).sum(), (columns * ink).sum()]) / mass
     offsets = np.stack([rows - center[0], columns - center[1]], axis=-1)
     covariance = np.einsum("ijk,ijl,ij->kl", offsets, offsets, ink) / mass
     eigenvalues, eigenvectors = np.linalg.eigh(covariance)
     zone = zone_name(float(center[0]), float(center[1]))
     if eigenvalues[1] > ELONGATION_RATIO * max(float(eigenvalues[0]), 1e-9):
-        return f"{stroke_name(eigenvectors[:, 1])} {zone}"
+        return stroke_name(eigenvectors[:, 1]), zone
     distances = np.hypot(offsets[..., 0], offsets[..., 1])
     radius = float((distances * ink).sum()) / mass
     is_hollow = ink[distances < HOLLOW_RADIUS_SHARE * radius].sum() < HOLLOW_CENTER_SHARE * mass
-    return f"{'boucle' if is_hollow else 'tache'} {zone}"
+    return ("boucle" if is_hollow else "tache"), zone
+
+
+def shape_name(pattern: Matrix) -> str:
+    """Motif d'un neurone en quelques mots : « boucle en bas »."""
+    return " ".join(part for part in shape_parts(pattern) if part)
 
 
 def active_shapes(patterns: Matrix, activations: Matrix) -> list[tuple[str, int]]:

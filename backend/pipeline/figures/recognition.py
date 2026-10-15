@@ -89,7 +89,7 @@ def neurons_figure(reasoning: Reasoning) -> go.Figure:
     count = len(reasoning.neuron_ids)
     rows = -(-count // NEURON_GRID_COLUMNS)
     titles = [
-        f"n°{neuron} {vote:+.1f}<br>{shape}"
+        f"n°{neuron} {vote:+.1f}<br>{shape[0]}<br>{shape[1]}"
         for neuron, vote, shape in zip(
             reasoning.neuron_ids, reasoning.neuron_votes, reasoning.neuron_shapes, strict=True
         )
@@ -99,7 +99,7 @@ def neurons_figure(reasoning: Reasoning) -> go.Figure:
         cols=NEURON_GRID_COLUMNS,
         subplot_titles=titles,
         horizontal_spacing=0.02,
-        vertical_spacing=0.2,
+        vertical_spacing=0.28,
     )
     for index, pattern in enumerate(reasoning.neuron_patterns):
         figure.add_trace(

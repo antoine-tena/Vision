@@ -35,7 +35,7 @@ UNREACHED = {"color": "#BBBBBB", "opacity": 0.35, "size": 5}
 ACTIVITY_COLORSCALE = [[0.0, "#33415C"], [0.15, "#21918C"], [0.6, "#5EC962"], [1.0, "#FDE725"]]
 EDGE_OPACITY = 0.7
 EDGE_WIDTH = 1.5
-FIGURE_HEIGHT = 420
+FIGURE_HEIGHT = 370
 PIXEL_SIZE = 9
 HIDDEN_SIZES = (6, 16)
 OUTPUT_SIZES = (12, 34)
@@ -211,10 +211,10 @@ def _network_layout(figure: go.Figure, activity: NetworkActivity, output_reached
         )
     _layer_frames(figure, activity.layer_sizes)
     figure.update_layout(
-        title="Le réseau en direct",
+        # Sans titre : la diapositive qui l'affiche le titre déjà (« Le réseau en direct »).
         height=FIGURE_HEIGHT,
         showlegend=False,
-        margin={"l": 10, "r": 10, "t": 50, "b": 10},
+        margin={"l": 10, "r": 10, "t": 10, "b": 10},
         plot_bgcolor="rgba(0,0,0,0)",
     )
     figure.update_xaxes(visible=False, range=[-0.4, OUTPUT_X + 1.4])
