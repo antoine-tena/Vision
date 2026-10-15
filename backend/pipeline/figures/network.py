@@ -20,6 +20,10 @@ HIDDEN_SPACING = 0.22
 OUTPUT_X = 7.0
 LAYER_HEIGHT = (IMAGE_SIZE - 1) * PIXEL_SPACING
 TITLE_Y = LAYER_HEIGHT + 0.25
+FRAME_PADDING = 0.2
+FRAME_OPACITY = 0.18
+OUTPUT_LABEL_WIDTH = 1.0
+LAYER_COLORS = (COLORBLIND_PALETTE[4], COLORBLIND_PALETTE[2], COLORBLIND_PALETTE[3])
 INPUT_FORMULA = "x = pixels ∈ [0, 1]"
 HIDDEN_FORMULA = "h = max(0, x·W₁ + b₁)"
 OUTPUT_FORMULA = "p = softmax(h·W₂ + b₂)"
@@ -147,8 +151,45 @@ def network_figure(activity: NetworkActivity, reached: int) -> go.Figure:
     return _network_layout(figure, activity, output_reached)
 
 
+def _layer_frames(figure: go.Figure, layer_sizes: tuple[int, int, int]) -> None:
+    """Un cadre teinté et un titre numéroté par couche, pour distinguer les trois couches."""
+    input_size, hidden_size, output_size = layer_sizes
+    hidden_right = HIDDEN_LEFT + (HIDDEN_COLUMNS - 1) * HIDDEN_SPACING
+    frames = (
+        (0.0, LAYER_HEIGHT, f"1. Entrée : {input_size} pixels", INPUT_FORMULA),
+        (HIDDEN_LEFT, hidden_right, f"2. Couche cachée : {hidden_size} neurones", HIDDEN_FORMULA),
+        (
+            OUTPUT_X,
+            OUTPUT_X + OUTPUT_LABEL_WIDTH,
+            f"3. Sortie : {output_size} chiffres",
+            OUTPUT_FORMULA,
+        ),
+    )
+    for index, (left, right, title, formula) in enumerate(frames):
+        color = LAYER_COLORS[index]
+        figure.add_shape(
+            type="rect",
+            x0=left - FRAME_PADDING,
+            x1=right + FRAME_PADDING,
+            y0=-FRAME_PADDING,
+            y1=LAYER_HEIGHT + FRAME_PADDING,
+            line={"color": color, "width": 2},
+            fillcolor=color,
+            opacity=FRAME_OPACITY,
+            layer="below",
+        )
+        figure.add_annotation(
+            x=(left + right) / 2,
+            y=TITLE_Y,
+            yanchor="bottom",
+            text=f"<b>{title}</b><br>{formula}",
+            font={"color": color},
+            showarrow=False,
+        )
+
+
 def _network_layout(figure: go.Figure, activity: NetworkActivity, output_reached: int) -> go.Figure:
-    input_size, hidden_size, output_size = activity.layer_sizes
+    output_size = activity.layer_sizes[-1]
     output_xs, output_ys = output_positions(output_size)
     for digit in range(output_reached):
         figure.add_annotation(
@@ -158,18 +199,7 @@ def _network_layout(figure: go.Figure, activity: NetworkActivity, output_reached
             showarrow=False,
             text=f"{digit} · {activity.probabilities[digit]:.0%}",
         )
-    for x, text, formula in (
-        (LAYER_HEIGHT / 2, f"Entrée : {input_size} pixels", INPUT_FORMULA),
-        (
-            HIDDEN_LEFT + (HIDDEN_COLUMNS - 1) * HIDDEN_SPACING / 2,
-            f"Couche cachée : {hidden_size} neurones",
-            HIDDEN_FORMULA,
-        ),
-        (OUTPUT_X, f"Sortie : {output_size} chiffres", OUTPUT_FORMULA),
-    ):
-        figure.add_annotation(
-            x=x, y=TITLE_Y, yanchor="bottom", text=f"<b>{text}</b><br>{formula}", showarrow=False
-        )
+    _layer_frames(figure, activity.layer_sizes)
     figure.update_layout(
         title="Le réseau en direct",
         height=FIGURE_HEIGHT,
@@ -177,7 +207,7 @@ def _network_layout(figure: go.Figure, activity: NetworkActivity, output_reached
         margin={"l": 10, "r": 10, "t": 50, "b": 10},
         plot_bgcolor="rgba(0,0,0,0)",
     )
-    figure.update_xaxes(visible=False, range=[-0.3, OUTPUT_X + 1.2])
+    figure.update_xaxes(visible=False, range=[-0.4, OUTPUT_X + 1.4])
     figure.update_yaxes(visible=False, range=[-0.3, TITLE_Y + 0.6])
     return figure
 
