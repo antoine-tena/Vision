@@ -7,7 +7,7 @@ IA écrite à la main (NumPy) qui reconnaît les chiffres manuscrits ou imprimé
 Après le clone, depuis la racine du dépôt (prérequis : [uv](https://docs.astral.sh/uv/)) :
 
 ```sh
-uv tool install git+https://github.com/antoine-tena/kiln   # une fois par poste
+uv tool install kiln-cli   # une fois par poste
 kiln install
 kiln dev
 ```
