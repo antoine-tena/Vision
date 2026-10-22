@@ -1,4 +1,4 @@
-# --- Secrets : seul le modèle sans valeur réelle est suivi ---
+# --- Secrets: only the example without real values is tracked ---
 .env
 .env.*
 !.env.example
@@ -6,27 +6,27 @@
 *.key
 *.p12
 
-# --- Claude Code : réglages personnels (le .claude/settings.json reste partagé) ---
+# --- Claude Code: personal settings (.claude/settings.json stays shared) ---
 .claude/settings.local.json
 .claude/worktrees/
-# Lien vers le plugin kiln installé (skills, hooks), créé à l'ouverture de session.
+# Link to the installed kiln plugin, made by kiln 0.3's session hook.
 .claude/kiln
-# Index de Serena (plugin serena@kiln), propre à chaque worktree.
+# Serena's index (plugin serena@kiln), specific to each worktree.
 .serena/
 CLAUDE.local.md
 
 # --- Données : jeux de données lourds ou bruts, hors du dépôt ---
 data/raw/
 
-# --- Journaux ---
+# --- Logs ---
 *.log
 logs/
 
-# --- Éditeurs ---
+# --- Editors ---
 .idea/
 *.swp
 
-# --- Système ---
+# --- System ---
 .DS_Store
 Thumbs.db
 *:Zone.Identifier
@@ -41,7 +41,7 @@ htmlcov/
 .ruff_cache/
 .pytest_cache/
 
-# --- Données : brutes et intermédiaires hors du dépôt ([DONNEES-LOURDES]) ---
+# --- Data: raw and intermediate sets stay out of the repo ([LARGE-DATA]) ---
 backend/data/raw/
 backend/data/interim/
 __marimo__/

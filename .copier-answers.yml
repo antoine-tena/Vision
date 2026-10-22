@@ -1,22 +1,27 @@
-# Réponses de kiln : ne pas modifier à la main, `kiln update` s'en sert.
-_commit: v0.3.4-rc.1
+# kiln's answers for this project: never edit by hand, `kiln set` changes them.
+_commit: v0.4.4-63-gb2b0bb5
 _src_path: https://github.com/antoine-tena/kiln.git
 backend: data
-boussole: Vision en service
-date_creation: '2026-10-10'
+ci_runner: github
+compact_window: 400000
+created: '2026-10-10'
 description: IA écrite à la main (NumPy) qui reconnaît les chiffres manuscrits ou
     imprimés.
-envergure: ember
-equipe:
+frontend: streamlit
+language: fr
+language_custom: false
+name: vision
+north_star: Vision en service
+owner: antoine-tena
+podman: true
+prod_health_url: ''
+project_type: dashboard
+serena: false
+size: ember
+statusline_ci: true
+team:
 - antoine-tena
 - NathanBarrachin
 - Trofymov-Pavlo
-frontend: streamlit
-nom: vision
-podman: true
-proprietaire: antoine-tena
-serena: false
-statusline_ci: true
-titre: Vision
-type_projet: tableau
-url_sante_prod: ''
+timezone: Europe/Paris
+title: Vision
