@@ -13,7 +13,7 @@ from dashboard.images import (
     decode_image,
 )
 
-# Relatif à ce fichier de test, comme l'attend AppTest.from_file.
+# Relative to this test file, as AppTest.from_file expects.
 APP_SCRIPT = "../app.py"
 
 

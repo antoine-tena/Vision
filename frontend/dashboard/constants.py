@@ -1,8 +1,8 @@
-"""[ZERO-MAGIE] : textes et réglages du tableau de bord, nommés une seule fois."""
+"""[NO-MAGIC-VALUES]: texts and settings of the dashboard, named once."""
 
 SITE_TITLE = "Vision"
 
-# [IDS] et réglages de la zone de dessin.
+# [COMPONENT-IDS] et réglages de la zone de dessin.
 CANVAS_KEY = "zone-de-dessin"
 CANVAS_PIXELS = 280
 PEN_WIDTH = 18
@@ -18,7 +18,7 @@ MISSING_REPORT = (
 )
 PATTERN_GRID_COLUMNS = 16
 
-# Onglets de l'accueil : seul l'onglet ouvert s'exécute ([ETAT]).
+# Onglets de l'accueil : seul l'onglet ouvert s'exécute ([SESSION-STATE]).
 INPUT_TABS_KEY = "source-du-chiffre"
 DRAWING_TAB = "Dessiner"
 EXAMPLES_TAB = "Exemples d'entraînement"
