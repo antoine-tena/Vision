@@ -16,7 +16,7 @@ Puis ouvrir http://localhost:8501.
 
 ## Le réseau
 
-Projet du module DATA732. Un perceptron écrit à la main avec NumPy, sans framework
+Projet du module DATA731. Un perceptron écrit à la main avec NumPy, sans framework
 d'apprentissage : 784 pixels → 128 neurones (ReLU) → 10 probabilités (softmax), entraîné par
 rétropropagation et descente de gradient stochastique avec inertie, sur les chiffres manuscrits
 de MNIST et des chiffres imprimés générés à partir de polices. Exactitude sur le jeu de test :
