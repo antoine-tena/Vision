@@ -1,4 +1,4 @@
-"""Images reçues du navigateur : validées à la frontière ([VALIDATION-AUX-FRONTIERES]).
+"""Images reçues du navigateur : validées à la frontière ([VALIDATE-AT-BOUNDARIES]).
 
 Dessin (URL de données PNG renvoyée par la zone de dessin) ou fichier importé : tout passe par
 `decode_image`, qui refuse un fichier trop lourd, illisible ou démesuré avec un message clair.

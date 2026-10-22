@@ -1,7 +1,7 @@
 """Le réseau entier dessiné neurone par neurone : 784 pixels, la couche cachée, 10 sorties.
 
 Un neurone pas encore atteint par la propagation est grisé ; un neurone atteint prend la couleur
-et la taille de sa sortie ([FIGURES-ACCESSIBLES] : la taille double la couleur, les sorties
+et la taille de sa sortie ([ACCESSIBLE-FIGURES] : la taille double la couleur, les sorties
 portent leur probabilité écrite).
 """
 

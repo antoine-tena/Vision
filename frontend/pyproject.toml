@@ -7,7 +7,7 @@ dependencies = [
     "streamlit>=1.65.0,<2.0.0",
 ]
 
-# La chaîne de données du backend, importée telle quelle ([CALCULS-HORS-UI]).
+# The backend's data chain, imported as is ([COMPUTE-OUTSIDE-UI]).
 [tool.uv.sources]
 vision-backend = { path = "../backend", editable = true }
 
@@ -29,7 +29,7 @@ select = ["E", "F", "W", "I", "N", "UP", "B", "SIM", "RUF", "ANN"]
 [tool.mypy]
 strict = true
 
-# Plotly ne publie pas de types.
+# Plotly ships no types.
 [[tool.mypy.overrides]]
 module = ["plotly", "plotly.*"]
 ignore_missing_imports = true

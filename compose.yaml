@@ -1,19 +1,43 @@
-# Pile du projet sous podman : `kiln dev --containers` (podman-compose up --build).
-# Images construites depuis la racine du dépôt (`.containerignore`) ; jamais docker.
+# The project's stack under podman: `kiln dev --containers` (podman-compose up --build); `kiln dev`
+# starts only its database and runs the code on the machine.
+# Images built from the root of the repo (`.containerignore`); never docker.
 name: vision
+
+# [HARDENED-CONTAINERS]: each service on a read-only file system, every capability dropped, no
+# privilege escalation; what it must write goes to a tmpfs.
+x-hardened: &hardened
+  read_only: true
+  tmpfs:
+    - /tmp
+  cap_drop:
+    - ALL
+  security_opt:
+    - no-new-privileges:true
 
 services:
 
   notebooks:
+    <<: *hardened
     build:
       context: .
       dockerfile: backend/Containerfile
     ports:
       - "2718:2718"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request as r; r.urlopen('http://127.0.0.1:2718/health', timeout=5)"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
 
   frontend:
+    <<: *hardened
     build:
       context: .
       dockerfile: frontend/Containerfile
     ports:
       - "8501:8501"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request as r; r.urlopen('http://127.0.0.1:8501/_stcore/health', timeout=5)"]
+      interval: 10s
+      timeout: 10s
+      retries: 10

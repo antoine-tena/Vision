@@ -1,4 +1,4 @@
-"""Réglages partagés par les figures ([FIGURES-ACCESSIBLES])."""
+"""Réglages partagés par les figures ([ACCESSIBLE-FIGURES])."""
 
 from network.model import DIGIT_COUNT
 

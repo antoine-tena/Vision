@@ -1,7 +1,7 @@
 """Entraîne le modèle et l'enregistre : `uv run python -m network.train` (depuis backend/).
 
 Données : MNIST (manuscrits) et chiffres imprimés générés ; graine fixée, donc le même modèle
-d'un lancement à l'autre sur un même poste ([REPRODUCTIBLE]).
+d'un lancement à l'autre sur un même poste ([REPRODUCIBLE]).
 """
 
 import argparse

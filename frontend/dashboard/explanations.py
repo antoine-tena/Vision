@@ -243,7 +243,7 @@ CONFUSION = """
 
 def key_fact(text: str) -> None:
     """L'information à retenir, en gros et centrée ; elle décrit aussi la figure
-    ([FIGURES-ACCESSIBLES])."""
+    ([ACCESSIBLE-FIGURES])."""
     st.markdown(f"<h3 style='text-align:center'>{text}</h3>", unsafe_allow_html=True)
 
 

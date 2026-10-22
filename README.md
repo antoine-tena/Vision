@@ -12,7 +12,7 @@ kiln install
 kiln dev
 ```
 
-Puis ouvrir http://localhost:8501. Détail de chaque commande ci-dessous.
+Puis ouvrir http://localhost:8501.
 
 ## Le réseau
 
@@ -44,28 +44,20 @@ cd backend && uv run python -m network.train            # --epochs, --learning-r
 
 ## Organisation
 
-- `backend/` : la chaîne de données (polars ou NumPy, Plotly) et les notebooks marimo ; règles dans [`backend/CLAUDE.md`](backend/CLAUDE.md).
-- `frontend/` : le tableau de bord, en Streamlit ; règles dans [`frontend/CLAUDE.md`](frontend/CLAUDE.md).
-- [`CLAUDE.md`](CLAUDE.md) : la charte commune (nommage, taille, git…), pour les humains comme
-  pour les agents.
+- `backend/` : la chaîne de données (polars ou NumPy, Plotly) et les notebooks marimo.
+- `frontend/` : le tableau de bord, en Streamlit.
+- [`CLAUDE.md`](CLAUDE.md) et [`.claude/rules/kiln/`](.claude/rules/kiln/) : la charte du code
+  et la façon de travailler, pour les humains comme pour les agents.
 - `.vscode/` : réglages et extensions recommandées, partagés par toute l'équipe.
 - `compose.yaml` et les `Containerfile` : la pile en conteneurs podman.
 
-Le projet est généré et tenu à jour par [kiln](https://github.com/antoine-tena/kiln) (réponses
-dans `.copier-answers.yml`). Changer un paramètre (équipe, frameworks, podman…) :
-`kiln set <clé>=<valeur>`, sur une branche.
+Le projet est généré et tenu à jour par [kiln](https://github.com/antoine-tena/kiln). Changer un
+paramètre (équipe, frameworks, podman…) : `kiln set <clé>=<valeur>`, sur une branche.
 
 ## Installation
 
-Prérequis : ceux du démarrage rapide, plus [podman](https://podman.io/). Puis, après le clone, depuis la
-racine du dépôt :
-
-```sh
-kiln install
-```
-
-La commande demande une fois le système du poste (Linux, WSL ou macOS), installe les
-dépendances (backend, frontend) et active les garde-fous du
+Prérequis : ceux du démarrage rapide, plus [podman](https://podman.io/).
+`kiln install` installe les dépendances (backend, frontend) et active les garde-fous du
 commit (pre-commit, dont le refus de commiter sur `main` ou `develop`). On peut la relancer sans
 risque.
 
@@ -78,21 +70,12 @@ kiln dev
 - Notebooks marimo : http://localhost:2718.
 - Frontend : http://localhost:8501.
 
-`kiln dev --containers` lance toute la pile dans podman (`compose.yaml`).
+`kiln dev` laisse tout tourner en arrière-plan et propose de suivre les journaux ; ensuite
+`kiln dev status`, `kiln dev logs [service] -f`, `kiln dev stop` (`--foreground` : dans le
+terminal, jusqu'à Ctrl+C). Un processus de plus (un worker, une tâche de fond) se déclare dans le
+`Procfile.dev` de son dossier, une ligne `nom: commande`.
 
-## Mettre à jour
-
-Sur une branche dédiée (`chore/kiln-update`), avec un arbre propre :
-
-```sh
-kiln update            # mises à jour compatibles
-kiln update --major    # y compris les versions majeures
-```
-
-Elle rapporte les évolutions du modèle (charte, outillage, configuration) sans écraser les
-modifications locales, met à jour les dépendances, puis lance les contrôles. Relire le diff,
-puis fusionner la branche dans `develop`. Avec Claude Code, le skill `base:maj-kiln` fait tout :
-l'outil kiln, puis le dépôt.
+`kiln dev --containers` lance toute la pile dans podman, comme en production (`compose.yaml`).
 
 ## Vérifier le code
 
@@ -100,18 +83,24 @@ l'outil kiln, puis le dépôt.
 kiln check
 ```
 
-Ruff, mypy et pytest pour chaque projet Python, puis la charte.
+Ruff, mypy et pytest pour chaque projet Python, puis la charte (`charter`).
+
+## Mettre à jour
+
+Sur une branche dédiée, avec un arbre propre : `kiln update` (mises à jour compatibles) ou
+`kiln update --major` (versions majeures comprises). La commande rapporte les évolutions de kiln
+sans écraser les modifications locales, met à jour les dépendances, puis lance les contrôles.
+Avec Claude Code, le skill `/kiln:update` fait tout : l'outil kiln, puis le dépôt.
 
 ## Suivi du travail
 
 Ce qui reste à faire est dans [`docs/backlog/`](docs/backlog/) : `backlog.md` (les tickets, par
-priorité), `rejected.md` (ce qui a été refusé) et `urgent.md` (ce que seul un humain peut faire).
+priorité), `done.md` (ceux qui sont faits), `rejected.md` (ce qui a été refusé) et `urgent.md` (ce que seul un humain peut faire).
 
 ## Contribuer
 
-1. Créer une branche depuis la branche par défaut du dépôt (`develop` quand elle existe,
-   sinon `main`) : `feat/…`, `fix/…`, voir [BRANCHES].
-2. Respecter les règles du [`CLAUDE.md`](CLAUDE.md).
+1. Créer une branche depuis `develop` : `feat/…`, `fix/…` ([BRANCHES]).
+2. Respecter la charte ([`.claude/rules/kiln/`](.claude/rules/kiln/), [`CLAUDE.md`](CLAUDE.md)).
 3. Fusionner la branche dans `develop` (`git merge --no-ff`, puis push), sans attendre
-   d'approbation : skill `base:fusion` avec Claude Code. Une pull request reste possible pour
+   d'approbation : skill `/kiln:merge` avec Claude Code. Une pull request reste possible pour
    demander un avis. On ne commite jamais directement sur `main` ou `develop`.

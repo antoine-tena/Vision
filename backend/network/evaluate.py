@@ -2,7 +2,7 @@
 source : `uv run python -m network.evaluate` (depuis backend/). `network.train` le fait aussi.
 
 Jeux de test : MNIST (manuscrits, jamais vus à l'entraînement) et chiffres imprimés générés avec
-une autre graine que ceux de l'entraînement ([REPRODUCTIBLE]).
+une autre graine que ceux de l'entraînement ([REPRODUCIBLE]).
 """
 
 import json
