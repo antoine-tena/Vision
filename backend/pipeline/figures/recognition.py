@@ -27,7 +27,7 @@ SHAPE_TITLE_SIZE = 11
 
 def probabilities_figure(probabilities: Matrix) -> go.Figure:
     """Probabilité donnée à chaque chiffre pour une image ; la prédiction ressort par sa
-    couleur, un motif hachuré et son pourcentage écrit ([FIGURES-ACCESSIBLES])."""
+    couleur, un motif hachuré et son pourcentage écrit ([ACCESSIBLE-FIGURES])."""
     row = probabilities.reshape(DIGIT_COUNT)
     predicted = int(np.argmax(row))
     is_predicted = [digit == predicted for digit in range(DIGIT_COUNT)]
@@ -66,7 +66,7 @@ def scores_figure(scores: Matrix) -> go.Figure:
 
 def output_weights_figure(weights: Matrix, neuron: int) -> go.Figure:
     """Les 10 poids de sortie d'un neurone caché, un par chiffre : bleu si son motif pousse
-    vers ce chiffre, orange s'il l'en éloigne ; la valeur est écrite ([FIGURES-ACCESSIBLES])."""
+    vers ce chiffre, orange s'il l'en éloigne ; la valeur est écrite ([ACCESSIBLE-FIGURES])."""
     figure = go.Figure(
         go.Bar(
             x=DIGITS,

@@ -2,7 +2,7 @@
 
 MNIST ne contient que des chiffres manuscrits : pour reconnaître aussi des chiffres tapés, on
 dessine chaque chiffre dans des polices variées, avec une taille, une inclinaison et une
-épaisseur tirées au hasard (graine fixée, [REPRODUCTIBLE]), puis on le ramène au format MNIST.
+épaisseur tirées au hasard (graine fixée, [REPRODUCIBLE]), puis on le ramène au format MNIST.
 """
 
 from pathlib import Path
