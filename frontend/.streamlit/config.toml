@@ -3,5 +3,5 @@ gatherUsageStats = false
 
 [server]
 headless = true
-# Mo ; dashboard/images.py refuse aussi au-delà ([VALIDATION-AUX-FRONTIERES]).
+# Mo ; dashboard/images.py refuse aussi au-delà ([VALIDATE-AT-BOUNDARIES]).
 maxUploadSize = 5

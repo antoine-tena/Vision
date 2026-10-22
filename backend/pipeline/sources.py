@@ -1,7 +1,7 @@
 """MNIST : téléchargé une fois dans data/raw/ (hors du dépôt), lu depuis le format IDX.
 
 Source : base MNIST de Yann LeCun, Corinna Cortes et Christopher J. C. Burges, licence
-CC BY-SA 3.0, servie par le miroir public de Google (voir data/README.md, [SOURCES]).
+CC BY-SA 3.0, servie par le miroir public de Google (voir data/README.md, [DATA-SOURCES]).
 """
 
 import gzip
@@ -19,7 +19,7 @@ from pipeline.dataset import DigitDataset
 
 DATA_DIR = Path(__file__).resolve().parent.parent / "data"
 MNIST_DIR = DATA_DIR / "raw" / "mnist"
-# Échantillon du jeu d'entraînement écrit par network.sample, commité ([DONNEES-LOURDES]).
+# Échantillon du jeu d'entraînement écrit par network.sample, commité ([LARGE-DATA]).
 SAMPLE_PATH = DATA_DIR / "sample" / "exemples.npz"
 MNIST_URL = "https://storage.googleapis.com/cvdf-datasets/mnist"
 MNIST_FILES = {
@@ -82,7 +82,7 @@ def load_mnist(split: Literal["train", "test"], source_dir: Path = MNIST_DIR) ->
 
 
 def load_training_history(path: Path) -> list[EpochMetrics]:
-    """L'historique d'entraînement, une mesure par époque, validé ([SCHEMA-DONNEES])."""
+    """L'historique d'entraînement, une mesure par époque, validé ([DATA-SCHEMA])."""
     entries = json.loads(path.read_text())
     if not isinstance(entries, list) or not entries:
         raise DatasetFormatError(f"{path.name} : liste d'époques attendue, non vide")
